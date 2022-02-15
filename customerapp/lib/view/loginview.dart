@@ -61,7 +61,6 @@ class Login extends StatelessWidget {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            prefixIcon: Icon(Icons.email),
                             labelText: 'Email',
                             labelStyle: TextStyle(
                               fontSize: 13,
@@ -87,7 +86,6 @@ class Login extends StatelessWidget {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            prefixIcon: Icon(Icons.remove_red_eye),
                             labelText: 'Password',
                             labelStyle: TextStyle(
                               fontSize: 13,
