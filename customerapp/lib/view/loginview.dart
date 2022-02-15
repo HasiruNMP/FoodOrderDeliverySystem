@@ -46,25 +46,18 @@ class Login extends StatelessWidget {
               ),
               Container(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Card(
-                      elevation: 5,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Container(
-                        height: 45,
-                        child: TextField(
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            labelText: 'Email',
-                            labelStyle: TextStyle(
-                              fontSize: 13,
-                            ),
+                    Container(
+                      height: 45,
+                      child: TextField(
+                        obscureText: false,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                          labelText: 'Email',
+                          labelStyle: TextStyle(
+                            fontSize: 13,
                           ),
                         ),
                       ),
@@ -72,24 +65,18 @@ class Login extends StatelessWidget {
                     SizedBox(
                       height: 20.0,
                     ),
-                    Card(
-                      elevation: 5,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Container(
-                        height: 45,
-                        child: TextField(
-                          style: TextStyle(height: 1),
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            labelText: 'Password',
-                            labelStyle: TextStyle(
-                              fontSize: 13,
-                            ),
+                    Container(
+                      height: 45,
+                      child: TextField(
+                        style: TextStyle(height: 1),
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          labelText: 'Password',
+                          labelStyle: TextStyle(
+                            fontSize: 13,
                           ),
                         ),
                       ),
