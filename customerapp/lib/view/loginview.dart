@@ -14,7 +14,7 @@ class Login extends StatelessWidget {
                 color: Colors.red,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image(
+                  child: const Image(
                     image: AssetImage('images/gg.png'),
                     height: 100.0,
                     width: 200.0,
@@ -25,12 +25,12 @@ class Login extends StatelessWidget {
                 margin: EdgeInsets.only(bottom: 10),
                 child: Column(
                   children: <Widget>[
-                    Text(
+                    const Text(
                       'Welcome to Logo!',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10.0,
                     ),
                     SizedBox(
@@ -44,81 +44,79 @@ class Login extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                child: Column(
-                  children: [
-                    Container(
-                      height: 45,
-                      child: TextField(
-                        obscureText: false,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(9),
-                          ),
-                          labelText: 'Email',
-                          labelStyle: TextStyle(
+              Column(
+                children: [
+                  SizedBox(
+                    height: 45,
+                    child: TextField(
+                      obscureText: false,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                        labelText: 'Email',
+                        labelStyle: const TextStyle(
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
+                  SizedBox(
+                    height: 45,
+                    child: TextField(
+                      style: const TextStyle(height: 1),
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        labelText: 'Password',
+                        labelStyle: const TextStyle(
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    margin: const EdgeInsets.only(right: 30),
+                    height: 40,
+                    child: SizedBox(
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                            color: Colors.grey[600],
                             fontSize: 13,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Container(
-                      height: 45,
-                      child: TextField(
-                        style: TextStyle(height: 1),
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          labelText: 'Password',
-                          labelStyle: TextStyle(
-                            fontSize: 13,
-                          ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(right: 50, left: 50),
+                    child: SizedBox(
+                      width: 250,
+                      height: 50,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          primary: Colors.white,
+                          backgroundColor: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                              side: const BorderSide(color: Colors.blue)),
                         ),
+                        onPressed: () {},
+                        child: const Text('Sign In'),
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      margin: EdgeInsets.only(right: 30),
-                      height: 40,
-                      child: SizedBox(
-                        child: TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(right: 50, left: 50),
-                      child: SizedBox(
-                        width: 250,
-                        height: 50,
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            primary: Colors.white,
-                            backgroundColor: Colors.blue,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                                side: BorderSide(color: Colors.blue)),
-                          ),
-                          onPressed: () {},
-                          child: Text('Sign In'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ],
           ),
