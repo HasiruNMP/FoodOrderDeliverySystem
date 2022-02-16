@@ -1,3 +1,4 @@
+import 'package:customerapp/view/cartview.dart';
 import 'package:customerapp/view/menuview.dart';
 import 'package:customerapp/view/signupview.dart';
 import 'package:flutter/material.dart';
@@ -17,10 +18,7 @@ class _HomeViewState extends State<HomeView> {
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   final List<Widget> _widgetOptions = <Widget>[
     const MenuView(),
-    const Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
+    const CartView(),
     Signup(),
   ];
 
