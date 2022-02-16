@@ -1,4 +1,5 @@
 import 'package:customerapp/view/loginview.dart';
+import 'package:customerapp/view/signupview.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: Login(),
+      home: Signup(),
     );
   }
 }
