@@ -11,7 +11,6 @@ class Login extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                color: Colors.red,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: const Image(
@@ -46,17 +45,20 @@ class Login extends StatelessWidget {
               ),
               Column(
                 children: [
-                  SizedBox(
-                    height: 45,
-                    child: TextField(
-                      obscureText: false,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(9),
-                        ),
-                        labelText: 'Email',
-                        labelStyle: const TextStyle(
-                          fontSize: 13,
+                  Container(
+                    margin: const EdgeInsets.only(left: 20, right: 20),
+                    child: SizedBox(
+                      height: 45,
+                      child: TextField(
+                        obscureText: false,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                          labelText: 'Email',
+                          labelStyle: const TextStyle(
+                            fontSize: 13,
+                          ),
                         ),
                       ),
                     ),
@@ -64,27 +66,30 @@ class Login extends StatelessWidget {
                   const SizedBox(
                     height: 20.0,
                   ),
-                  SizedBox(
-                    height: 45,
-                    child: TextField(
-                      style: const TextStyle(height: 1),
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        labelText: 'Password',
-                        labelStyle: const TextStyle(
-                          fontSize: 13,
+                  Container(
+                    margin: const EdgeInsets.only(left: 20, right: 20),
+                    child: SizedBox(
+                      height: 45,
+                      child: TextField(
+                        style: const TextStyle(height: 1),
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          labelText: 'Password',
+                          labelStyle: const TextStyle(
+                            fontSize: 13,
+                          ),
                         ),
                       ),
                     ),
                   ),
                   Container(
                     alignment: Alignment.centerRight,
-                    margin: const EdgeInsets.only(right: 30),
-                    height: 40,
+                    margin: const EdgeInsets.only(right: 30, bottom: 20),
                     child: SizedBox(
+                      height: 30,
                       child: TextButton(
                         onPressed: () {},
                         child: Text(
