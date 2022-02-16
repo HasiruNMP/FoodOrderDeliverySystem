@@ -87,6 +87,7 @@ class _CartViewState extends State<CartView> {
                 flex: 1,
                 child: Card(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Total Price: Rs. 5000"),
                       ElevatedButton(
