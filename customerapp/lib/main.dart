@@ -1,4 +1,5 @@
 import 'package:customerapp/view/categoryview.dart';
+import 'package:customerapp/view/checkoutview.dart';
 import 'package:customerapp/view/homeview.dart';
 import 'package:customerapp/view/loginview.dart';
 import 'package:customerapp/view/menuview.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
       routes: {
         'menu': (context) => const MenuView(),
         'category': (context) => const CategoryView(),
+        'checkout': (context) => const CheckoutView(),
       },
       home: const HomeView(),
     );

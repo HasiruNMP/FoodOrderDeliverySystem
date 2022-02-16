@@ -91,7 +91,9 @@ class _CartViewState extends State<CartView> {
                     children: [
                       Text("Total Price: Rs. 5000"),
                       ElevatedButton(
-                        onPressed: (){},
+                        onPressed: (){
+                          Navigator.pushNamed(context, 'checkout');
+                        },
                         child: const Text("Checkout")
                       ),
                     ],
