@@ -3,6 +3,7 @@ import 'package:customerapp/view/checkoutview.dart';
 import 'package:customerapp/view/homeview.dart';
 import 'package:customerapp/view/loginview.dart';
 import 'package:customerapp/view/menuview.dart';
+import 'package:customerapp/view/ordertrackingview.dart';
 import 'package:customerapp/view/signupview.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         'menu': (context) => const MenuView(),
         'category': (context) => const CategoryView(),
         'checkout': (context) => const CheckoutView(),
+        'track': (context) => const TrackOrderView(),
       },
       home: const HomeView(),
     );

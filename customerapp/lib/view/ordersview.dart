@@ -72,7 +72,7 @@ class _OrderviewState extends State<Orderview> {
                                   ),
                                 ),
                                 onPressed: () {
-//   Navigator.pushNamed(context, OtpVerify.id);
+                                  Navigator.pushNamed(context, 'track');
                                 },
                                 child: const Text('Track'),
                               ),

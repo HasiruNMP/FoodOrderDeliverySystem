@@ -1,5 +1,7 @@
 import 'package:customerapp/view/cartview.dart';
 import 'package:customerapp/view/menuview.dart';
+import 'package:customerapp/view/ordersview.dart';
+import 'package:customerapp/view/profileview.dart';
 import 'package:customerapp/view/signupview.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +21,8 @@ class _HomeViewState extends State<HomeView> {
   final List<Widget> _widgetOptions = <Widget>[
     const MenuView(),
     const CartView(),
-    Signup(),
+    Orderview(),
+    ProfileView(),
   ];
 
   void _onItemTapped(int index) {
@@ -35,14 +38,19 @@ class _HomeViewState extends State<HomeView> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.menu),
-            label: 'Home',
+            label: 'Menu',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: 'Cart',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'Orders',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
