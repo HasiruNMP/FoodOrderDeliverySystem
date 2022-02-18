@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shopapp/view/newordersview.dart';
+import 'package:shopapp/view/pendingordersview.dart';
 
 class OrdersView extends StatefulWidget {
   const OrdersView({Key? key}) : super(key: key);
@@ -25,8 +27,8 @@ class _OrdersViewState extends State<OrdersView> {
         ),
         body: const TabBarView(
           children: [
-            Icon(Icons.directions_car),
-            Icon(Icons.directions_transit),
+            NewOrdersView(),
+            PendingOrdersView(),
             Icon(Icons.directions_bike),
           ],
         ),
