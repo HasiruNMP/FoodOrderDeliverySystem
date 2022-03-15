@@ -61,25 +61,33 @@ class _NavigationViewState extends State<NavigationView> {
               SideMenuItem(
                 priority: 0,
                 title: 'NEW ORDERS',
-                onTap: () {page.jumpToPage(0);},
+                onTap: () {
+                  page.jumpToPage(0);
+                },
                 icon: Icon(Icons.home),
               ),
               SideMenuItem(
                 priority: 1,
                 title: 'ORDERS',
-                onTap: () {page.jumpToPage(1);},
+                onTap: () {
+                  page.jumpToPage(1);
+                },
                 icon: Icon(Icons.home),
               ),
               SideMenuItem(
                 priority: 2,
                 title: 'MENU',
-                onTap: () {page.jumpToPage(2);},
+                onTap: () {
+                  page.jumpToPage(2);
+                },
                 icon: Icon(Icons.supervisor_account),
               ),
               SideMenuItem(
                 priority: 3,
                 title: 'DELIVERY',
-                onTap: () {page.jumpToPage(3);},
+                onTap: () {
+                  page.jumpToPage(3);
+                },
                 icon: Icon(Icons.file_copy_rounded),
               ),
               SideMenuItem(
@@ -108,18 +116,7 @@ class _NavigationViewState extends State<NavigationView> {
                 ),
                 Container(
                   color: Colors.white,
-                  child: Center(
-                    child: DeliveryView()
-                  ),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: Center(
-                    child: Text(
-                      'Page\n   5',
-                      style: TextStyle(fontSize: 35),
-                    ),
-                  ),
+                  child: Center(child: DeliveryView()),
                 ),
               ],
             ),
@@ -129,4 +126,3 @@ class _NavigationViewState extends State<NavigationView> {
     );
   }
 }
-
