@@ -22,6 +22,8 @@ class _HistoryViewState extends State<HistoryView> {
         child: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection("orders")
+              .where("deliveryPerson", isEqualTo: "jagathg")
+              .where("orderStatus", isEqualTo: "pending")
               .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
@@ -53,6 +55,7 @@ class _HistoryViewState extends State<HistoryView> {
                     //String itemCounts=category['itemCounts'];
                     String itemID=category['orderid'];
                     Timestamp orderTime=category['orderTime'];
+                    var time = DateTime.fromMicrosecondsSinceEpoch(orderTime.microsecondsSinceEpoch);
                     String orderId=category['orderid'];
                     String  totalPrice=category['totalPrice'];
 
@@ -121,7 +124,7 @@ class _HistoryViewState extends State<HistoryView> {
                                       Expanded(
                                         flex: 4,
                                         child: Text(
-                                          orderTime.toString(),
+                                          '${time.hour} : ${time.minute}',
                                           style: TextStyle(color: Colors.black),
                                         ),
                                       ),
