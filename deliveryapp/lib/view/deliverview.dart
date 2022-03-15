@@ -45,12 +45,12 @@ class _DeliverViewState extends State<DeliverView> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   OutlinedButton(
-                      onPressed: () {
-                        _settingModalBottomSheet(context);
-                      },
-                      child: Text('View Order')),
+                    onPressed: () {
+                      _settingModalBottomSheet(context);
+                    },
+                    child: Text('View Order')),
                   OutlinedButton(
-                      onPressed: () {}, child: Text('Mark As Delivered')),
+                    onPressed: () {}, child: Text('Mark As Delivered')),
                 ],
               ),
             ],

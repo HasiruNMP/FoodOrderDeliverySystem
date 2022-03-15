@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shopapp/view/homeview.dart';
 import 'package:shopapp/view/menuview.dart';
+import 'package:shopapp/view/navigationview.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.blue,
       ),
-      home: const MenuView(),
+      home: const NavigationView(),
     );
   }
 }
