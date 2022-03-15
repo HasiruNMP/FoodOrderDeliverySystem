@@ -87,14 +87,20 @@ class _ItemViewState extends State<ItemView> {
           child: ListView(
             children: [
               Container(
-                height: MediaQuery.of(context).size.width,
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Image.network(imgUrl),
+                width: MediaQuery.of(context).size.width,
+                child: Image.network(
+                  imgUrl,
+                  height: 263,
                 ),
               ),
-              Text('Rs.$price'),
-              Text(discription),
+              Container(
+                margin: const EdgeInsets.only(left: 10, top: 20),
+                child: Text(discription),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 10, top: 20),
+                child: Text('Rs.$price'),
+              ),
               Container(
                 alignment: Alignment.center,
                 child: Row(
