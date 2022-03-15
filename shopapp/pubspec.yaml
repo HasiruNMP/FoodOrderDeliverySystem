@@ -37,6 +37,7 @@ dependencies:
   firebase_core: ^1.13.1
   easy_sidemenu: ^0.2.0
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

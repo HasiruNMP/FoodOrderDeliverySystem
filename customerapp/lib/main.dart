@@ -5,9 +5,17 @@ import 'package:customerapp/view/loginview.dart';
 import 'package:customerapp/view/menuview.dart';
 import 'package:customerapp/view/ordertrackingview.dart';
 import 'package:customerapp/view/signupview.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  //firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  ); //run the application
   runApp(const MyApp());
 }
 
@@ -24,7 +32,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         'menu': (context) => const MenuView(),
-        'category': (context) => const CategoryView(),
+        'category': (context) => CategoryView(0),
         'checkout': (context) => const CheckoutView(),
         'track': (context) => const TrackOrderView(),
       },
