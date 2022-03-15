@@ -62,7 +62,15 @@ class _CategoryViewState extends State<CategoryView> {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => ItemView(catItems.id,catItems['name']),),
+                                  MaterialPageRoute(
+                                    builder: (context) => ItemView(
+                                      itemID: catItems['prodId'],
+                                      imgUrl: catItems['imgUrl'],
+                                      name: catItems['name'],
+                                      price: catItems['price'],
+                                      discription: catItems['description'],
+                                    ),
+                                  ),
                                 );
                               },
                               child: Column(
