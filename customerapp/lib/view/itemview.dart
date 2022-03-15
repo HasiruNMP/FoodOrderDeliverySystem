@@ -1,8 +1,10 @@
+import 'package:advance_notification/advance_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/cart.dart';
 import '../controller/item.dart';
+import 'cartview.dart';
 
 class ItemView extends StatefulWidget {
   int itemID;
@@ -48,6 +50,38 @@ class _ItemViewState extends State<ItemView> {
       return Scaffold(
         appBar: AppBar(
           title: Text(name),
+          actions: [
+            IconButton(
+              icon: Icon(
+                Icons.shopping_cart_rounded,
+                color: Colors.white,
+                size: 35,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.push<void>(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) => CartView(),
+                  ),
+                );
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20, right: 5),
+              child: Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.all(4),
+                decoration:
+                    BoxDecoration(shape: BoxShape.circle, color: Colors.yellow),
+                child: Text(
+                  Cart.count.toString(),
+                  style: TextStyle(fontSize: 12, color: Colors.black),
+                ),
+              ),
+            ),
+          ],
         ),
         body: SafeArea(
           child: ListView(
@@ -75,7 +109,7 @@ class _ItemViewState extends State<ItemView> {
                             }
                           });
                         },
-                        icon: Icon(Icons.remove)),
+                        icon: Icon(Icons.remove_circle_outlined)),
                     Text(
                       quantity.toString(),
                     ),
@@ -85,7 +119,7 @@ class _ItemViewState extends State<ItemView> {
                             quantity++;
                           });
                         },
-                        icon: Icon(Icons.add_box)),
+                        icon: Icon(Icons.add_circle_rounded)),
                   ],
                 ),
               ),
@@ -101,7 +135,15 @@ class _ItemViewState extends State<ItemView> {
                             quantity: quantity),
                       ];
                       cart.add(items[0]);
-                      print('quntitiy $quantity');
+                      const AdvanceSnackBar(
+                        message: "Item Added!",
+                        mode: Mode.ADVANCE,
+                        duration: Duration(seconds: 2),
+                        bgColor: Colors.blue,
+                        textColor: Colors.black,
+                        iconColor: Colors.black,
+                      ).show(context);
+                      print('qauntitiy $quantity');
                     },
                     child: Text('Add To Cart')),
               )

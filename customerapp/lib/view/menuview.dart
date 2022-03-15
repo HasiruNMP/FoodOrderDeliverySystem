@@ -63,7 +63,8 @@ class _MenuViewState extends State<MenuView> {
                                         context,
                                         MaterialPageRoute<void>(
                                           builder: (BuildContext context) =>
-                                              CategoryView(category['id']),
+                                              CategoryView(category['id'],
+                                                  category['name']),
                                         ),
                                       );
                                     },
