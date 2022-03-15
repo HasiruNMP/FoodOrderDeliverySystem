@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
-
+import 'package:advance_notification/advance_notification.dart';
+import 'package:flutter/material.dart';
 import 'item.dart';
 
 class Cart extends ChangeNotifier {
@@ -20,13 +20,17 @@ class Cart extends ChangeNotifier {
       _items.add(item);
       _totalPrice += item.price * item.quantity;
       notifyListeners();
-      Get.snackbar(
-          "Product Added", "You have added the ${item.name} to the cart",
-          snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 1));
+      print('item Added!');
+      const AdvanceSnackBar(message: "Hello...").show;
+      // Get.snackbar(
+      //     "Product Added", "You have added the ${item.name} to the cart",
+      //     snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 1));
     } else {
-      Get.snackbar("Already Added ",
-          "You have added the ${item.name} to the cart already",
-          snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 1));
+      const AdvanceSnackBar(message: "Hello...").show;
+      print('Already Added');
+      // Get.snackbar("Already Added ",
+      //     "You have added the ${item.name} to the cart already",
+      //     snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 1));
     }
   }
 
@@ -80,7 +84,7 @@ class Cart extends ChangeNotifier {
   }
 
   static void PaymentStates() {
-    Get.snackbar("Order Completed Successfully!", "Thank You!",
-        snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 2));
+    // Get.snackbar("Order Completed Successfully!", "Thank You!",
+    //     snackPosition: SnackPosition.BOTTOM, duration: Duration(seconds: 2));
   }
 }

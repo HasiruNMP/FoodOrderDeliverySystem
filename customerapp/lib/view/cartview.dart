@@ -71,89 +71,89 @@ class _CartViewState extends State<CartView> {
                                   child: Card(
                                     child: Row(
                                       children: [
-                                        Expanded(
-                                          flex: 1,
+                                        Container(
+                                          margin: EdgeInsets.all(10),
                                           child: Image.network(
-                                              Cart.basketItems[index].imgUrl),
+                                            Cart.basketItems[index].imgUrl,
+                                            width: 150,
+                                          ),
+                                        ),
+                                        Column(
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 10, top: 20),
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Text(
+                                                        Cart.basketItems[index]
+                                                            .name,
+                                                      )),
+                                                  Container(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Row(
+                                                      children: [
+                                                        IconButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                cart.updateProduct(
+                                                                    Cart.basketItems[
+                                                                        index],
+                                                                    Cart.basketItems[index]
+                                                                            .quantity -
+                                                                        1);
+                                                              });
+                                                            },
+                                                            icon: const Icon(Icons
+                                                                .remove_circle_outlined)),
+                                                        Text(
+                                                          Cart
+                                                              .basketItems[
+                                                                  index]
+                                                              .quantity
+                                                              .toString(),
+                                                        ),
+                                                        IconButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                cart.updateProduct(
+                                                                    Cart.basketItems[
+                                                                        index],
+                                                                    Cart.basketItems[index]
+                                                                            .quantity +
+                                                                        1);
+                                                              });
+                                                            },
+                                                            icon: const Icon(Icons
+                                                                .add_circle)),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Text(
+                                                          'Rs.${Cart.basketItems[index].price.toString()}')),
+                                                ],
+                                              ),
+                                            )
+                                          ],
                                         ),
                                         Expanded(
-                                          flex: 2,
-                                          child: Column(
-                                            children: [
-                                              Expanded(
-                                                flex: 1,
-                                                child: Container(
-                                                  alignment: Alignment.topRight,
-                                                  child: IconButton(
-                                                    icon: Icon(Icons.close),
-                                                    onPressed: () {
-                                                      cart.remove(Cart
-                                                          .basketItems[index]);
-                                                    },
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                flex: 1,
-                                                child: Container(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Text(
-                                                      Cart.basketItems[index]
-                                                          .name,
-                                                    )),
-                                              ),
-                                              Expanded(
-                                                flex: 2,
-                                                child: Container(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Row(
-                                                    children: [
-                                                      IconButton(
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              cart.updateProduct(
-                                                                  Cart.basketItems[
-                                                                      index],
-                                                                  Cart.basketItems[index]
-                                                                          .quantity -
-                                                                      1);
-                                                            });
-                                                          },
-                                                          icon: const Icon(
-                                                              Icons.remove)),
-                                                      Text(
-                                                        Cart.basketItems[index]
-                                                            .quantity
-                                                            .toString(),
-                                                      ),
-                                                      IconButton(
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              cart.updateProduct(
-                                                                  Cart.basketItems[
-                                                                      index],
-                                                                  Cart.basketItems[index]
-                                                                          .quantity +
-                                                                      1);
-                                                            });
-                                                          },
-                                                          icon: Icon(
-                                                              Icons.add_box)),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                flex: 1,
-                                                child: Container(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Text(
-                                                        'Rs.${Cart.basketItems[index].price.toString()}')),
-                                              ),
-                                            ],
+                                          flex: 1,
+                                          child: Container(
+                                            alignment: Alignment.topRight,
+                                            child: IconButton(
+                                              icon: Icon(Icons.close),
+                                              onPressed: () {
+                                                cart.remove(
+                                                    Cart.basketItems[index]);
+                                              },
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -168,17 +168,22 @@ class _CartViewState extends State<CartView> {
                       Expanded(
                           flex: 1,
                           child: Card(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                    "Total Price: Rs.${Cart.totalPrice.toString()}"),
-                                ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(context, 'checkout');
-                                    },
-                                    child: const Text("Checkout")),
-                              ],
+                            child: Container(
+                              margin: EdgeInsets.all(10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                      "Total Price: Rs.${Cart.totalPrice.toString()}"),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, 'checkout');
+                                      },
+                                      child: const Text("Checkout")),
+                                ],
+                              ),
                             ),
                           )),
                     ],

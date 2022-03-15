@@ -2,23 +2,61 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customerapp/view/itemview.dart';
 import 'package:flutter/material.dart';
 
+import '../controller/cart.dart';
+import 'cartview.dart';
+
 class CategoryView extends StatefulWidget {
   int categoryId;
-  CategoryView(this.categoryId);
+  String name;
+  CategoryView(this.categoryId, this.name);
 
   @override
-  _CategoryViewState createState() => _CategoryViewState(this.categoryId);
+  _CategoryViewState createState() =>
+      _CategoryViewState(this.categoryId, this.name);
 }
 
 class _CategoryViewState extends State<CategoryView> {
   int categoryId;
-  _CategoryViewState(this.categoryId);
+  String name;
+  _CategoryViewState(this.categoryId, this.name);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Category 1'),
+        title: Text(name),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.shopping_cart_rounded,
+              color: Colors.white,
+              size: 35,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.push<void>(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => CartView(),
+                ),
+              );
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20, right: 5),
+            child: Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(4),
+              decoration:
+                  BoxDecoration(shape: BoxShape.circle, color: Colors.yellow),
+              child: Text(
+                Cart.count.toString(),
+                style: TextStyle(fontSize: 12, color: Colors.black),
+              ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: ListView(
@@ -42,6 +80,7 @@ class _CategoryViewState extends State<CategoryView> {
 
                   if (snapshot.hasData) {
                     print('has data in items');
+
                     return Container(
                       height: MediaQuery.of(context).size.height,
                       child: ListView.builder(

@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         'menu': (context) => const MenuView(),
-        'category': (context) => CategoryView(0),
+        'category': (context) => CategoryView(0, '0'),
         'checkout': (context) => const CheckoutView(),
         'track': (context) => const TrackOrderView(),
       },
