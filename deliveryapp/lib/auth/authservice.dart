@@ -14,7 +14,8 @@ class Auth with ChangeNotifier {
 
   Stream<CurrentUser> get onAuthStateChanged => _auth.authStateChanges().map((User? user) => CurrentUser(user!.uid));
 
-  void signIn(String email, String password) async{
+  void signIn(String username, String password) async{
+    String email = username + '@fods.lk';
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
