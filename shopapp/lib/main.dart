@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shopapp/view/assignview.dart';
+import 'package:shopapp/view/deliveryview.dart';
 import 'package:shopapp/view/homeview.dart';
+import 'package:shopapp/view/loginview.dart';
 import 'package:shopapp/view/menuview.dart';
 import 'package:shopapp/view/navigationview.dart';
 
@@ -14,17 +17,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'FODS Shop App',
+      title: 'FOODS Shop App',
       theme: ThemeData(
-
         primarySwatch: Colors.blue,
       ),
-      home: const NavigationView(),
+      home: const AssignView(),
     );
   }
 }
-
-
-
-
-
