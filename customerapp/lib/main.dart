@@ -7,7 +7,9 @@ import 'package:customerapp/view/ordertrackingview.dart';
 import 'package:customerapp/view/signupview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'controller/cart.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -16,7 +18,10 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   ); //run the application
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => Cart(),
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

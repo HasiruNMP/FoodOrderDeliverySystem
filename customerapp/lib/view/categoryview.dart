@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customerapp/view/itemview.dart';
 import 'package:flutter/material.dart';
 
 class CategoryView extends StatefulWidget {
@@ -58,7 +59,20 @@ class _CategoryViewState extends State<CategoryView> {
                                 child: InkWell(
                               highlightColor: Colors.blue.withOpacity(0.6),
                               splashColor: Colors.blue.withOpacity(0.3),
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ItemView(
+                                      itemID: catItems['prodId'],
+                                      imgUrl: catItems['imgUrl'],
+                                      name: catItems['name'],
+                                      price: catItems['price'],
+                                      discription: catItems['description'],
+                                    ),
+                                  ),
+                                );
+                              },
                               child: Column(
                                 children: [
                                   Container(

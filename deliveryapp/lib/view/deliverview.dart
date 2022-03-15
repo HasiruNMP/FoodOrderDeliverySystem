@@ -29,7 +29,7 @@ class _DeliverViewState extends State<DeliverView> {
                     alignment: Alignment.centerLeft,
                     child: Text('Phone No    '),
                   ),
-                  OutlinedButton(onPressed: () {}, child: Text('Call'))
+                  OutlinedButton(onPressed: () {}, child: Text('Call'),),
                 ],
               ),
               Container(
