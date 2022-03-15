@@ -129,6 +129,7 @@ class _ItemViewState extends State<ItemView> {
                     onPressed: () {
                       final List<Item> items = [
                         Item(
+                            id: itemID,
                             name: name,
                             price: double.parse(price),
                             imgUrl: imgUrl,
