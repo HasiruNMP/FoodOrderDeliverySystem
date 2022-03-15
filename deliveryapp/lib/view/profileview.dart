@@ -1,3 +1,4 @@
+import 'package:deliveryapp/auth/authservice.dart';
 import 'package:flutter/material.dart';
 import 'loginview.dart';
 
@@ -41,14 +42,7 @@ class _ProfileViewState extends State<ProfileView> {
             const Expanded(child: SizedBox()),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginView();
-                    },
-                  ),
-                );
+                Auth().signOut();
               },
               child: const Text('SIGN OUT'),
             ),

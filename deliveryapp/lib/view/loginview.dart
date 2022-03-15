@@ -1,3 +1,4 @@
+import 'package:deliveryapp/auth/authservice.dart';
 import 'package:deliveryapp/view/orderview.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,10 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+
+  final tecUsername = TextEditingController();
+  final tecPassword = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,13 +29,14 @@ class _LoginViewState extends State<LoginView> {
               child: SizedBox(),
             ),
             Row(
-              children: const [
+              children: [
                 Expanded(
                   child: SizedBox(),
                 ),
                 Expanded(
                   flex: 3,
                   child: TextField(
+                    controller: tecUsername,
                     decoration: InputDecoration(
                         labelText: 'Username', border: OutlineInputBorder()),
                   ),
@@ -51,6 +57,7 @@ class _LoginViewState extends State<LoginView> {
                 Expanded(
                   flex: 3,
                   child: TextFormField(
+                    controller: tecPassword,
                     decoration: const InputDecoration(
                         labelText: 'Password', border: OutlineInputBorder()),
                     obscureText: true,
@@ -75,14 +82,7 @@ class _LoginViewState extends State<LoginView> {
                   flex: 2,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return const OrderView();
-                          },
-                        ),
-                      );
+                      Auth().signIn(tecUsername.text, tecPassword.text);
                     },
                     child: const Text('LOGIN'),
                   ),
