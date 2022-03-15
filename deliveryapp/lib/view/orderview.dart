@@ -113,7 +113,13 @@ class _OrderViewState extends State<OrderView> {
                                             flex: 3,
                                             child: OutlinedButton(
                                               onPressed: () {
-                                                Navigator.push(context, MaterialPageRoute(builder: (context) {return const DeliverView();},),);
+                                                Navigator.push(context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return DeliverView(orderId,cName,cPhone,cLocation);
+                                                    },
+                                                  ),
+                                                );
                                               },
                                               child: const Text('VIEW'),
                                             ),
