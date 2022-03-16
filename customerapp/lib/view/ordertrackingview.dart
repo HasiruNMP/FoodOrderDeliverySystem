@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 class TrackOrderView extends StatefulWidget {
   String orderId;
+
   TrackOrderView(this.orderId);
 
   @override
@@ -41,6 +42,7 @@ class _TrackOrderViewState extends State<TrackOrderView> {
 
   String orderId;
   _TrackOrderViewState(this.orderId);
+  late String status;
   @override
   Widget build(BuildContext context) {
     CollectionReference orders =
@@ -72,6 +74,8 @@ class _TrackOrderViewState extends State<TrackOrderView> {
                       if (snapshot.connectionState == ConnectionState.done) {
                         Map<String, dynamic> orders =
                             snapshot.data!.data() as Map<String, dynamic>;
+
+                        status = orders['orderStatus'];
                         DateTime myDateTime = DateTime.parse(
                             orders['orderTime'].toDate().toString());
                         String formattedDateTime =

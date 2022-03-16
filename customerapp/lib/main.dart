@@ -3,6 +3,7 @@ import 'package:customerapp/view/checkoutview.dart';
 import 'package:customerapp/view/homeview.dart';
 import 'package:customerapp/view/loginview.dart';
 import 'package:customerapp/view/menuview.dart';
+import 'package:customerapp/view/ordersview.dart';
 import 'package:customerapp/view/ordertrackingview.dart';
 import 'package:customerapp/view/signupview.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         'category': (context) => CategoryView(0, '0'),
         'checkout': (context) => const CheckoutView(),
         'track': (context) => TrackOrderView('0'),
+        'orders': (context) => Orderview(),
       },
     );
   }
