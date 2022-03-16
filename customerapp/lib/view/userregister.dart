@@ -23,6 +23,22 @@ class _userRegister extends State<userRegister> {
     }
   }
 
+  void addUserData() {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(phonNo.toString())
+        .set({
+          "fname": _fnameController.text,
+          "lname": _lnameController.text,
+          "name": '${_fnameController.text} ${_lnameController.text}',
+          "mobileNo": phonNo,
+        })
+        .then(
+          (value) => print('Data Added Succesfully'),
+        )
+        .catchError((error) => print("Failed: $error"));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,23 +130,9 @@ class _userRegister extends State<userRegister> {
             ElevatedButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(phonNo.toString())
-                      .set({
-                        "fname": _fnameController.text,
-                        "lname": _lnameController.text,
-                        "name":
-                            '${_fnameController.text} ${_lnameController.text}',
-                        "mobileNo": phonNo,
-                      })
-                      .then(
-                        (value) => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeView())),
-                      )
-                      .catchError((error) => print("Failed: $error"));
+                  addUserData();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, 'home', (route) => false);
                 } else {
                   return null;
                 }

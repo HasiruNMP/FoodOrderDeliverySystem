@@ -79,6 +79,8 @@ class _CheckoutViewState extends State<CheckoutView> {
         fname = documentSnapshot.data()!['fname'];
         lname = documentSnapshot.data()!['lname'];
         fullname = "${fname}' '${lname} ";
+        print(fname);
+        print(lname);
       }
     });
   }
@@ -116,7 +118,8 @@ class _CheckoutViewState extends State<CheckoutView> {
       });
       Navigator.pop(context);
       setState(() {
-        Navigator.popUntil(context, ModalRoute.withName('/'));
+        Navigator.pushReplacementNamed(context, 'home');
+        // Navigator.popUntil(context, ModalRoute.withName('home'));
         const AdvanceSnackBar(
           message: "Payment Completed Successfully!",
           mode: Mode.ADVANCE,
@@ -135,7 +138,7 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   void getOrderId() async {
     FirebaseFirestore.instance
-        .collection('orders')
+        .collection('OrderCount')
         .doc('OrderNumbers')
         .get()
         .then((DocumentSnapshot OrderNo) {
@@ -153,7 +156,7 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   void IncreaseOrderNumbers() {
     FirebaseFirestore.instance
-        .collection("orders")
+        .collection("OrderCount")
         .doc('OrderNumbers')
         .update({"lastOrderNumber": FieldValue.increment(1)})
         .then((value) => print("Order Number Increased"))

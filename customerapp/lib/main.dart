@@ -44,10 +44,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: 'otpsetup',
+      initialRoute: '/',
       routes: {
-        '/': (context) => const HomeView(),
-        'otpsetup': (context) => OtpSetup(),
+        '/': (context) => OtpSetup(),
+        'home': (context) => const HomeView(),
         'menu': (context) => const MenuView(),
         'category': (context) => CategoryView(0, '0'),
         'checkout': (context) => const CheckoutView(),
