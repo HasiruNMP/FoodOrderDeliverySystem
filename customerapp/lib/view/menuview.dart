@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'categoryview.dart';
@@ -11,6 +12,17 @@ class MenuView extends StatefulWidget {
 }
 
 class _MenuViewState extends State<MenuView> {
+  late String phonNo;
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAuth auth = FirebaseAuth.instance;
+    if (auth.currentUser != null) {
+      phonNo = auth.currentUser!.phoneNumber!;
+      print(phonNo);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

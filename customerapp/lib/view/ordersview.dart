@@ -26,7 +26,7 @@ class _OrderviewState extends State<Orderview> {
     await FirebaseFirestore.instance
         .collection('orders')
         .where('customerPhone', isEqualTo: '0766807668')
-        .where('orderStatus', isEqualTo: 'Pending')
+        .where('orderStatus', isEqualTo: 'New')
         .get()
         .then((documentSnapshot) {
       if (documentSnapshot.size == 0) {
@@ -77,7 +77,7 @@ class _OrderviewState extends State<Orderview> {
                         stream: FirebaseFirestore.instance
                             .collection('orders')
                             .where('customerPhone', isEqualTo: '0766807668')
-                            .where('orderStatus', isEqualTo: 'Pending')
+                            .where('orderStatus', isEqualTo: 'New')
                             .orderBy('orderid', descending: true)
                             .snapshots(),
                         builder:

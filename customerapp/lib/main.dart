@@ -5,7 +5,9 @@ import 'package:customerapp/view/loginview.dart';
 import 'package:customerapp/view/menuview.dart';
 import 'package:customerapp/view/ordersview.dart';
 import 'package:customerapp/view/ordertrackingview.dart';
+import 'package:customerapp/view/otpverificationview.dart';
 import 'package:customerapp/view/signupview.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,14 +32,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        print('User is signed in!');
+      }
+    });
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/',
+      initialRoute: 'otpsetup',
       routes: {
         '/': (context) => const HomeView(),
+        'otpsetup': (context) => OtpSetup(),
         'menu': (context) => const MenuView(),
         'category': (context) => CategoryView(0, '0'),
         'checkout': (context) => const CheckoutView(),

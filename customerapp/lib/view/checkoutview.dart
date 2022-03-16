@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:advance_notification/advance_notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customerapp/view/selectlocationview.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -20,11 +21,10 @@ class CheckoutView extends StatefulWidget {
 
 class _CheckoutViewState extends State<CheckoutView> {
   double quantityPrice = 0;
-  late String userEmail = 'rakshitha1@gmail.com';
   late String fname;
   late String lname;
   late String fullname;
-  late String phoneNo = '0766807668';
+  late String phoneNo;
   late String totalPrice;
   late String items;
   late int orderNum;
@@ -46,7 +46,7 @@ class _CheckoutViewState extends State<CheckoutView> {
   void initState() {
     super.initState();
 
-    //getUserMail();
+    getPhoneNo();
     totalPrice = Cart.totalPrice.toString();
     getUserInfo();
     _determinePosition();
@@ -58,13 +58,16 @@ class _CheckoutViewState extends State<CheckoutView> {
     print(itemsArr);
   }
 
-  // void getUserMail() {
-  //   FirebaseAuth auth = FirebaseAuth.instance;
-  //   if (auth.currentUser != null) {
-  //     userEmail = auth.currentUser.email;
-  //     print(auth.currentUser.email);
-  //   }
-  // }
+  void getPhoneNo() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    if (auth.currentUser != null) {
+      setState(() {
+        phoneNo = auth.currentUser!.phoneNumber!;
+      });
+
+      print(phoneNo);
+    }
+  }
 
   void getUserInfo() {
     FirebaseFirestore.instance
@@ -91,7 +94,7 @@ class _CheckoutViewState extends State<CheckoutView> {
       "currency": "LKR",
       "first_name": fname,
       "last_name": lname,
-      "email": userEmail,
+      "email": "",
       "phone": phoneNo,
       "address": "",
       "city": "",
@@ -165,11 +168,10 @@ class _CheckoutViewState extends State<CheckoutView> {
           "orderid": orderId,
           "orderTime": DateTime.now(),
           "customerName": fullname,
-          "customerLocation": GeoPoint(location.latitude,location.longitude),
+          "customerLocation": GeoPoint(location.latitude, location.longitude),
           "totalPrice": totalPrice,
           "customerPhone": phoneNo,
-          "email": userEmail,
-          "orderStatus": 'Pending',
+          "orderStatus": 'New',
         })
         .then((value) => print("Records Added Successfully!"))
         .catchError((error) => print("Failed: $error"));
@@ -242,7 +244,6 @@ class _CheckoutViewState extends State<CheckoutView> {
     Position position = await Geolocator.getCurrentPosition();
     location = LatLng(position.latitude, position.longitude);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -375,12 +376,42 @@ class _CheckoutViewState extends State<CheckoutView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text('Name: User Name')),
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text('Contact Number: User Phone Number')),
+                    FutureBuilder<DocumentSnapshot>(
+                      future: FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(phoneNo)
+                          .get(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<DocumentSnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          return Text("Something went wrong");
+                        }
+
+                        if (snapshot.hasData && !snapshot.data!.exists) {
+                          return Text("Document does not exist");
+                        }
+
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          Map<String, dynamic> data =
+                              snapshot.data!.data() as Map<String, dynamic>;
+                          // return Text("Full Name: ${data['full_name']} ${data['last_name']}");
+                          return Column(
+                            children: [
+                              Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text('Name: ${data['fname']}')),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text('Contact Number: $phoneNo'),
+                              ),
+                            ],
+                          );
+                        }
+
+                        return Text("loading");
+                      },
+                    ),
+
                     //Container(alignment: Alignment.centerLeft,child: Text('Location')),
                   ],
                 ),
@@ -425,7 +456,7 @@ class _CheckoutViewState extends State<CheckoutView> {
             ),
             Center(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   getOrderId();
                 },
                 child: Text('PAY'),
@@ -438,7 +469,6 @@ class _CheckoutViewState extends State<CheckoutView> {
   }
 
   void _navigateAndDisplaySelection(BuildContext context) async {
-
     LatLng newLocation = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SelectLocationView()),
@@ -446,12 +476,12 @@ class _CheckoutViewState extends State<CheckoutView> {
 
     location = newLocation;
 
-    ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(SnackBar(content: Text('$newLocation')));
-
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text('$newLocation')));
   }
 
   void _onMapCreated(GoogleMapController controller) {
-
     final marker = Marker(
       markerId: MarkerId('place_name'),
       position: LatLng(9.669111, 80.014007),
@@ -466,5 +496,4 @@ class _CheckoutViewState extends State<CheckoutView> {
       markers[MarkerId('place_name')] = marker;
     });
   }
-
 }
