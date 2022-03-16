@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         'menu': (context) => const MenuView(),
         'category': (context) => CategoryView(0, '0'),
         'checkout': (context) => const CheckoutView(),
-        'track': (context) => const TrackOrderView(),
+        'track': (context) => TrackOrderView('0'),
       },
     );
   }
