@@ -36,12 +36,12 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
+        '/': (context) => const HomeView(),
         'menu': (context) => const MenuView(),
         'category': (context) => CategoryView(0, '0'),
         'checkout': (context) => const CheckoutView(),
         'track': (context) => const TrackOrderView(),
       },
-      home: const HomeView(),
     );
   }
 }

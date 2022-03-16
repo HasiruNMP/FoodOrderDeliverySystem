@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 
 class TrackOrderView extends StatefulWidget {
@@ -9,6 +12,32 @@ class TrackOrderView extends StatefulWidget {
 }
 
 class _TrackOrderViewState extends State<TrackOrderView> {
+
+  Completer<GoogleMapController> _controller = Completer();
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
+  final CameraPosition initLocation = const CameraPosition(
+    target: LatLng(6.820934, 80.041671),
+    zoom: 10,
+  );
+
+  void _onMapCreated(GoogleMapController controller) {
+
+    final marker = Marker(
+      markerId: MarkerId('place_name'),
+      position: LatLng(9.669111, 80.014007),
+      // icon: BitmapDescriptor.,
+      infoWindow: InfoWindow(
+        title: 'title',
+        snippet: 'address',
+      ),
+    );
+
+    setState(() {
+      markers[MarkerId('place_name')] = marker;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,14 +105,26 @@ class _TrackOrderViewState extends State<TrackOrderView> {
                 child: Text("Delivery Location"),
               ),
               Container(
-                height: MediaQuery.of(context).size.height/1,
-                color: Colors.teal,
-                child: Text("google map"),
-              )
+                height: MediaQuery.of(context).size.height/2,
+                child: GoogleMap(
+                  mapType: MapType.normal,
+                  initialCameraPosition: initLocation,
+                  onMapCreated: _onMapCreated,
+                  compassEnabled: true,
+                  myLocationButtonEnabled: true,
+                  myLocationEnabled: true,
+                  zoomControlsEnabled: true,
+                  zoomGesturesEnabled: true,
+                  markers: markers.values.toSet(),
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
   }
+
+
+
 }

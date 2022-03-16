@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:advance_notification/advance_notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customerapp/view/selectlocationview.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:payhere_mobilesdk_flutter/payhere_mobilesdk_flutter.dart';
 
 import '../controller/cart.dart';
@@ -25,16 +30,26 @@ class _CheckoutViewState extends State<CheckoutView> {
   late int orderNum;
   late String orderId;
   late Timestamp timeStamp;
-  late GeoPoint location;
+  LatLng location = LatLng(0.0, 0.0);
   List<String> itemsArr = [];
+
+  //map variables
+  Completer<GoogleMapController> _controller = Completer();
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  late LatLng lastTap;
+  final CameraPosition initLocation = const CameraPosition(
+    target: LatLng(6.820934, 80.041671),
+    zoom: 10,
+  );
 
   @override
   void initState() {
     super.initState();
 
-    //  getUserMail();
+    //getUserMail();
     totalPrice = Cart.totalPrice.toString();
     getUserInfo();
+    _determinePosition();
 
     itemsArr = [
       for (int i = 0; i < Cart.basketItems.length; i++)
@@ -98,12 +113,7 @@ class _CheckoutViewState extends State<CheckoutView> {
       });
       Navigator.pop(context);
       setState(() {
-        Navigator.push<void>(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) => HomeView(),
-          ),
-        );
+        Navigator.popUntil(context, ModalRoute.withName('/'));
         const AdvanceSnackBar(
           message: "Payment Completed Successfully!",
           mode: Mode.ADVANCE,
@@ -155,7 +165,7 @@ class _CheckoutViewState extends State<CheckoutView> {
           "orderid": orderId,
           "orderTime": DateTime.now(),
           "customerName": fullname,
-          "customerLocation": GeoPoint(53.483959, -2.244644),
+          "customerLocation": GeoPoint(location.latitude,location.longitude),
           "totalPrice": totalPrice,
           "customerPhone": phoneNo,
           "email": userEmail,
@@ -194,6 +204,45 @@ class _CheckoutViewState extends State<CheckoutView> {
           .catchError((error) => print("Failed: $error"));
     }
   }
+
+  void _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    Position position = await Geolocator.getCurrentPosition();
+    location = LatLng(position.latitude, position.longitude);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -341,7 +390,9 @@ class _CheckoutViewState extends State<CheckoutView> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _navigateAndDisplaySelection(context);
+                  },
                   child: Text('Select Location'),
                 ),
                 //OutlinedButton(onPressed: (){}, child: Text('Select Different Location'),),
@@ -353,7 +404,22 @@ class _CheckoutViewState extends State<CheckoutView> {
                 height: MediaQuery.of(context).size.height / 3.2,
                 color: Colors.teal,
                 child: Container(
-                  child: Text('Google Map'),
+                  child: GoogleMap(
+                    mapType: MapType.normal,
+                    initialCameraPosition: initLocation,
+                    onMapCreated: _onMapCreated,
+                    compassEnabled: true,
+                    myLocationButtonEnabled: true,
+                    myLocationEnabled: true,
+                    zoomControlsEnabled: true,
+                    zoomGesturesEnabled: true,
+                    markers: markers.values.toSet(),
+                    onTap: (LatLng pos) {
+                      setState(() {
+                        lastTap = pos;
+                      });
+                    },
+                  ),
                 ),
               ),
             ),
@@ -370,4 +436,35 @@ class _CheckoutViewState extends State<CheckoutView> {
       ),
     );
   }
+
+  void _navigateAndDisplaySelection(BuildContext context) async {
+
+    LatLng newLocation = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SelectLocationView()),
+    );
+
+    location = newLocation;
+
+    ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(SnackBar(content: Text('$newLocation')));
+
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+
+    final marker = Marker(
+      markerId: MarkerId('place_name'),
+      position: LatLng(9.669111, 80.014007),
+      // icon: BitmapDescriptor.,
+      infoWindow: InfoWindow(
+        title: 'title',
+        snippet: 'address',
+      ),
+    );
+
+    setState(() {
+      markers[MarkerId('place_name')] = marker;
+    });
+  }
+
 }
