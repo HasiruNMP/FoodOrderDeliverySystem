@@ -1,6 +1,12 @@
+import 'dart:async';
+
 import 'package:advance_notification/advance_notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customerapp/view/selectlocationview.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:payhere_mobilesdk_flutter/payhere_mobilesdk_flutter.dart';
 
 import '../controller/cart.dart';
@@ -15,26 +21,35 @@ class CheckoutView extends StatefulWidget {
 
 class _CheckoutViewState extends State<CheckoutView> {
   double quantityPrice = 0;
-  late String userEmail = 'rakshitha1@gmail.com';
   late String fname;
   late String lname;
   late String fullname;
-  late String phoneNo = '0766807668';
+  late String phoneNo;
   late String totalPrice;
   late String items;
   late int orderNum;
   late String orderId;
   late Timestamp timeStamp;
-  late GeoPoint location;
+  LatLng location = LatLng(0.0, 0.0);
   List<String> itemsArr = [];
+
+  //map variables
+  Completer<GoogleMapController> _controller = Completer();
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  late LatLng lastTap;
+  final CameraPosition initLocation = const CameraPosition(
+    target: LatLng(6.820934, 80.041671),
+    zoom: 10,
+  );
 
   @override
   void initState() {
     super.initState();
 
-    //  getUserMail();
+    getPhoneNo();
     totalPrice = Cart.totalPrice.toString();
     getUserInfo();
+    _determinePosition();
 
     itemsArr = [
       for (int i = 0; i < Cart.basketItems.length; i++)
@@ -43,13 +58,16 @@ class _CheckoutViewState extends State<CheckoutView> {
     print(itemsArr);
   }
 
-  // void getUserMail() {
-  //   FirebaseAuth auth = FirebaseAuth.instance;
-  //   if (auth.currentUser != null) {
-  //     userEmail = auth.currentUser.email;
-  //     print(auth.currentUser.email);
-  //   }
-  // }
+  void getPhoneNo() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    if (auth.currentUser != null) {
+      setState(() {
+        phoneNo = auth.currentUser!.phoneNumber!;
+      });
+
+      print(phoneNo);
+    }
+  }
 
   void getUserInfo() {
     FirebaseFirestore.instance
@@ -61,6 +79,8 @@ class _CheckoutViewState extends State<CheckoutView> {
         fname = documentSnapshot.data()!['fname'];
         lname = documentSnapshot.data()!['lname'];
         fullname = "${fname}' '${lname} ";
+        print(fname);
+        print(lname);
       }
     });
   }
@@ -76,7 +96,7 @@ class _CheckoutViewState extends State<CheckoutView> {
       "currency": "LKR",
       "first_name": fname,
       "last_name": lname,
-      "email": userEmail,
+      "email": "",
       "phone": phoneNo,
       "address": "",
       "city": "",
@@ -98,12 +118,8 @@ class _CheckoutViewState extends State<CheckoutView> {
       });
       Navigator.pop(context);
       setState(() {
-        Navigator.push<void>(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) => HomeView(),
-          ),
-        );
+        Navigator.pushReplacementNamed(context, 'home');
+        // Navigator.popUntil(context, ModalRoute.withName('home'));
         const AdvanceSnackBar(
           message: "Payment Completed Successfully!",
           mode: Mode.ADVANCE,
@@ -122,7 +138,7 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   void getOrderId() async {
     FirebaseFirestore.instance
-        .collection('orders')
+        .collection('OrderCount')
         .doc('OrderNumbers')
         .get()
         .then((DocumentSnapshot OrderNo) {
@@ -140,7 +156,7 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   void IncreaseOrderNumbers() {
     FirebaseFirestore.instance
-        .collection("orders")
+        .collection("OrderCount")
         .doc('OrderNumbers')
         .update({"lastOrderNumber": FieldValue.increment(1)})
         .then((value) => print("Order Number Increased"))
@@ -155,11 +171,13 @@ class _CheckoutViewState extends State<CheckoutView> {
           "orderid": orderId,
           "orderTime": DateTime.now(),
           "customerName": fullname,
-          "customerLocation": GeoPoint(53.483959, -2.244644),
+          "customerLocation": GeoPoint(location.latitude, location.longitude),
           "totalPrice": totalPrice,
           "customerPhone": phoneNo,
-          "email": userEmail,
-          "orderStatus": 'Pending',
+          "orderStatus": 'New',
+          "isProcessed" : false,
+          "isDelivered" : false,
+          "isReceived" : false,
         })
         .then((value) => print("Records Added Successfully!"))
         .catchError((error) => print("Failed: $error"));
@@ -193,6 +211,44 @@ class _CheckoutViewState extends State<CheckoutView> {
           .then((value) => print("Each item added!"))
           .catchError((error) => print("Failed: $error"));
     }
+  }
+
+  void _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    Position position = await Geolocator.getCurrentPosition();
+    location = LatLng(position.latitude, position.longitude);
   }
 
   @override
@@ -326,12 +382,42 @@ class _CheckoutViewState extends State<CheckoutView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text('Name: User Name')),
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text('Contact Number: User Phone Number')),
+                    FutureBuilder<DocumentSnapshot>(
+                      future: FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(phoneNo)
+                          .get(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<DocumentSnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          return Text("Something went wrong");
+                        }
+
+                        if (snapshot.hasData && !snapshot.data!.exists) {
+                          return Text("Document does not exist");
+                        }
+
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          Map<String, dynamic> data =
+                              snapshot.data!.data() as Map<String, dynamic>;
+                          // return Text("Full Name: ${data['full_name']} ${data['last_name']}");
+                          return Column(
+                            children: [
+                              Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text('Name: ${data['fname']}')),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text('Contact Number: $phoneNo'),
+                              ),
+                            ],
+                          );
+                        }
+
+                        return Text("loading");
+                      },
+                    ),
+
                     //Container(alignment: Alignment.centerLeft,child: Text('Location')),
                   ],
                 ),
@@ -341,7 +427,9 @@ class _CheckoutViewState extends State<CheckoutView> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _navigateAndDisplaySelection(context);
+                  },
                   child: Text('Select Location'),
                 ),
                 //OutlinedButton(onPressed: (){}, child: Text('Select Different Location'),),
@@ -353,13 +441,28 @@ class _CheckoutViewState extends State<CheckoutView> {
                 height: MediaQuery.of(context).size.height / 3.2,
                 color: Colors.teal,
                 child: Container(
-                  child: Text('Google Map'),
+                  child: GoogleMap(
+                    mapType: MapType.normal,
+                    initialCameraPosition: initLocation,
+                    onMapCreated: _onMapCreated,
+                    compassEnabled: true,
+                    myLocationButtonEnabled: true,
+                    myLocationEnabled: true,
+                    zoomControlsEnabled: true,
+                    zoomGesturesEnabled: true,
+                    markers: markers.values.toSet(),
+                    onTap: (LatLng pos) {
+                      setState(() {
+                        lastTap = pos;
+                      });
+                    },
+                  ),
                 ),
               ),
             ),
             Center(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   getOrderId();
                 },
                 child: Text('PAY'),
@@ -369,5 +472,34 @@ class _CheckoutViewState extends State<CheckoutView> {
         ),
       ),
     );
+  }
+
+  void _navigateAndDisplaySelection(BuildContext context) async {
+    LatLng newLocation = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SelectLocationView()),
+    );
+
+    location = newLocation;
+
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text('$newLocation')));
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    final marker = Marker(
+      markerId: MarkerId('place_name'),
+      position: LatLng(9.669111, 80.014007),
+      // icon: BitmapDescriptor.,
+      infoWindow: InfoWindow(
+        title: 'title',
+        snippet: 'address',
+      ),
+    );
+
+    setState(() {
+      markers[MarkerId('place_name')] = marker;
+    });
   }
 }
