@@ -175,6 +175,9 @@ class _CheckoutViewState extends State<CheckoutView> {
           "totalPrice": totalPrice,
           "customerPhone": phoneNo,
           "orderStatus": 'New',
+          "isProcessed" : false,
+          "isDelivered" : false,
+          "isReceived" : false,
         })
         .then((value) => print("Records Added Successfully!"))
         .catchError((error) => print("Failed: $error"));
