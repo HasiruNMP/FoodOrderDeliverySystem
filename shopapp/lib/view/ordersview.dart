@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopapp/view/completedordersview.dart';
 import 'package:shopapp/view/newordersview.dart';
 import 'package:shopapp/view/pendingordersview.dart';
 
@@ -16,12 +17,22 @@ class _OrdersViewState extends State<OrdersView> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text('Orders'),
           bottom: const TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.directions_car),text: 'New',),
-              Tab(icon: Icon(Icons.directions_transit),text: 'Pending',),
-              Tab(icon: Icon(Icons.directions_bike),text: 'Completed',),
+              Tab(
+                icon: Icon(Icons.directions_car),
+                text: 'New',
+              ),
+              Tab(
+                icon: Icon(Icons.directions_transit),
+                text: 'Pending',
+              ),
+              Tab(
+                icon: Icon(Icons.directions_bike),
+                text: 'Completed',
+              ),
             ],
           ),
         ),
@@ -29,7 +40,7 @@ class _OrdersViewState extends State<OrdersView> {
           children: [
             NewOrdersView(),
             PendingOrdersView(),
-            Icon(Icons.directions_bike),
+            CompletedOrdersView(),
           ],
         ),
       ),

@@ -1,4 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterfire_ui/firestore.dart';
+import 'package:shopapp/model/post.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PendingOrdersView extends StatefulWidget {
   const PendingOrdersView({Key? key}) : super(key: key);
@@ -8,25 +12,111 @@ class PendingOrdersView extends StatefulWidget {
 }
 
 class _PendingOrdersViewState extends State<PendingOrdersView> {
+  final queryPost = FirebaseFirestore.instance
+      .collection('orders')
+      .where('isProcessed', isEqualTo: true)
+      .where('orderStatus', isEqualTo: 'New')
+      .withConverter<Post>(
+        fromFirestore: (snapshot, _) => Post.fromJson(snapshot.data()!),
+        toFirestore: (orderID, _) => orderID.toJson(),
+      );
+
+  String customerName = "null";
+  String customerPhone = "null";
+  String orderId = "null";
+  String orderStatus = "null";
+  Timestamp orderTime = Timestamp.now();
+  String totalPrice = "null";
+  double latitude = 0.0;
+  double longitude = 0.0;
+  bool isDelivered = false;
+  bool isProcessed = false;
+  bool isReceived = false;
+  String deliveryPerson = 'null';
+
+  void updateOrderDetails(
+    customerName,
+    customerPhone,
+    orderId,
+    orderStatus,
+    orderTime,
+    totalPrice,
+    latitude,
+    longitude,
+    isDelivered,
+    isProcessed,
+    isReceived,
+    deliveryPerson,
+  ) {
+    setState(() {
+      this.customerName = customerName;
+      this.customerPhone = customerPhone;
+      this.orderId = orderId;
+      this.orderStatus = orderStatus;
+      this.orderTime = orderTime;
+      this.totalPrice = totalPrice;
+      this.latitude = latitude;
+      this.longitude = longitude;
+      this.isDelivered = isDelivered;
+      this.isProcessed = isProcessed;
+      this.isReceived = isReceived;
+      this.deliveryPerson = deliveryPerson;
+    });
+  }
+
+  var selectedOrderId = 'null';
+
+  void setSelectedOrderId(String id) {
+    selectedOrderId = id;
+  }
+
+  CollectionReference orders = FirebaseFirestore.instance.collection('orders');
+  updateOrders(String id) {
+    orders.doc(id).update({
+      'orderStatus': 'Delivered',
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
           flex: 2,
-          child: ListView(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  child: ListTile(
-                    title: Text('Order No: 23457'),
-                    subtitle: Text('12:23 PM - 13.02.2022'),
+          child: FirestoreListView<Post>(
+              pageSize: 4,
+              query: queryPost,
+              itemBuilder: (context, snapshot) {
+                final post = snapshot.data();
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    child: TextButton(
+                      onPressed: () {
+                        updateOrderDetails(
+                          post.customerName,
+                          post.customerPhone,
+                          post.orderId,
+                          post.orderStatus,
+                          post.orderTime,
+                          post.totalPrice,
+                          post.customerLocation.latitude,
+                          post.customerLocation.longitude,
+                          post.isDelivered,
+                          post.isProcessed,
+                          post.isReceived,
+                          post.deliveryPerson,
+                        );
+                        setSelectedOrderId(post.orderId);
+                      },
+                      child: ListTile(
+                        title: Text('Order No: ' + post.orderId),
+                        subtitle: Text(post.orderTime.toDate().toString()),
+                      ),
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
+                );
+              }),
         ),
         VerticalDivider(
           color: Colors.black26,
@@ -35,28 +125,73 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
           flex: 3,
           child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: ListView(
+            child: Column(
               children: [
-                Container(
-                  height: MediaQuery.of(context).size.height/3,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                Expanded(
+                  child: Container(
+                    child: Text(
+                      'Order Description',
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          letterSpacing: 1),
+                    ),
+                    alignment: Alignment.center,
+                  ),
+                ),
+                Expanded(
+                  child: Row(
                     children: [
-                      Container(
-                        child: Text('Order Description'),
-                        alignment: Alignment.center,
+                      Expanded(flex: 5, child: Text("Customer Name")),
+                      Expanded(child: Text(":")),
+                      Expanded(
+                        flex: 8,
+                        child: Text(
+                          customerName,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                      Container(
-                        child: Text('Customer Name'),
-                        alignment: Alignment.centerLeft,
+                      Expanded(flex: 6, child: Text("Delivery Person NIC")),
+                      Expanded(child: Text(":")),
+                      Expanded(
+                        flex: 6,
+                        child: Text(
+                          deliveryPerson,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                      Container(
-                        child: Text('Timestamp'),
-                        alignment: Alignment.centerLeft,
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(flex: 2, child: Text("Timestamp")),
+                      Expanded(child: Text(":")),
+                      Expanded(
+                        flex: 10,
+                        child: Text(
+                          orderTime.toDate().toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        child: TextField(
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 4,
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: ListView(
+                      children: [
+                        TextField(
                           keyboardType: TextInputType.multiline,
                           minLines: 10,
                           maxLines: null,
@@ -66,38 +201,116 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                             border: OutlineInputBorder(),
                           ),
                         ),
-                      ),
-                      Container(
-                        child: Text('Total Price'),
-                        alignment: Alignment.centerLeft,
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(flex: 2, child: Text("Total Price")),
+                      Expanded(child: Text(":")),
+                      Expanded(
+                        flex: 10,
+                        child: Text(
+                          totalPrice,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-                CheckboxListTile(
-                  title: Text('Delivered'),
-                  value: true,
-                  onChanged: null,
-                  controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                Divider(),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(flex: 4, child: SizedBox()),
+                      Expanded(
+                          flex: 2,
+                          child: Text(
+                            "Delivered",
+                            textAlign: TextAlign.center,
+                          )),
+                      Expanded(
+                        flex: 2,
+                        child: Checkbox(
+                          value: isDelivered,
+                          onChanged: null,
+                        ),
+                      ),
+                      Expanded(flex: 4, child: SizedBox()),
+                      Expanded(
+                          flex: 2,
+                          child: Text(
+                            "Received",
+                            textAlign: TextAlign.center,
+                          )),
+                      Expanded(
+                        flex: 2,
+                        child: Checkbox(
+                          value: isReceived,
+                          onChanged: null,
+                        ),
+                      ),
+                      Expanded(flex: 4, child: SizedBox()),
+                    ],
+                  ),
                 ),
-                CheckboxListTile(
-                  title: Text('Recieved'),
-                  value: true,
-                  onChanged: null,
-                  controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                Divider(),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(flex: 2, child: Text("Location")),
+                      Expanded(child: Text(":")),
+                      Expanded(
+                        flex: 10,
+                        child: Text(
+                          latitude.toString() + " , " + longitude.toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                OutlinedButton(onPressed: (){}, child: Text('TRACK Delivery')),
-                Container(
-                  child: Text('Location'),
-                  alignment: Alignment.centerLeft,
+                Expanded(
+                    flex: 4,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      child: Stack(children: [
+                        GoogleMap(
+                          markers: {
+                            Marker(
+                              markerId: const MarkerId('_distressedAnimal'),
+                              infoWindow:
+                                  const InfoWindow(title: 'Delivery Location'),
+                              icon: BitmapDescriptor.defaultMarker,
+                              position: LatLng(latitude, longitude),
+                            )
+                          },
+                          initialCameraPosition: CameraPosition(
+                              target: LatLng(latitude, longitude), zoom: 16),
+                        ),
+                      ]),
+                    )),
+                Expanded(
+                  child: SizedBox(),
                 ),
-                Container(
-                  height: MediaQuery.of(context).size.height/2.5,
-                  color: Colors.teal,
-                  child: Text('Google Map'),
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        updateOrders(selectedOrderId);
+                      },
+                      child: Text('COMPLETED'),
+                    ),
+                  ),
                 ),
-                //SizedBox(height: 20,),
-                //ElevatedButton(onPressed: (){}, child: Text('ASSIGN'),),
               ],
             ),
           ),

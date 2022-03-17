@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shopapp/model/post.dart';
 import 'package:shopapp/view/loginview.dart';
+import 'package:shopapp/view/menuview.dart';
 import 'package:shopapp/view/ordersview.dart';
 
 class HomeView extends StatefulWidget {
@@ -47,25 +50,30 @@ class SideBar extends StatelessWidget {
           child: Container(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.food_bank),
-                Text('FODS')
-              ],
+              children: [Icon(Icons.food_bank), Text('FODS')],
             ),
           ),
         ),
-        Divider(
-            color: Colors.black
-        ),
+        Divider(color: Colors.black),
         AspectRatio(
           aspectRatio: 1,
           child: TextButton(
-            onPressed: (){},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const MenuHomeView();
+              }));
+            },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.menu,color: Colors.black,),
-                Text('MENU',style: TextStyle(color: Colors.black),)
+                Icon(
+                  Icons.menu,
+                  color: Colors.black,
+                ),
+                Text(
+                  'MENU',
+                  style: TextStyle(color: Colors.black),
+                )
               ],
             ),
           ),
@@ -76,35 +84,47 @@ class SideBar extends StatelessWidget {
         AspectRatio(
           aspectRatio: 1,
           child: TextButton(
-            onPressed: (){},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const HomeView();
+              }));
+            },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.store,color: Colors.black,),
-                Text('ORDERS',style: TextStyle(color: Colors.black),)
+                Icon(
+                  Icons.store,
+                  color: Colors.black,
+                ),
+                Text(
+                  'ORDERS',
+                  style: TextStyle(color: Colors.black),
+                )
               ],
             ),
           ),
         ),
-        Divider(
-            color: Colors.black
-        ),
+        Divider(color: Colors.black),
         AspectRatio(
           aspectRatio: 1,
           child: TextButton(
-            onPressed: (){},
+            onPressed: () {},
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.pedal_bike,color: Colors.black,),
-                Text('DELIVERY',style: TextStyle(color: Colors.black),)
+                Icon(
+                  Icons.pedal_bike,
+                  color: Colors.black,
+                ),
+                Text(
+                  'DELIVERY',
+                  style: TextStyle(color: Colors.black),
+                )
               ],
             ),
           ),
         ),
-        Divider(
-            color: Colors.black
-        ),
+        Divider(color: Colors.black),
       ],
     );
   }
@@ -126,7 +146,7 @@ class ShortCuts extends StatelessWidget {
                 aspectRatio: 1,
                 child: Card(
                   child: TextButton(
-                    onPressed: (){},
+                    onPressed: () {},
                     child: Center(
                       child: Text('MENU'),
                     ),
@@ -142,7 +162,7 @@ class ShortCuts extends StatelessWidget {
                 aspectRatio: 1,
                 child: Card(
                   child: TextButton(
-                    onPressed: (){},
+                    onPressed: () {},
                     child: Center(
                       child: Text('ORDERS'),
                     ),
@@ -158,7 +178,7 @@ class ShortCuts extends StatelessWidget {
                 aspectRatio: 1,
                 child: Card(
                   child: TextButton(
-                    onPressed: (){},
+                    onPressed: () {},
                     child: Center(
                       child: Text('DELIVERY'),
                     ),

@@ -3,29 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/firestore.dart';
 import 'package:shopapp/model/post.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:shopapp/model/postEmployee.dart';
 
-class NewOrdersView extends StatefulWidget {
-  const NewOrdersView({Key? key}) : super(key: key);
+class CompletedOrdersView extends StatefulWidget {
+  const CompletedOrdersView({Key? key}) : super(key: key);
 
   @override
-  _NewOrdersViewState createState() => _NewOrdersViewState();
+  _CompletedOrdersViewState createState() => _CompletedOrdersViewState();
 }
 
-class _NewOrdersViewState extends State<NewOrdersView> {
+class _CompletedOrdersViewState extends State<CompletedOrdersView> {
   final queryPost = FirebaseFirestore.instance
       .collection('orders')
-      .where('orderStatus', isEqualTo: "New")
-      .where('isProcessed', isEqualTo: false)
+      .where('orderStatus', isEqualTo: "Delivered")
       .withConverter<Post>(
         fromFirestore: (snapshot, _) => Post.fromJson(snapshot.data()!),
         toFirestore: (orderID, _) => orderID.toJson(),
-      );
-  final queryPost2 = FirebaseFirestore.instance
-      .collection('employees')
-      .withConverter<PostEmployee>(
-        fromFirestore: (snapshot, _) => PostEmployee.fromJson(snapshot.data()!),
-        toFirestore: (phone, _) => phone.toJson(),
       );
 
   String customerName = "null";
@@ -67,133 +59,44 @@ class _NewOrdersViewState extends State<NewOrdersView> {
     });
   }
 
-  var deliveryPerson = 'null';
-  var selectedOrderId = 'null';
-
-  void setDeliveryPerson(String nic) {
-    deliveryPerson = nic;
-  }
-
-  void setSelectedOrderId(String id) {
-    selectedOrderId = id;
-  }
-
-  CollectionReference orders = FirebaseFirestore.instance.collection('orders');
-  updateOrders(String id, String person) {
-    orders.doc(id).update({
-      'isProcessed': true,
-      'deliveryPerson': person,
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
-          child: Column(
-            children: [
-              Expanded(
-                  child: SizedBox(
-                width: double.infinity,
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "New Orders",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                      textAlign: TextAlign.center,
+          flex: 2,
+          child: FirestoreListView<Post>(
+              pageSize: 4,
+              query: queryPost,
+              itemBuilder: (context, snapshot) {
+                final post = snapshot.data();
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    child: TextButton(
+                      onPressed: () {
+                        updateOrderDetails(
+                          post.customerName,
+                          post.customerPhone,
+                          post.orderId,
+                          post.orderStatus,
+                          post.orderTime,
+                          post.totalPrice,
+                          post.customerLocation.latitude,
+                          post.customerLocation.longitude,
+                          post.isDelivered,
+                          post.isProcessed,
+                          post.isReceived,
+                        );
+                      },
+                      child: ListTile(
+                        title: Text('Order No: ' + post.orderId),
+                        subtitle: Text(post.orderTime.toDate().toString()),
+                      ),
                     ),
                   ),
-                ),
-              )),
-              Expanded(
-                flex: 11,
-                child: FirestoreListView<Post>(
-                    pageSize: 4,
-                    query: queryPost,
-                    itemBuilder: (context, snapshot) {
-                      final post = snapshot.data();
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Card(
-                          child: TextButton(
-                            onPressed: () {
-                              updateOrderDetails(
-                                post.customerName,
-                                post.customerPhone,
-                                post.orderId,
-                                post.orderStatus,
-                                post.orderTime,
-                                post.totalPrice,
-                                post.customerLocation.latitude,
-                                post.customerLocation.longitude,
-                                post.isDelivered,
-                                post.isProcessed,
-                                post.isReceived,
-                              );
-                              setSelectedOrderId(post.orderId);
-                            },
-                            child: ListTile(
-                              title: Text('Order No: ' + post.orderId),
-                              subtitle:
-                                  Text(post.orderTime.toDate().toString()),
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-              ),
-            ],
-          ),
-        ),
-        VerticalDivider(
-          color: Colors.black26,
-        ),
-        Expanded(
-          child: Column(
-            children: [
-              Expanded(
-                  child: SizedBox(
-                width: double.infinity,
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Delivery Person",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              )),
-              Expanded(
-                flex: 11,
-                child: FirestoreListView<PostEmployee>(
-                    pageSize: 4,
-                    query: queryPost2,
-                    itemBuilder: (context, snapshot) {
-                      final post = snapshot.data();
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Card(
-                          child: TextButton(
-                            onPressed: () {
-                              setDeliveryPerson(post.nic);
-                            },
-                            child: ListTile(
-                              title: Text(post.name),
-                              subtitle: Text(post.phone),
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-              ),
-            ],
-          ),
+                );
+              }),
         ),
         VerticalDivider(
           color: Colors.black26,
@@ -328,17 +231,6 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                     )),
                 Expanded(
                   child: SizedBox(),
-                ),
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        updateOrders(selectedOrderId, deliveryPerson);
-                      },
-                      child: Text('ASSIGN'),
-                    ),
-                  ),
                 ),
               ],
             ),
