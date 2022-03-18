@@ -1,7 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shopapp/model/post.dart';
-import 'package:shopapp/view/loginview.dart';
 import 'package:shopapp/view/menuview.dart';
 import 'package:shopapp/view/ordersview.dart';
 
@@ -22,15 +19,12 @@ class _HomeViewState extends State<HomeView> {
             flex: 1,
             child: Container(
               color: Colors.blue,
-              child: SideBar(),
+              child: const SideBar(),
             ),
           ),
-          Expanded(
+          const Expanded(
             flex: 14,
-            child: Container(
-              //color: Colors.deepOrange,
-              child: OrdersView(),
-            ),
+            child: OrdersView(),
           ),
         ],
       ),
@@ -47,14 +41,12 @@ class SideBar extends StatelessWidget {
       children: [
         AspectRatio(
           aspectRatio: 1,
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [Icon(Icons.food_bank), Text('FODS')],
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [Icon(Icons.food_bank), Text('FODS')],
           ),
         ),
-        Divider(color: Colors.black),
+        const Divider(color: Colors.black),
         AspectRatio(
           aspectRatio: 1,
           child: TextButton(
@@ -65,7 +57,7 @@ class SideBar extends StatelessWidget {
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 Icon(
                   Icons.menu,
                   color: Colors.black,
@@ -78,7 +70,7 @@ class SideBar extends StatelessWidget {
             ),
           ),
         ),
-        Divider(
+        const Divider(
           color: Colors.black,
         ),
         AspectRatio(
@@ -91,7 +83,7 @@ class SideBar extends StatelessWidget {
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 Icon(
                   Icons.store,
                   color: Colors.black,
@@ -104,14 +96,14 @@ class SideBar extends StatelessWidget {
             ),
           ),
         ),
-        Divider(color: Colors.black),
+        const Divider(color: Colors.black),
         AspectRatio(
           aspectRatio: 1,
           child: TextButton(
             onPressed: () {},
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 Icon(
                   Icons.pedal_bike,
                   color: Colors.black,
@@ -124,7 +116,7 @@ class SideBar extends StatelessWidget {
             ),
           ),
         ),
-        Divider(color: Colors.black),
+        const Divider(color: Colors.black),
       ],
     );
   }
@@ -147,7 +139,7 @@ class ShortCuts extends StatelessWidget {
                 child: Card(
                   child: TextButton(
                     onPressed: () {},
-                    child: Center(
+                    child: const Center(
                       child: Text('MENU'),
                     ),
                   ),
@@ -163,7 +155,7 @@ class ShortCuts extends StatelessWidget {
                 child: Card(
                   child: TextButton(
                     onPressed: () {},
-                    child: Center(
+                    child: const Center(
                       child: Text('ORDERS'),
                     ),
                   ),
@@ -179,7 +171,7 @@ class ShortCuts extends StatelessWidget {
                 child: Card(
                   child: TextButton(
                     onPressed: () {},
-                    child: Center(
+                    child: const Center(
                       child: Text('DELIVERY'),
                     ),
                   ),

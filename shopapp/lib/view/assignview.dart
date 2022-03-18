@@ -15,9 +15,9 @@ class _AssignViewState extends State<AssignView> {
         child: Row(
           children: [
             Column(
-              children: [
+              children: const [
                 Expanded(
-                  child: Container(child: Text('text field ekak danna')),
+                  child: Text('text field ekak danna'),
                 ),
                 Expanded(
                   child: Text('list view danna'),
@@ -29,12 +29,10 @@ class _AssignViewState extends State<AssignView> {
             ),
             Column(
               children: [
-                Container(
-                  child: Text('this is a container'),
-                ),
+                const Text('this is a container'),
                 ElevatedButton(
                   onPressed: () {},
-                  child: Text('Assign'),
+                  child: const Text('Assign'),
                 ),
               ],
             )

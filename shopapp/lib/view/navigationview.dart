@@ -18,7 +18,7 @@ class _NavigationViewState extends State<NavigationView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Title'),
+        title: const Text('Title'),
         centerTitle: true,
       ),
       body: Row(
@@ -30,7 +30,7 @@ class _NavigationViewState extends State<NavigationView> {
               displayMode: SideMenuDisplayMode.auto,
               hoverColor: Colors.blue[100],
               selectedColor: Colors.lightBlue,
-              selectedTitleTextStyle: TextStyle(color: Colors.white),
+              selectedTitleTextStyle: const TextStyle(color: Colors.white),
               selectedIconColor: Colors.white,
               // backgroundColor: Colors.amber
               // openSideMenuWidth: 200
@@ -38,20 +38,20 @@ class _NavigationViewState extends State<NavigationView> {
             title: Column(
               children: [
                 ConstrainedBox(
-                  constraints: BoxConstraints(
+                  constraints: const BoxConstraints(
                     maxHeight: 150,
                     maxWidth: 150,
                   ),
                   //child: Image.network('https://firebasestorage.googleapis.com/v0/b/ddhprr-fods.appspot.com/o/common%2Flogo.png?alt=media&token=908ad592-fd14-4ae1-b2ce-2d95e85eca75'),
                 ),
-                Divider(
+                const Divider(
                   indent: 8.0,
                   endIndent: 8.0,
                 ),
               ],
             ),
-            footer: Padding(
-              padding: const EdgeInsets.all(8.0),
+            footer: const Padding(
+              padding: EdgeInsets.all(8.0),
               child: Text(
                 'mohada',
                 style: TextStyle(fontSize: 15),
@@ -64,7 +64,7 @@ class _NavigationViewState extends State<NavigationView> {
                 onTap: () {
                   page.jumpToPage(0);
                 },
-                icon: Icon(Icons.home),
+                icon: const Icon(Icons.home),
               ),
               SideMenuItem(
                 priority: 1,
@@ -72,7 +72,7 @@ class _NavigationViewState extends State<NavigationView> {
                 onTap: () {
                   page.jumpToPage(1);
                 },
-                icon: Icon(Icons.home),
+                icon: const Icon(Icons.home),
               ),
               SideMenuItem(
                 priority: 2,
@@ -80,7 +80,7 @@ class _NavigationViewState extends State<NavigationView> {
                 onTap: () {
                   page.jumpToPage(2);
                 },
-                icon: Icon(Icons.supervisor_account),
+                icon: const Icon(Icons.supervisor_account),
               ),
               SideMenuItem(
                 priority: 3,
@@ -88,13 +88,13 @@ class _NavigationViewState extends State<NavigationView> {
                 onTap: () {
                   page.jumpToPage(3);
                 },
-                icon: Icon(Icons.file_copy_rounded),
+                icon: const Icon(Icons.file_copy_rounded),
               ),
               SideMenuItem(
                 priority: 4,
                 title: 'Logout',
                 onTap: () {},
-                icon: Icon(Icons.file_copy_rounded),
+                icon: const Icon(Icons.file_copy_rounded),
               ),
             ],
           ),
@@ -104,19 +104,19 @@ class _NavigationViewState extends State<NavigationView> {
               children: [
                 Container(
                   color: Colors.white,
-                  child: NewOrdersView(),
+                  child: const NewOrdersView(),
                 ),
                 Container(
                   color: Colors.white,
-                  child: OrdersView(),
+                  child: const OrdersView(),
                 ),
                 Container(
                   color: Colors.white,
-                  child: MenuView(),
+                  child: const MenuView(),
                 ),
                 Container(
                   color: Colors.white,
-                  child: Center(child: DeliveryView()),
+                  child: const Center(child: DeliveryView()),
                 ),
               ],
             ),

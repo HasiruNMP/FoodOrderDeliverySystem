@@ -1,7 +1,7 @@
 // ignore_for_file: file_names
 
 class PostCategory {
-  final int id;
+  final String id;
   final String imgUrl;
   final String name;
 
@@ -13,7 +13,7 @@ class PostCategory {
 
   PostCategory.fromJson(Map<String, Object?> json)
       : this(
-          id: json['id'] as int,
+          id: json['id'] as String,
           imgUrl: json['imgUrl'] as String,
           name: json['name'] as String,
         );

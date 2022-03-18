@@ -12,25 +12,25 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('Login')),
+        title: const Center(child: Text('Login')),
       ),
       body: Column(
         children: [
-          Image(
+          const Image(
             image: NetworkImage(
                 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
           ),
-          TextField(
+          const TextField(
             decoration: InputDecoration(
                 border: OutlineInputBorder(), hintText: 'Username'),
           ),
-          TextField(
+          const TextField(
             decoration: InputDecoration(
                 border: OutlineInputBorder(), hintText: 'Password'),
           ),
           ElevatedButton(
             onPressed: () {},
-            child: Text('Sign In'),
+            child: const Text('Sign In'),
           ),
         ],
       ),

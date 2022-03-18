@@ -18,7 +18,7 @@ class _OrdersViewState extends State<OrdersView> {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text('Orders'),
+          title: const Text('Orders'),
           bottom: const TabBar(
             tabs: [
               Tab(

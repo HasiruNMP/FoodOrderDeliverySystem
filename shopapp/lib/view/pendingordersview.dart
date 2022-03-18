@@ -118,7 +118,7 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                 );
               }),
         ),
-        VerticalDivider(
+        const VerticalDivider(
           color: Colors.black26,
         ),
         Expanded(
@@ -129,7 +129,7 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
               children: [
                 Expanded(
                   child: Container(
-                    child: Text(
+                    child: const Text(
                       'Order Description',
                       style: TextStyle(
                           color: Colors.blue,
@@ -143,24 +143,25 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(flex: 5, child: Text("Customer Name")),
-                      Expanded(child: Text(":")),
+                      const Expanded(flex: 5, child: Text("Customer Name")),
+                      const Expanded(child: Text(":")),
                       Expanded(
                         flex: 8,
                         child: Text(
                           customerName,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                      Expanded(flex: 6, child: Text("Delivery Person NIC")),
-                      Expanded(child: Text(":")),
+                      const Expanded(
+                          flex: 6, child: Text("Delivery Person NIC")),
+                      const Expanded(child: Text(":")),
                       Expanded(
                         flex: 6,
                         child: Text(
                           deliveryPerson,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -171,13 +172,13 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(flex: 2, child: Text("Timestamp")),
-                      Expanded(child: Text(":")),
+                      const Expanded(flex: 2, child: Text("Timestamp")),
+                      const Expanded(child: Text(":")),
                       Expanded(
                         flex: 10,
                         child: Text(
                           orderTime.toDate().toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -190,7 +191,7 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                   child: Container(
                     alignment: Alignment.centerLeft,
                     child: ListView(
-                      children: [
+                      children: const [
                         TextField(
                           keyboardType: TextInputType.multiline,
                           minLines: 10,
@@ -208,13 +209,13 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(flex: 2, child: Text("Total Price")),
-                      Expanded(child: Text(":")),
+                      const Expanded(flex: 2, child: Text("Total Price")),
+                      const Expanded(child: Text(":")),
                       Expanded(
                         flex: 10,
                         child: Text(
                           totalPrice,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -222,12 +223,12 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                     ],
                   ),
                 ),
-                Divider(),
+                const Divider(),
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(flex: 4, child: SizedBox()),
-                      Expanded(
+                      const Expanded(flex: 4, child: SizedBox()),
+                      const Expanded(
                           flex: 2,
                           child: Text(
                             "Delivered",
@@ -240,8 +241,8 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                           onChanged: null,
                         ),
                       ),
-                      Expanded(flex: 4, child: SizedBox()),
-                      Expanded(
+                      const Expanded(flex: 4, child: SizedBox()),
+                      const Expanded(
                           flex: 2,
                           child: Text(
                             "Received",
@@ -254,21 +255,21 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                           onChanged: null,
                         ),
                       ),
-                      Expanded(flex: 4, child: SizedBox()),
+                      const Expanded(flex: 4, child: SizedBox()),
                     ],
                   ),
                 ),
-                Divider(),
+                const Divider(),
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(flex: 2, child: Text("Location")),
-                      Expanded(child: Text(":")),
+                      const Expanded(flex: 2, child: Text("Location")),
+                      const Expanded(child: Text(":")),
                       Expanded(
                         flex: 10,
                         child: Text(
                           latitude.toString() + " , " + longitude.toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -297,17 +298,17 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                         ),
                       ]),
                     )),
-                Expanded(
+                const Expanded(
                   child: SizedBox(),
                 ),
                 Expanded(
-                  child: Container(
+                  child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
                         updateOrders(selectedOrderId);
                       },
-                      child: Text('COMPLETED'),
+                      child: const Text('COMPLETED'),
                     ),
                   ),
                 ),

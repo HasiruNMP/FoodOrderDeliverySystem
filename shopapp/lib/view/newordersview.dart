@@ -70,12 +70,16 @@ class _NewOrdersViewState extends State<NewOrdersView> {
   var deliveryPerson = 'null';
   var selectedOrderId = 'null';
 
-  void setDeliveryPerson(String nic) {
-    deliveryPerson = nic;
+  void setDeliveryPerson(String name) {
+    setState(() {
+      deliveryPerson = name;
+    });
   }
 
   void setSelectedOrderId(String id) {
-    selectedOrderId = id;
+    setState(() {
+      selectedOrderId = id;
+    });
   }
 
   CollectionReference orders = FirebaseFirestore.instance.collection('orders');
@@ -93,12 +97,12 @@ class _NewOrdersViewState extends State<NewOrdersView> {
         Expanded(
           child: Column(
             children: [
-              Expanded(
+              const Expanded(
                   child: SizedBox(
                 width: double.infinity,
                 child: Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
                     child: Text(
                       "New Orders",
                       style:
@@ -148,18 +152,18 @@ class _NewOrdersViewState extends State<NewOrdersView> {
             ],
           ),
         ),
-        VerticalDivider(
+        const VerticalDivider(
           color: Colors.black26,
         ),
         Expanded(
           child: Column(
             children: [
-              Expanded(
+              const Expanded(
                   child: SizedBox(
                 width: double.infinity,
                 child: Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
                     child: Text(
                       "Delivery Person",
                       style:
@@ -181,7 +185,7 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                         child: Card(
                           child: TextButton(
                             onPressed: () {
-                              setDeliveryPerson(post.nic);
+                              setDeliveryPerson(post.name);
                             },
                             child: ListTile(
                               title: Text(post.name),
@@ -195,7 +199,7 @@ class _NewOrdersViewState extends State<NewOrdersView> {
             ],
           ),
         ),
-        VerticalDivider(
+        const VerticalDivider(
           color: Colors.black26,
         ),
         Expanded(
@@ -206,7 +210,7 @@ class _NewOrdersViewState extends State<NewOrdersView> {
               children: [
                 Expanded(
                   child: Container(
-                    child: Text(
+                    child: const Text(
                       'Order Description',
                       style: TextStyle(
                           color: Colors.blue,
@@ -220,13 +224,13 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(flex: 2, child: Text("Customer Name")),
-                      Expanded(child: Text(":")),
+                      const Expanded(flex: 2, child: Text("Customer Name")),
+                      const Expanded(child: Text(":")),
                       Expanded(
                         flex: 10,
                         child: Text(
                           customerName,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -237,13 +241,13 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(flex: 2, child: Text("Timestamp")),
-                      Expanded(child: Text(":")),
+                      const Expanded(flex: 2, child: Text("Timestamp")),
+                      const Expanded(child: Text(":")),
                       Expanded(
                         flex: 10,
                         child: Text(
                           orderTime.toDate().toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -256,7 +260,7 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                   child: Container(
                     alignment: Alignment.centerLeft,
                     child: ListView(
-                      children: [
+                      children: const [
                         TextField(
                           keyboardType: TextInputType.multiline,
                           minLines: 10,
@@ -274,13 +278,13 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(flex: 2, child: Text("Total Price")),
-                      Expanded(child: Text(":")),
+                      const Expanded(flex: 2, child: Text("Total Price")),
+                      const Expanded(child: Text(":")),
                       Expanded(
                         flex: 10,
                         child: Text(
                           totalPrice,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -291,13 +295,13 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(flex: 2, child: Text("Location")),
-                      Expanded(child: Text(":")),
+                      const Expanded(flex: 2, child: Text("Location")),
+                      const Expanded(child: Text(":")),
                       Expanded(
                         flex: 10,
                         child: Text(
                           latitude.toString() + " , " + longitude.toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -327,16 +331,16 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                       ]),
                     )),
                 Expanded(
-                  child: SizedBox(),
+                  child: Text("\nDelivery Person: " + deliveryPerson),
                 ),
                 Expanded(
-                  child: Container(
+                  child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
                         updateOrders(selectedOrderId, deliveryPerson);
                       },
-                      child: Text('ASSIGN'),
+                      child: const Text('ASSIGN'),
                     ),
                   ),
                 ),

@@ -16,19 +16,17 @@ class _DeliveryViewState extends State<DeliveryView> {
           children: [
             Column(
               children: [
-                Container(
-                  child: Center(
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text('Add'),
-                    ),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: const Text('Add'),
                   ),
                 ),
                 Expanded(
                   child: SizedBox(
                     height: 200.0,
                     child: ListView(
-                      children: [
+                      children: const [
                         Card(
                           child: Text('Name'),
                         ),
@@ -38,11 +36,11 @@ class _DeliveryViewState extends State<DeliveryView> {
                 ),
               ],
             ),
-            VerticalDivider(
+            const VerticalDivider(
               color: Colors.black26,
             ),
             Column(
-              children: [
+              children: const [
                 TextField(
                   decoration: InputDecoration(
                       border: OutlineInputBorder(), hintText: 'Name'),

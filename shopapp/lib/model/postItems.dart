@@ -1,8 +1,8 @@
 // ignore_for_file: file_names
 
 class PostItems {
-  final int prodId;
-  final int categoryId;
+  final String prodId;
+  final String categoryId;
   final String description;
   final String imgUrl;
   final String name;
@@ -19,8 +19,8 @@ class PostItems {
 
   PostItems.fromJson(Map<String, Object?> json)
       : this(
-          prodId: json['prodId'] as int,
-          categoryId: json['categoryId'] as int,
+          prodId: json['prodId'] as String,
+          categoryId: json['categoryId'] as String,
           description: json['description'] as String,
           imgUrl: json['imgUrl'] as String,
           name: json['name'] as String,

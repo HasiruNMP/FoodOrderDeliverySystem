@@ -31,6 +31,7 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
   bool isDelivered = false;
   bool isProcessed = false;
   bool isReceived = false;
+  String deliveryPerson = "null";
 
   void updateOrderDetails(
       customerName,
@@ -43,7 +44,8 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
       longitude,
       isDelivered,
       isProcessed,
-      isReceived) {
+      isReceived,
+      deliveryPerson) {
     setState(() {
       this.customerName = customerName;
       this.customerPhone = customerPhone;
@@ -56,6 +58,7 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
       this.isDelivered = isDelivered;
       this.isProcessed = isProcessed;
       this.isReceived = isReceived;
+      this.deliveryPerson = deliveryPerson;
     });
   }
 
@@ -87,6 +90,7 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
                           post.isDelivered,
                           post.isProcessed,
                           post.isReceived,
+                          post.deliveryPerson,
                         );
                       },
                       child: ListTile(
@@ -98,7 +102,7 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
                 );
               }),
         ),
-        VerticalDivider(
+        const VerticalDivider(
           color: Colors.black26,
         ),
         Expanded(
@@ -109,7 +113,7 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
               children: [
                 Expanded(
                   child: Container(
-                    child: Text(
+                    child: const Text(
                       'Order Description',
                       style: TextStyle(
                           color: Colors.blue,
@@ -123,15 +127,34 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(flex: 2, child: Text("Customer Name")),
-                      Expanded(child: Text(":")),
                       Expanded(
-                        flex: 10,
-                        child: Text(
-                          customerName,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: Row(
+                          children: [
+                            const Expanded(
+                                flex: 5, child: Text("Customer Name")),
+                            const Expanded(child: Text(":")),
+                            Expanded(
+                              flex: 8,
+                              child: Text(
+                                customerName,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const Expanded(
+                                flex: 6, child: Text("Delivery Person NIC")),
+                            const Expanded(child: Text(":")),
+                            Expanded(
+                              flex: 6,
+                              child: Text(
+                                deliveryPerson,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -140,13 +163,13 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(flex: 2, child: Text("Timestamp")),
-                      Expanded(child: Text(":")),
+                      const Expanded(flex: 2, child: Text("Timestamp")),
+                      const Expanded(child: Text(":")),
                       Expanded(
                         flex: 10,
                         child: Text(
                           orderTime.toDate().toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -159,7 +182,7 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
                   child: Container(
                     alignment: Alignment.centerLeft,
                     child: ListView(
-                      children: [
+                      children: const [
                         TextField(
                           keyboardType: TextInputType.multiline,
                           minLines: 10,
@@ -177,13 +200,13 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(flex: 2, child: Text("Total Price")),
-                      Expanded(child: Text(":")),
+                      const Expanded(flex: 2, child: Text("Total Price")),
+                      const Expanded(child: Text(":")),
                       Expanded(
                         flex: 10,
                         child: Text(
                           totalPrice,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -194,13 +217,13 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(flex: 2, child: Text("Location")),
-                      Expanded(child: Text(":")),
+                      const Expanded(flex: 2, child: Text("Location")),
+                      const Expanded(child: Text(":")),
                       Expanded(
                         flex: 10,
                         child: Text(
                           latitude.toString() + " , " + longitude.toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -229,7 +252,7 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
                         ),
                       ]),
                     )),
-                Expanded(
+                const Expanded(
                   child: SizedBox(),
                 ),
               ],
