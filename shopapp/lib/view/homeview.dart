@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopapp/view/deliveryview.dart';
 import 'package:shopapp/view/menuview.dart';
 import 'package:shopapp/view/ordersview.dart';
 
@@ -100,7 +101,11 @@ class SideBar extends StatelessWidget {
         AspectRatio(
           aspectRatio: 1,
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const DeliveryView();
+              }));
+            },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [

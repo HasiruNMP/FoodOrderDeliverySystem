@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/firestore.dart';
 import 'package:shopapp/model/postCategory.dart';
 import 'package:shopapp/model/postItems.dart';
+import 'package:shopapp/view/deliveryview.dart';
 import 'package:shopapp/view/homeview.dart';
 
 class MenuHomeView extends StatefulWidget {
@@ -55,7 +56,11 @@ class SideBar extends StatelessWidget {
         AspectRatio(
           aspectRatio: 1,
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const MenuHomeView();
+              }));
+            },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
@@ -101,7 +106,11 @@ class SideBar extends StatelessWidget {
         AspectRatio(
           aspectRatio: 1,
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const DeliveryView();
+              }));
+            },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
@@ -323,13 +332,24 @@ class _MenuViewState extends State<MenuView> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 20,
+                  width: double.infinity,
+                  child: Card(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        "Categories",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
                 ),
-                const Text("Categories"),
                 SizedBox(
                   height: 20,
                 ),
                 Expanded(
+                  flex: 2,
                   child: FirestoreListView<PostCategory>(
                     pageSize: 4,
                     query: queryPost,
@@ -369,31 +389,29 @@ class _MenuViewState extends State<MenuView> {
                 )),
                 Divider(),
                 Expanded(
-                    flex: 2,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Form(
-                        key: _formKey2,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            TextField(
-                              decoration:
-                                  InputDecoration(hintText: "New Category"),
-                              controller: newCategory,
-                            ),
-                            OutlinedButton(
-                              onPressed: () {
-                                if (_formKey2.currentState!.validate()) {
-                                  addCategory(newCategory.text);
-                                }
-                              },
-                              child: Text("Add New"),
-                            ),
-                          ],
+                  padding: const EdgeInsets.all(8.0),
+                  child: Form(
+                    key: _formKey2,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TextField(
+                          decoration: InputDecoration(hintText: "New Category"),
+                          controller: newCategory,
                         ),
-                      ),
-                    )),
+                        OutlinedButton(
+                          onPressed: () {
+                            if (_formKey2.currentState!.validate()) {
+                              addCategory(newCategory.text);
+                            }
+                          },
+                          child: Text("Add New"),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
               ],
             ),
           ),
@@ -403,13 +421,24 @@ class _MenuViewState extends State<MenuView> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 20,
+                  width: double.infinity,
+                  child: Card(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        "Category Items",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
                 ),
-                const Text("Category Items"),
                 SizedBox(
                   height: 20,
                 ),
                 Expanded(
+                  flex: 2,
                   child: FirestoreListView<PostItems>(
                     pageSize: 4,
                     query: queryPost2,
@@ -528,7 +557,7 @@ class _MenuViewState extends State<MenuView> {
                 ),
                 SizedBox(
                   height: 200,
-                  child: Image(image: NetworkImage(imgUrl)),
+                  //child: Image(image: NetworkImage(imgUrl)),
                 ),
                 SizedBox(
                   height: 20,
