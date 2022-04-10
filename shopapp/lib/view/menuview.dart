@@ -1,18 +1,16 @@
-// ignore_for_file: avoid_print
 
-import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/firestore.dart';
 import 'package:shopapp/model/postCategory.dart';
 import 'package:shopapp/model/postItems.dart';
 import 'package:shopapp/view/deliveryview.dart';
 import 'package:shopapp/view/homeview.dart';
-import 'package:image_picker_web/image_picker_web.dart';
+//import 'package:image_picker_web/image_picker_web.dart';
 import 'package:image_picker/image_picker.dart';
-//import 'package:universal_html/prefer_universal/html.dart' as html;
+
+import 'package:http/http.dart' as http;
 
 class MenuHomeView extends StatefulWidget {
   const MenuHomeView({Key? key}) : super(key: key);
@@ -149,7 +147,7 @@ class _MenuViewState extends State<MenuView> {
   String categoryId = "null";
   String selectedCategory = "null";
   late String imagePath;
-  late File file;
+  late var file;
 
   void setCategoryId(String id, String cat) {
     setState(() {
@@ -746,7 +744,9 @@ class _MenuViewState extends State<MenuView> {
                       child: Text("Delete Item")),
                 )),
                 Expanded(
-                  child: SizedBox(),
+                  child: SizedBox(
+                    child: Image.network("https://d21f-2402-d000-a400-52ba-fc34-b963-a9c3-6e76.ngrok.io/static/images/pexels-wellington-cunha-2027394.jpg"),
+                  ),
                 ),
               ],
             ),
@@ -757,17 +757,24 @@ class _MenuViewState extends State<MenuView> {
   }
 
   Future selectFile() async {
-    //final result = await FilePicker.platform.pickFiles(allowMultiple: false);
 
-    //html.File? imageFile = await ImagePickerWeb.getMultiImagesAsFile();
+    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    Uint8List data = await image!.readAsBytes();
+    List<int> list = data.cast();
 
-    /*if (result == null) return;
-    imagePath = result.files.single.path!;*/
+    var request = http.MultipartRequest('POST', Uri.parse('https://d21f-2402-d000-a400-52ba-fc34-b963-a9c3-6e76.ngrok.io/uploads'));
+    request.files.add(await http.MultipartFile.fromBytes('image', list, filename: '123.png'));
 
-   /*setState(() {
-      file = imageFile;
-    });*/
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    }
+    else {
+      print(response.reasonPhrase);
+    }
 
   }
+
 
 }

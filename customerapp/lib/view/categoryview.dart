@@ -6,7 +6,7 @@ import '../controller/cart.dart';
 import 'cartview.dart';
 
 class CategoryView extends StatefulWidget {
-  int categoryId;
+  String categoryId;
   String name;
   CategoryView(this.categoryId, this.name);
 
@@ -16,7 +16,7 @@ class CategoryView extends StatefulWidget {
 }
 
 class _CategoryViewState extends State<CategoryView> {
-  int categoryId;
+  String categoryId;
   String name;
   _CategoryViewState(this.categoryId, this.name);
 
@@ -125,8 +125,7 @@ class _CategoryViewState extends State<CategoryView> {
                                     margin:
                                         EdgeInsets.only(left: 10, right: 10),
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           catItems['name'],

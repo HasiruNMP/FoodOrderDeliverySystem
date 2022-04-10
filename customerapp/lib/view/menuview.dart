@@ -61,7 +61,7 @@ class _MenuViewState extends State<MenuView> {
                             (index) {
                               QueryDocumentSnapshot category =
                                   snapshot.data!.docs[index];
-                              int categoryId = category['id'];
+                              String categoryId = category['id'];
 
                               return Container(
                                 margin: const EdgeInsets.only(
