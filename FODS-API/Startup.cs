@@ -57,11 +57,14 @@ namespace FODS_API
             //Enable CORS
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-            if (env.IsDevelopment())
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
+            /*if (env.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+            }*/
 
             app.UseRouting();
 

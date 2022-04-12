@@ -34,7 +34,7 @@ namespace FODS_API.Controllers
             .ToArray();
         }
 
-        [HttpGet,Route("test")]
+        [HttpGet,Route("test1")]
         public JsonResult GetUser(String nic)
         {
             string query = @"select * from USERS;";
