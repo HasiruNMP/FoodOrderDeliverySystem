@@ -5,13 +5,13 @@ using System.Data.SqlClient;
 
 namespace FODS_API.Controllers
 {
-    [Route("users")]
+    [Route("employee")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class EmployeeController : ControllerBase
     {
 
         private readonly IConfiguration _configuration;
-        public UserController(IConfiguration configuration)
+        public EmployeeController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
