@@ -13,6 +13,7 @@ using Newtonsoft.Json.Serialization;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace FODS_API
 {
@@ -59,6 +60,10 @@ namespace FODS_API
 
             app.UseSwagger();
             app.UseSwaggerUI();
+
+            var option = new RewriteOptions();
+            option.AddRedirect("^$", "swagger");
+            app.UseRewriter(option);
 
             /*if (env.IsDevelopment())
             {
