@@ -46,6 +46,7 @@ dependencies:
   geolocator: ^8.2.0
   timeago: ^3.2.2
   firebase_auth: ^3.3.11
+  http: ^0.13.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

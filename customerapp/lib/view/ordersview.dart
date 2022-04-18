@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:customerapp/global.dart' as global;
 
 import 'ordertrackingview.dart';
 
@@ -25,7 +26,7 @@ class _OrderviewState extends State<Orderview> {
   void CheckPendingOrders() async {
     await FirebaseFirestore.instance
         .collection('orders')
-        .where('customerPhone', isEqualTo: '0766807668')
+        .where('customerPhone', isEqualTo: global.phoneNo)
         .where('orderStatus', isEqualTo: 'New')
         .get()
         .then((documentSnapshot) {
@@ -45,7 +46,7 @@ class _OrderviewState extends State<Orderview> {
   void CheckDeliveredOrders() async {
     await FirebaseFirestore.instance
         .collection('orders')
-        .where('customerPhone', isEqualTo: '0766807668')
+        .where('customerPhone', isEqualTo: global.phoneNo)
         .where('orderStatus', isEqualTo: 'Recieved')
         .get()
         .then((documentSnapshot) {
@@ -76,7 +77,7 @@ class _OrderviewState extends State<Orderview> {
                     child: StreamBuilder(
                         stream: FirebaseFirestore.instance
                             .collection('orders')
-                            .where('customerPhone', isEqualTo: '0766807668')
+                            .where('customerPhone', isEqualTo: global.phoneNo)
                             .where('orderStatus', isEqualTo: 'New')
                             .orderBy('orderid', descending: true)
                             .snapshots(),
@@ -259,7 +260,7 @@ class _OrderviewState extends State<Orderview> {
                     child: StreamBuilder(
                         stream: FirebaseFirestore.instance
                             .collection('orders')
-                            .where('customerPhone', isEqualTo: '0766807668')
+                            .where('customerPhone', isEqualTo: global.phoneNo)
                             .where('orderStatus', isEqualTo: 'Recieved')
                             .orderBy('orderid', descending: true)
                             .snapshots(),

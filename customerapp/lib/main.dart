@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:customerapp/view/categoryview.dart';
 import 'package:customerapp/view/checkoutview.dart';
 import 'package:customerapp/view/homeview.dart';
@@ -15,7 +18,20 @@ import 'package:provider/provider.dart';
 import 'controller/cart.dart';
 import 'firebase_options.dart';
 
+String appState = '1';
+StreamController<String> streamController = StreamController<String>();
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 Future<void> main() async {
+  HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   //firebase
   await Firebase.initializeApp(
@@ -44,16 +60,72 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/',
+      //   initialRoute: '/',
       routes: {
-        '/': (context) => OtpSetup(),
+        'otpsetup': (context) => OtpSetup(),
         'home': (context) => const HomeView(),
         'menu': (context) => const MenuView(),
-        'category': (context) => CategoryView(0, '0'),
+        'category': (context) => CategoryView('0', '0'),
         'checkout': (context) => const CheckoutView(),
         'track': (context) => TrackOrderView('0'),
         'orders': (context) => Orderview(),
       },
+      home: ViewController(streamController.stream),
+      debugShowCheckedModeBanner: false,
     );
+  }
+}
+
+class ViewController extends StatefulWidget {
+  ViewController(this.stream);
+  final Stream<String> stream;
+  @override
+  _ViewControllerState createState() => _ViewControllerState();
+}
+
+class _ViewControllerState extends State<ViewController> {
+  void setAppState(String appStateValue) {
+    print(appStateValue);
+    setState(() {
+      appState = appStateValue;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.stream.listen((appStateValue) {
+      setAppState(appStateValue);
+    });
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+        setAppState('2');
+      } else {
+        print('User is signed in!');
+        setAppState('0');
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (appState == '0') {
+      print(appState);
+      return HomeView();
+    } else if (appState == '2') {
+      setState(() {
+        appState = '2';
+      });
+      return OtpSetup();
+    } else {
+      return Scaffold(
+        body: Container(
+          child: CircularProgressIndicator(
+            color: Colors.blue,
+          ),
+        ),
+      );
+    }
   }
 }
