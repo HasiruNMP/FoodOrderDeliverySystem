@@ -3,7 +3,6 @@ import 'package:customerapp/controller/usermodel.dart';
 import 'package:customerapp/view/homeview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:customerapp/global.dart' as global;
 
 import '../api/apiservice.dart';
 
@@ -24,8 +23,6 @@ class _userRegister extends State<userRegister> {
     if (auth.currentUser != null) {
       phonNo = auth.currentUser!.phoneNumber!;
       print(phonNo);
-      global.phoneNo = phonNo;
-      print(global.phoneNo);
     }
   }
 
@@ -33,12 +30,13 @@ class _userRegister extends State<userRegister> {
     firstName: '',
     lastName: '',
     phone: '',
+    userId: 0,
   );
 
   Future<void> addUserData() async {
     user.firstName = _fnameController.text;
     user.lastName = _lnameController.text;
-    user.phone = global.phoneNo;
+    user.phone = phonNo;
     bool saveResponse = await APIService.adduser(user);
     saveResponse == true
         ? Navigator.pushNamedAndRemoveUntil(context, 'home', (route) => false)

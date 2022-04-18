@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:customerapp/controller/ordermodel.dart';
 import 'package:http/http.dart' as http;
 import 'package:customerapp/controller/usermodel.dart';
 
@@ -60,17 +61,14 @@ class APIService {
     }
   }
 
-//   static Future<List<complaintModel>> getComplaintsOfUser(int nic) async {
-//     final response = await http
-//         .get(Uri.parse('https://10.0.2.2:7018/complaints/getcomplaintlistapp?NIC=2'));
-//     if (response.statusCode == 200) {
-//       List jsonResponse = json.decode(response.body);
-//       return jsonResponse.map((data) => new complaintModel.fromJson(data)).toList();
-//     } else {
-//       throw Exception('Unexpected error occured!');
-//     }
-//   }
-//
-// }
-
+  static Future<List<orderModel>> getNewOrders(int userId) async {
+    final response = await http.get(Uri.parse(
+        'https://10.0.2.2:7072/orders/getneworderslist?userId=$userId'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((data) => new orderModel.fromJson(data)).toList();
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
+  }
 }

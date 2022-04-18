@@ -49,7 +49,7 @@ namespace FODS_API.Controllers
         [HttpGet, Route("getuserdetails")]
         public JsonResult GetUserDetails(String phone)
         {
-            string query = @"select FirstName,LastName,Phone from dbo.USERS
+            string query = @"select * from dbo.USERS
             Where Phone ='" + phone + "' ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("FODSDB");
@@ -92,7 +92,6 @@ namespace FODS_API.Controllers
             }
             return new JsonResult("Delteted Successfully!");
         }
-
 
 
     }

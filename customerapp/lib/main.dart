@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
         'menu': (context) => const MenuView(),
         'category': (context) => CategoryView('0', '0'),
         'checkout': (context) => const CheckoutView(),
-        'track': (context) => TrackOrderView('0'),
+        'track': (context) => TrackOrderView('0', '1', 3.4),
         'orders': (context) => Orderview(),
       },
       home: ViewController(streamController.stream),
