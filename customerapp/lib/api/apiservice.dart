@@ -3,6 +3,9 @@ import 'package:customerapp/controller/ordermodel.dart';
 import 'package:http/http.dart' as http;
 import 'package:customerapp/controller/usermodel.dart';
 
+import '../controller/orderitemsmodel.dart';
+import '../controller/productmodel.dart';
+
 class APIService {
   static Future adduser(userModel user) async {
     var headers = {'Content-Type': 'application/json'};
@@ -69,6 +72,69 @@ class APIService {
       return jsonResponse.map((data) => new orderModel.fromJson(data)).toList();
     } else {
       throw Exception('Unexpected error occured!');
+    }
+  }
+
+  static Future<List<orderModel>> getCompletedOrders(int userId) async {
+    final response = await http.get(Uri.parse(
+        'https://10.0.2.2:7072/orders/getcompletedlist?userId=$userId'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((data) => new orderModel.fromJson(data)).toList();
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
+  }
+
+  static Future<List<orderItemModel>> getOrderItems(int orderId) async {
+    final response = await http.get(Uri.parse(
+        'https://10.0.2.2:7072/orders/getOrderItems?orderId=$orderId'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse
+          .map((data) => new orderItemModel.fromJson(data))
+          .toList();
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
+  }
+
+  static Future<List<productModel>> getProductDetails(int productId) async {
+    final response = await http.get(Uri.parse(
+        'https://10.0.2.2:7072/orders/getproductdetails?productId=$productId'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse
+          .map((data) => new productModel.fromJson(data))
+          .toList();
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
+  }
+
+  static Future updateOrderStatus(int orderId, String orderStatus) async {
+    var headers = {'Content-Type': 'application/json'};
+    var request = http.Request(
+      'PUT',
+      Uri.parse(
+          'https://10.0.2.2:7072/orders/updateorderstatus?orderId=$orderId&orderStatus=$orderStatus'),
+    );
+    request.body = json.encode({
+      "OrderId": orderId,
+      "OrderStatus": orderStatus,
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+      print(await response.stream.bytesToString());
+      return true;
+    } else {
+      print(response.statusCode);
+      print(response.reasonPhrase);
+      return false;
     }
   }
 }
