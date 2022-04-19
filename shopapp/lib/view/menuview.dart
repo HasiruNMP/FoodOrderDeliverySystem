@@ -1,4 +1,4 @@
-
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +11,51 @@ import 'package:shopapp/view/homeview.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:http/http.dart' as http;
+
+class Category {
+  final int CategoryId;
+  final String Name;
+  final String ImgUrl;
+
+  Category(
+      {required this.CategoryId, required this.Name, required this.ImgUrl});
+
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
+      CategoryId: json['CategoryId'],
+      Name: json['Name'],
+      ImgUrl: json['ImgUrl'],
+    );
+  }
+}
+
+class Product {
+  final int ProductId;
+  final int CategoryId;
+  final String Name;
+  final String Description;
+  final double Price;
+  final String ImgUrl;
+
+  Product(
+      {required this.ProductId,
+      required this.CategoryId,
+      required this.Name,
+      required this.Description,
+      required this.Price,
+      required this.ImgUrl});
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      ProductId: json['ProductId'],
+      CategoryId: json['CategoryId'],
+      Name: json['Name'],
+      Description: json['Description'],
+      Price: json['Price'],
+      ImgUrl: json['ImgUrl'],
+    );
+  }
+}
 
 class MenuHomeView extends StatefulWidget {
   const MenuHomeView({Key? key}) : super(key: key);
@@ -144,24 +189,19 @@ class MenuView extends StatefulWidget {
 }
 
 class _MenuViewState extends State<MenuView> {
-  String categoryId = "null";
-  String selectedCategory = "null";
+  int CategoryId = 0;
+  String Name = 'null';
+  String ImgUrl = 'null';
   late String imagePath;
   late var file;
 
-  void setCategoryId(String id, String cat) {
+  void setCategoryId(int CategoryId, String Name, String ImgUrl) {
     setState(() {
-      categoryId = id;
-      selectedCategory = cat;
+      this.CategoryId = CategoryId;
+      this.Name = Name;
+      this.ImgUrl = ImgUrl;
     });
   }
-
-  final queryPost = FirebaseFirestore.instance
-      .collection('categories')
-      .withConverter<PostCategory>(
-        fromFirestore: (snapshot, _) => PostCategory.fromJson(snapshot.data()!),
-        toFirestore: (id, _) => id.toJson(),
-      );
 
   String prodId = "null";
   String categoryIdItem = "null";
@@ -199,134 +239,134 @@ class _MenuViewState extends State<MenuView> {
   TextEditingController updateName = TextEditingController();
   TextEditingController updatePrice = TextEditingController();
 
-  CollectionReference category =
-      FirebaseFirestore.instance.collection('categories');
-  Future<void> addCategory(newCategory) {
-    return category
-        .add({
-          'id': "null",
-          'name': newCategory,
-          'imgUrl': "null",
-        })
-        .then((value) => category.doc(value.id).update({'id': value.id}))
-        .then(
-          (value) => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Category Added'),
-            ),
-          ),
-        )
-        .catchError(
-          (error) => ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to report: $error'),
-            ),
-          ),
-        );
+  Future<List<Category>> fetchCategories() async {
+    final response = await http
+        .get(Uri.parse('https://localhost:7072/api/Category/getcategories'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((data) => Category.fromJson(data)).toList();
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
   }
 
-  CollectionReference product =
-      FirebaseFirestore.instance.collection('products');
-  Future<void> addItm(newDescription, newImgUrl, newName, newPrice) {
-    return product
-        .add({
-          'prodId': "null",
-          'categoryId': categoryId,
-          'description': newDescription,
-          'imgUrl': newImgUrl,
-          'name': newName,
-          'price': newPrice,
-        })
-        .then((value) => product.doc(value.id).update({'prodId': value.id}))
-        .then(
-          (value) => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Item Added'),
-            ),
-          ),
-        )
-        .catchError(
-          (error) => ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to report: $error'),
-            ),
-          ),
-        );
+  Future addCategory(String Name, String ImgUrl) async {
+    final response = await http.post(
+        Uri.parse(
+            'https://localhost:7072/api/Category/postcategory?Name=$Name&ImgUrl=$ImgUrl'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        });
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      //return Data.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to add.');
+    }
   }
 
-  void update(String id, String fieldName, String newValue) {
-    product
-        .doc(id)
-        .update({
-          fieldName: newValue,
-        })
-        .then(
-          (value) => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Value Updated'),
-            ),
-          ),
-        )
-        .catchError(
-          (error) => ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to report: $error'),
-            ),
-          ),
-        );
+  Future deleteCategory(int CategoryId) async {
+    final response = await http.delete(
+        Uri.parse(
+            '  https://localhost:7072/api/Category?CategoryId=$CategoryId'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        });
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      //return Data.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to add.');
+    }
   }
 
-  void deleteItem() {
-    product
-        .doc(prodId)
-        .delete()
-        .then(
-          (value) => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Item Deleted'),
-            ),
-          ),
-        )
-        .catchError(
-          (error) => ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to report: $error'),
-            ),
-          ),
-        );
+  ////////////////////////////////////////////////////////////
+  Future<List<Product>> fetchProducts() async {
+    final response = await http.get(Uri.parse(
+        'https://localhost:7072/products/getcategoryproducts?categoryId=$CategoryId'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((data) => Product.fromJson(data)).toList();
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
   }
 
-  void deleteCategory() {
-    category
-        .doc(categoryId)
-        .delete()
-        .then(
-          (value) => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Category Deleted'),
-            ),
-          ),
-        )
-        .catchError(
-          (error) => ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to report: $error'),
-            ),
-          ),
-        );
+  Future addProduct(int CategoryId, String Name, String Description,
+      double Price, String ImgUrl) async {
+    final response = await http.post(
+        Uri.parse(
+            'https://localhost:7072/products/postproduct?CategoryId=$CategoryId&Name=$Name&Description=$Description&Price=$Price&ImgUrl=$ImgUrl'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        });
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      //return Data.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to add.');
+    }
+  }
+
+  Future updateProduct(int ProductId, int CategoryId, String Name,
+      String Description, double Price, String ImgUrl) async {
+    final response = await http.put(
+        Uri.parse(
+            'https://localhost:7072/products/putproductdetails?ProductId=$ProductId&CategoryId=$CategoryId&Name=$Name&Description=$Description&Price=$Price&ImgUrl=$ImgUrl'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        });
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      //return Data.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to Update.');
+    }
+  }
+
+  Future deleteProduct(int ProductId) async {
+    final response = await http.delete(
+        Uri.parse('  https://localhost:7072/products?ProductId=$ProductId'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        });
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      //return Data.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to add.');
+    }
+  }
+
+  late Future<List<Category>> futureCategoryData;
+  late Future<List<Product>> futureProductData;
+  @override
+  void initState() {
+    super.initState();
+    futureCategoryData = fetchCategories();
+    futureProductData = fetchProducts();
   }
 
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
     final _formKey2 = GlobalKey<FormState>();
-    final queryPost2 = FirebaseFirestore.instance
-        .collection('products')
-        .where('categoryId', isEqualTo: categoryId)
-        .withConverter<PostItems>(
-          fromFirestore: (snapshot, _) => PostItems.fromJson(snapshot.data()!),
-          toFirestore: (prodId, _) => prodId.toJson(),
-        );
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -357,27 +397,37 @@ class _MenuViewState extends State<MenuView> {
                 ),
                 Expanded(
                   flex: 2,
-                  child: FirestoreListView<PostCategory>(
-                    pageSize: 4,
-                    query: queryPost,
-                    itemBuilder: (context, snapshot) {
-                      final post = snapshot.data();
-                      return Card(
-                        child: TextButton(
-                          onPressed: () {
-                            setCategoryId(post.id, post.name);
-                            updateItemDetails(
-                                "null", "null", "null", "null", "null", "null");
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(post.name),
-                              const Icon(Icons.navigate_next),
-                            ],
-                          ),
-                        ),
-                      );
+                  child: FutureBuilder<List<Category>>(
+                    future: futureCategoryData,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<Category>? data = snapshot.data;
+                        return ListView.builder(
+                            itemCount: data!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  setCategoryId(data[index].CategoryId,
+                                      data[index].Name, data[index].ImgUrl);
+                                  updateItemDetails("null", "null", "null",
+                                      "null", "null", "null");
+                                  fetchProducts();
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(data[index].Name),
+                                    const Icon(Icons.navigate_next),
+                                  ],
+                                ),
+                              );
+                            });
+                      } else if (snapshot.hasError) {
+                        return Text("${snapshot.error}");
+                      }
+                      // By default show a loading spinner.
+                      return CircularProgressIndicator();
                     },
                   ),
                 ),
@@ -386,10 +436,10 @@ class _MenuViewState extends State<MenuView> {
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text(selectedCategory),
+                    Text(Name),
                     ElevatedButton(
                         onPressed: () {
-                          deleteCategory();
+                          deleteCategory(CategoryId);
                         },
                         child: Text("Delete Category"))
                   ],
@@ -410,7 +460,7 @@ class _MenuViewState extends State<MenuView> {
                         OutlinedButton(
                           onPressed: () {
                             if (_formKey2.currentState!.validate()) {
-                              addCategory(newCategory.text);
+                              addCategory(newCategory.text, newImgUrl.text);
                             }
                           },
                           child: Text("Add New"),
@@ -446,34 +496,37 @@ class _MenuViewState extends State<MenuView> {
                 ),
                 Expanded(
                   flex: 2,
-                  child: FirestoreListView<PostItems>(
-                    pageSize: 4,
-                    query: queryPost2,
-                    itemBuilder: (context, snapshot) {
-                      final post = snapshot.data();
-                      return Card(
-                        child: TextButton(
-                          onPressed: () {
-                            updateItemDetails(
-                              post.prodId,
-                              post.categoryId,
-                              post.description,
-                              post.imgUrl,
-                              post.name,
-                              post.price,
-                            );
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(post.name),
-                              const Icon(Icons.navigate_next),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                  child: FutureBuilder<List<Product>>(
+                      future: futureProductData,
+                      builder: (context, snapshot) {
+                        List<Product>? data = snapshot.data;
+                        return ListView.builder(
+                            itemCount: data!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Card(
+                                child: TextButton(
+                                  onPressed: () {
+                                    updateItemDetails(
+                                      data[index].ProductId,
+                                      data[index].CategoryId,
+                                      data[index].Description,
+                                      data[index].ImgUrl,
+                                      data[index].Name,
+                                      data[index].Price,
+                                    );
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(data[index].Name),
+                                      const Icon(Icons.navigate_next),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            });
+                      }),
                 ),
                 Divider(),
                 Expanded(
@@ -485,7 +538,7 @@ class _MenuViewState extends State<MenuView> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text("Category Name: " + selectedCategory),
+                          Text("Category Name: " + Name),
                           TextFormField(
                             decoration: InputDecoration(hintText: "Item Name"),
                             controller: newName,
@@ -534,8 +587,12 @@ class _MenuViewState extends State<MenuView> {
                           OutlinedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                addItm(newDescription.text, newImgUrl.text,
-                                    newName.text, newPrice.text);
+                                addProduct(
+                                    CategoryId,
+                                    newName.text,
+                                    newDescription.text,
+                                    double.parse(newPrice.text),
+                                    imgUrl);
                               }
                             },
                             child: Text("Add New"),
@@ -552,203 +609,7 @@ class _MenuViewState extends State<MenuView> {
           Expanded(
             flex: 5,
             child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Item Code: " + prodId,
-                  ),
-                ),
-                Divider(),
-                SizedBox(
-                  height: 20,
-                ),
-                SizedBox(
-                  height: 200,
-                  //child: Image(image: NetworkImage(imgUrl)),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        "Item Name:",
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SizedBox(),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(name),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: TextField(
-                            controller: updateName,
-                            decoration: InputDecoration(
-                                hintText: "New Value",
-                                border: OutlineInputBorder()),
-                          ),
-                        ),
-                        Expanded(
-                          child: SizedBox(),
-                        ),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              update(prodId, "name", updateName.text);
-                            },
-                            child: Text("Update"),
-                          ),
-                        ),
-                        Expanded(
-                          child: SizedBox(),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Divider(),
-                Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        "Description:",
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SizedBox(),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(description),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: TextField(
-                            controller: updateDescription,
-                            decoration: InputDecoration(
-                                hintText: "New Value",
-                                border: OutlineInputBorder()),
-                          ),
-                        ),
-                        Expanded(
-                          child: SizedBox(),
-                        ),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              update(prodId, "description",
-                                  updateDescription.text);
-                            },
-                            child: Text("Update"),
-                          ),
-                        ),
-                        Expanded(
-                          child: SizedBox(),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Divider(),
-                Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        "Price:",
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SizedBox(),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(price),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: TextField(
-                            controller: updatePrice,
-                            decoration: InputDecoration(
-                                hintText: "New Value",
-                                border: OutlineInputBorder()),
-                          ),
-                        ),
-                        Expanded(
-                          child: SizedBox(),
-                        ),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              update(prodId, "price", updatePrice.text);
-                            },
-                            child: Text("Update"),
-                          ),
-                        ),
-                        Expanded(
-                          child: SizedBox(),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Divider(),
-                Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        "Category Name:",
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SizedBox(),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(selectedCategory),
-                        ),
-                        Expanded(
-                          child: SizedBox(),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Divider(),
-                Expanded(
-                    child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      onPressed: () {
-                        deleteItem();
-                      },
-                      child: Text("Delete Item")),
-                )),
-                Expanded(
-                  child: SizedBox(
-                    child: Image.network("https://d21f-2402-d000-a400-52ba-fc34-b963-a9c3-6e76.ngrok.io/static/images/pexels-wellington-cunha-2027394.jpg"),
-                  ),
-                ),
-              ],
+              children: [SizedBox()],
             ),
           ),
         ],
@@ -757,24 +618,23 @@ class _MenuViewState extends State<MenuView> {
   }
 
   Future selectFile() async {
-
     var image = await ImagePicker().pickImage(source: ImageSource.gallery);
     Uint8List data = await image!.readAsBytes();
     List<int> list = data.cast();
 
-    var request = http.MultipartRequest('POST', Uri.parse('https://d21f-2402-d000-a400-52ba-fc34-b963-a9c3-6e76.ngrok.io/uploads'));
-    request.files.add(await http.MultipartFile.fromBytes('image', list, filename: '123.png'));
+    var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            'https://d21f-2402-d000-a400-52ba-fc34-b963-a9c3-6e76.ngrok.io/uploads'));
+    request.files.add(
+        await http.MultipartFile.fromBytes('image', list, filename: '123.png'));
 
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
-
   }
-
-
 }

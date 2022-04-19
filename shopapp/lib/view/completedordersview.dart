@@ -1,8 +1,54 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterfire_ui/firestore.dart';
-import 'package:shopapp/model/post.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+class Data {
+  final int OrderId;
+  final int UserId;
+  final int EmployeeId;
+  final String OrderStatus;
+  final bool IsDelivered;
+  final bool IsProcessed;
+  final bool IsReceived;
+  final Timestamp DateTime;
+  final double TotalPrice;
+  final double Longitude;
+  final double Latitude;
+
+  Data(
+      {required this.OrderId,
+      required this.UserId,
+      required this.EmployeeId,
+      required this.OrderStatus,
+      required this.IsDelivered,
+      required this.IsProcessed,
+      required this.IsReceived,
+      required this.DateTime,
+      required this.TotalPrice,
+      required this.Longitude,
+      required this.Latitude});
+
+  factory Data.fromJson(Map<String, dynamic> json) {
+    return Data(
+      OrderId: json['OrderId'],
+      UserId: json['UserId'],
+      EmployeeId: json['OrderId'],
+      OrderStatus: json['OrderStatus'],
+      IsDelivered: json['IsDelivered'],
+      IsProcessed: json['IsProcessed'],
+      IsReceived: json['IsReceived'],
+      DateTime: json['DateTime'],
+      TotalPrice: json['TotalPrice'],
+      Longitude: json['Longitude'],
+      Latitude: json['Latitude'],
+    );
+  }
+}
 
 class CompletedOrdersView extends StatefulWidget {
   const CompletedOrdersView({Key? key}) : super(key: key);
@@ -12,54 +58,66 @@ class CompletedOrdersView extends StatefulWidget {
 }
 
 class _CompletedOrdersViewState extends State<CompletedOrdersView> {
-  final queryPost = FirebaseFirestore.instance
-      .collection('orders')
-      .where('orderStatus', isEqualTo: "Delivered")
-      .withConverter<Post>(
-        fromFirestore: (snapshot, _) => Post.fromJson(snapshot.data()!),
-        toFirestore: (orderID, _) => orderID.toJson(),
-      );
+  Future<List<Data>> fetchData() async {
+    final response = await http
+        .get(Uri.parse('https://localhost:7072/orders/getcompletedorders'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((data) => new Data.fromJson(data)).toList();
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
+  }
 
-  String customerName = "null";
-  String customerPhone = "null";
-  String orderId = "null";
-  String orderStatus = "null";
-  Timestamp orderTime = Timestamp.now();
-  String totalPrice = "null";
-  double latitude = 0.0;
-  double longitude = 0.0;
-  bool isDelivered = false;
-  bool isProcessed = false;
-  bool isReceived = false;
-  String deliveryPerson = "null";
+  int OrderId = 0;
+  int UserId = 0;
+  int EmployeeId = 0;
+  String OrderStatus = "null";
+  bool IsDelivered = false;
+  bool IsProcessed = false;
+  bool IsReceived = false;
+  Timestamp DateTime = Timestamp.now();
+  double TotalPrice = 0.0;
+  double Longitude = 0.0;
+  double Latitude = 0.0;
 
-  void updateOrderDetails(
-      customerName,
-      customerPhone,
-      orderId,
-      orderStatus,
-      orderTime,
-      totalPrice,
-      latitude,
-      longitude,
-      isDelivered,
-      isProcessed,
-      isReceived,
-      deliveryPerson) {
+  void updateOrderDetails(OrderId, UserId, EmployeeId, OrderStatus, IsDelivered,
+      IsProcessed, IsReceived, DateTime, TotalPrice, Longitude, Latitude) {
     setState(() {
-      this.customerName = customerName;
-      this.customerPhone = customerPhone;
-      this.orderId = orderId;
-      this.orderStatus = orderStatus;
-      this.orderTime = orderTime;
-      this.totalPrice = totalPrice;
-      this.latitude = latitude;
-      this.longitude = longitude;
-      this.isDelivered = isDelivered;
-      this.isProcessed = isProcessed;
-      this.isReceived = isReceived;
-      this.deliveryPerson = deliveryPerson;
+      this.OrderId = OrderId;
+      this.UserId = UserId;
+      this.EmployeeId = EmployeeId;
+      this.OrderStatus = OrderStatus;
+      this.IsDelivered = IsDelivered;
+      this.IsProcessed = IsProcessed;
+      this.IsReceived = IsReceived;
+      this.DateTime = DateTime;
+      this.TotalPrice = TotalPrice;
+      this.Longitude = Longitude;
+      this.Latitude = Latitude;
     });
+  }
+
+  var deliveryPerson = 'null';
+  int selectedOrderId = 0;
+
+  void setDeliveryPerson(String name) {
+    setState(() {
+      deliveryPerson = name;
+    });
+  }
+
+  void setSelectedOrderId(int id) {
+    setState(() {
+      selectedOrderId = id;
+    });
+  }
+
+  late Future<List<Data>> futureData;
+  @override
+  void initState() {
+    super.initState();
+    futureData = fetchData();
   }
 
   @override
@@ -67,40 +125,114 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
     return Row(
       children: [
         Expanded(
-          flex: 2,
-          child: FirestoreListView<Post>(
-              pageSize: 4,
-              query: queryPost,
-              itemBuilder: (context, snapshot) {
-                final post = snapshot.data();
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    child: TextButton(
-                      onPressed: () {
-                        updateOrderDetails(
-                          post.customerName,
-                          post.customerPhone,
-                          post.orderId,
-                          post.orderStatus,
-                          post.orderTime,
-                          post.totalPrice,
-                          post.customerLocation.latitude,
-                          post.customerLocation.longitude,
-                          post.isDelivered,
-                          post.isProcessed,
-                          post.isReceived,
-                          post.deliveryPerson,
-                        );
-                      },
-                      child: ListTile(
-                        title: Text('Order No: ' + post.orderId),
-                        subtitle: Text(post.orderTime.toDate().toString()),
-                      ),
+          child: Column(
+            children: [
+              const Expanded(
+                  child: SizedBox(
+                width: double.infinity,
+                child: Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "New Orders",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                );
-              }),
+                ),
+              )),
+              Expanded(
+                flex: 11,
+                child: FutureBuilder<List<Data>>(
+                    future: futureData,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<Data>? data = snapshot.data;
+                        return ListView.builder(
+                            itemCount: data!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  updateOrderDetails(
+                                      data[index].OrderId,
+                                      data[index].UserId,
+                                      data[index].EmployeeId,
+                                      data[index].OrderStatus,
+                                      data[index].IsDelivered,
+                                      data[index].IsProcessed,
+                                      data[index].IsReceived,
+                                      data[index].DateTime,
+                                      data[index].TotalPrice,
+                                      data[index].Longitude,
+                                      data[index].Latitude);
+                                  setSelectedOrderId(data[index].OrderId);
+                                },
+                                child: ListTile(
+                                  title: Text('Order No: ' +
+                                      data[index].OrderId.toString()),
+                                  subtitle: Text(
+                                      data[index].DateTime.toDate().toString()),
+                                ),
+                              );
+                            });
+                      } else if (snapshot.hasError) {
+                        return Text("${snapshot.error}");
+                      }
+                      // By default show a loading spinner.
+                      return CircularProgressIndicator();
+                    }),
+              ),
+            ],
+          ),
+        ),
+        const VerticalDivider(
+          color: Colors.black26,
+        ),
+        Expanded(
+          child: Column(
+            children: [
+              const Expanded(
+                  child: SizedBox(
+                width: double.infinity,
+                child: Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "Delivery Person",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              )),
+              Expanded(
+                flex: 11,
+                child: SizedBox(),
+                // child: FirestoreListView<PostEmployee>(
+                //     pageSize: 4,
+                //     query: queryPost2,
+                //     itemBuilder: (context, snapshot) {
+                //       final post = snapshot.data();
+                //       return Padding(
+                //         padding: const EdgeInsets.all(8.0),
+                //         child: Card(
+                //           child: TextButton(
+                //             onPressed: () {
+                //               setDeliveryPerson(post.name);
+                //             },
+                //             child: ListTile(
+                //               title: Text(post.name),
+                //               subtitle: Text(post.phone),
+                //             ),
+                //           ),
+                //         ),
+                //       );
+                //     }),
+              ),
+            ],
+          ),
         ),
         const VerticalDivider(
           color: Colors.black26,
@@ -127,34 +259,15 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
                 Expanded(
                   child: Row(
                     children: [
+                      const Expanded(flex: 2, child: Text("Customer Name")),
+                      const Expanded(child: Text(":")),
                       Expanded(
-                        child: Row(
-                          children: [
-                            const Expanded(
-                                flex: 5, child: Text("Customer Name")),
-                            const Expanded(child: Text(":")),
-                            Expanded(
-                              flex: 8,
-                              child: Text(
-                                customerName,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            const Expanded(
-                                flex: 6, child: Text("Delivery Person NIC")),
-                            const Expanded(child: Text(":")),
-                            Expanded(
-                              flex: 6,
-                              child: Text(
-                                deliveryPerson,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
+                        flex: 10,
+                        child: Text(
+                          UserId.toString(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],
@@ -168,7 +281,7 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
                       Expanded(
                         flex: 10,
                         child: Text(
-                          orderTime.toDate().toString(),
+                          DateTime.toDate().toString(),
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -205,7 +318,7 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
                       Expanded(
                         flex: 10,
                         child: Text(
-                          totalPrice,
+                          TotalPrice.toString(),
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -222,7 +335,7 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
                       Expanded(
                         flex: 10,
                         child: Text(
-                          latitude.toString() + " , " + longitude.toString(),
+                          Latitude.toString() + " , " + Longitude.toString(),
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -244,16 +357,27 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
                               infoWindow:
                                   const InfoWindow(title: 'Delivery Location'),
                               icon: BitmapDescriptor.defaultMarker,
-                              position: LatLng(latitude, longitude),
+                              position: LatLng(Latitude, Longitude),
                             )
                           },
                           initialCameraPosition: CameraPosition(
-                              target: LatLng(latitude, longitude), zoom: 16),
+                              target: LatLng(Latitude, Longitude), zoom: 16),
                         ),
                       ]),
                     )),
-                const Expanded(
-                  child: SizedBox(),
+                Expanded(
+                  child: Text("\nDelivery Person: " + deliveryPerson),
+                ),
+                Expanded(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        //updateOrders(selectedOrderId, deliveryPerson);
+                      },
+                      child: const Text('ASSIGN'),
+                    ),
+                  ),
                 ),
               ],
             ),
