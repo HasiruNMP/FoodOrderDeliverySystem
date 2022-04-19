@@ -17,10 +17,10 @@ namespace FODS_API.Models
         public bool IsDelivered { get; set; }
         public bool IsProcessed { get; set; }
         public bool IsReceived { get; set; }
-        public TimeSpan Time { get; set; }
         public double TotalPrice { get; set; }
         public double Longitude { get; set; }
         public double Latitude { get; set; }
+        public DateTime datetime { get; set; }
 
         public virtual Employee Employee { get; set; } = null!;
         public virtual User User { get; set; } = null!;

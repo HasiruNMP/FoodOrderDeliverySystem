@@ -4,12 +4,16 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
+import '../api/apiservice.dart';
+import '../controller/orderitemsmodel.dart';
+import '../controller/productmodel.dart';
+
 class TrackOrderView extends StatefulWidget {
   String orderId;
-  String time;
+  String dateTime;
   double totalPrice;
 
-  TrackOrderView(this.orderId, this.time, this.totalPrice);
+  TrackOrderView(this.orderId, this.dateTime, this.totalPrice);
 
   @override
   _TrackOrderViewState createState() => _TrackOrderViewState();
@@ -40,11 +44,17 @@ class _TrackOrderViewState extends State<TrackOrderView> {
     });
   }
 
+  late Future<List<productModel>> productDetails;
+  late Future<List<orderItemModel>> orderItems;
+  @override
+  void initState() {
+    super.initState();
+    orderItems = APIService.getOrderItems(1);
+  }
+
   late String status;
   @override
   Widget build(BuildContext context) {
-    CollectionReference orders =
-        FirebaseFirestore.instance.collection('orders');
     return Scaffold(
         appBar: AppBar(
           title: Text('Track Your Order'),
@@ -56,7 +66,7 @@ class _TrackOrderViewState extends State<TrackOrderView> {
               child: ListView(
                 children: [
                   Container(
-                    height: 200,
+                    height: MediaQuery.of(context).size.height / 3,
                     child: Card(
                       child: Column(
                         children: [
@@ -67,7 +77,7 @@ class _TrackOrderViewState extends State<TrackOrderView> {
                           Container(
                             margin: EdgeInsets.only(top: 5),
                             alignment: Alignment.centerLeft,
-                            child: Text(widget.time),
+                            child: Text(widget.dateTime),
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 5),
@@ -78,58 +88,111 @@ class _TrackOrderViewState extends State<TrackOrderView> {
                                   fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                           ),
-                          StreamBuilder(
-                              stream: FirebaseFirestore.instance
-                                  .collection('orders')
-                                  .doc('ID16')
-                                  .collection('OrderItems')
-                                  .snapshots(),
-                              builder: (context,
-                                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                                if (snapshot.hasError) {
-                                  return Text("Something went wrong");
-                                }
+                          Container(
+                            height: MediaQuery.of(context).size.height / 5,
+                            child: FutureBuilder<List<orderItemModel>>(
+                                future: orderItems,
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasError) {
+                                    return Text("Something went wrong");
+                                  }
 
-                                // if (snapshot.connectionState ==
-                                //         ConnectionState.waiting ||
-                                //     !snapshot.hasData) {
-                                //   return CircularProgressIndicator();
-                                // }
+                                  // if (snapshot.connectionState ==
+                                  //         ConnectionState.waiting ||
+                                  //     !snapshot.hasData) {
+                                  //   return CircularProgressIndicator();
+                                  // }
 
-                                if (snapshot.hasData) {
-                                  print('has data in Order Items');
+                                  if (snapshot.hasData) {
+                                    print('has data in Order Items');
+                                    List<orderItemModel>? data = snapshot.data;
+
+                                    return ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        itemCount: data!.length,
+                                        itemBuilder: (BuildContext context, i) {
+                                          productDetails =
+                                              APIService.getProductDetails(
+                                                  data[i].productId);
+
+                                          return FutureBuilder<
+                                                  List<productModel>>(
+                                              future: productDetails,
+                                              builder: (context, snapshot) {
+                                                if (snapshot.hasError) {
+                                                  return Text(
+                                                      "Something went wrong");
+                                                }
+
+                                                // if (snapshot.connectionState ==
+                                                //         ConnectionState.waiting ||
+                                                //     !snapshot.hasData) {
+                                                //   return CircularProgressIndicator();
+                                                // }
+
+                                                if (snapshot.hasData) {
+                                                  print(
+                                                      'has data in Order Items');
+                                                  List<productModel>? product =
+                                                      snapshot.data;
+
+                                                  return Container(
+                                                    margin: EdgeInsets.only(
+                                                        top: 10),
+                                                    child: ListView.builder(
+                                                        scrollDirection:
+                                                            Axis.vertical,
+                                                        shrinkWrap: true,
+                                                        itemCount:
+                                                            product!.length,
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                index) {
+                                                          return Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child: Text(
+                                                                    '${product[index].name}  '),
+                                                              ),
+                                                              Expanded(
+                                                                child: Text(
+                                                                  ' ${data[i].quantity} x ${product[index].price}',
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .right,
+                                                                ),
+                                                              ),
+                                                              Expanded(
+                                                                child: Text(
+                                                                    '=${product[index].price * data[i].quantity}'),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        }),
+                                                  );
+                                                }
+                                                return Container(
+                                                  height: 100,
+                                                  width: 100,
+                                                  child: const Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                );
+                                              });
+                                        });
+                                  }
                                   return Container(
-                                    color: Colors.grey.shade200,
                                     height: 100,
-                                    child: Container(
-                                      margin: EdgeInsets.only(top: 10),
-                                      child: ListView.builder(
-                                          scrollDirection: Axis.vertical,
-                                          shrinkWrap: true,
-                                          itemCount: snapshot.data!.docs.length,
-                                          itemBuilder:
-                                              (BuildContext context, index) {
-                                            QueryDocumentSnapshot orderItems =
-                                                snapshot.data!.docs[index];
-
-                                            return Column(
-                                              children: [
-                                                Text(
-                                                    '${orderItems['name']} x ${orderItems['quantity']} =${orderItems['price']}'),
-                                              ],
-                                            );
-                                          }),
+                                    width: 100,
+                                    child: const Center(
+                                      child: CircularProgressIndicator(),
                                     ),
                                   );
-                                }
-                                return Container(
-                                  height: 100,
-                                  width: 100,
-                                  child: const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              }),
+                                }),
+                          ),
                           Container(
                             margin: EdgeInsets.only(top: 5, right: 58),
                             alignment: Alignment.centerRight,

@@ -1,14 +1,16 @@
 class orderModel {
   late int orderId;
-  late String time;
+  late String dateTime;
   late double totalPrice;
 
   orderModel(
-      {required this.orderId, required this.time, required this.totalPrice});
+      {required this.orderId,
+      required this.dateTime,
+      required this.totalPrice});
   factory orderModel.fromJson(Map<String, dynamic> json) {
     return orderModel(
       orderId: json['OrderId'],
-      time: json['Time'],
+      dateTime: json['datetime'],
       totalPrice: json['TotalPrice'],
     );
   }

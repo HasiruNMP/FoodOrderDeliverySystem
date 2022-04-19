@@ -7,9 +7,6 @@ import 'package:customerapp/global.dart' as global;
 import '../api/apiservice.dart';
 import 'ordertrackingview.dart';
 
-late int pendingOrderslength = 0;
-late int deliveredOrderslength = 0;
-
 class Orderview extends StatefulWidget {
   const Orderview({Key? key}) : super(key: key);
 
@@ -25,11 +22,13 @@ class _OrderviewState extends State<Orderview> {
   //   CheckDeliveredOrders();
   // }
 
-  late Future<List<orderModel>> futureData;
+  late Future<List<orderModel>> newOrders;
+  late Future<List<orderModel>> completedOrders;
   @override
   void initState() {
     super.initState();
-    futureData = APIService.getNewOrders(1);
+    newOrders = APIService.getNewOrders(1);
+    completedOrders = APIService.getCompletedOrders(1);
   }
 
   // void CheckPendingOrders() async {
@@ -83,7 +82,7 @@ class _OrderviewState extends State<Orderview> {
         children: [
           Container(
             child: FutureBuilder<List<orderModel>>(
-                future: futureData,
+                future: newOrders,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Text("Something went wrong");
@@ -109,16 +108,14 @@ class _OrderviewState extends State<Orderview> {
                           ),
                         ),
                         Container(
-                          height: deliveredOrderslength == 0
-                              ? MediaQuery.of(context).size.height - 280
-                              : 290,
+                          height: MediaQuery.of(context).size.height / 3,
                           child: ListView.builder(
                               scrollDirection: Axis.vertical,
                               shrinkWrap: true,
                               itemCount: data!.length,
                               itemBuilder: (BuildContext context, index) {
-                                // Timestamp orderTime =
-                                //     orders['orderTime'];
+                                DateTime orderTime =
+                                    DateTime.parse(data[index].dateTime);
                                 return Card(
                                   color: Colors.grey[200],
                                   child: Container(
@@ -133,7 +130,8 @@ class _OrderviewState extends State<Orderview> {
                                                     'Order No: ${data[index].orderId.toString()}')),
                                             Expanded(
                                               flex: 1,
-                                              child: Text(data[index].time),
+                                              child: Text(
+                                                  (timeago.format(orderTime))),
                                             ),
                                           ],
                                         ),
@@ -201,7 +199,9 @@ class _OrderviewState extends State<Orderview> {
                                                           data[index]
                                                               .orderId
                                                               .toString(),
-                                                          data[index].time,
+                                                          data[index]
+                                                              .dateTime
+                                                              .toString(),
                                                           data[index]
                                                               .totalPrice,
                                                         ),
@@ -235,14 +235,9 @@ class _OrderviewState extends State<Orderview> {
                 }),
           ),
           Container(
-            child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('orders')
-                    .where('customerPhone', isEqualTo: global.phoneNo)
-                    .where('orderStatus', isEqualTo: 'Recieved')
-                    .orderBy('orderid', descending: true)
-                    .snapshots(),
-                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            child: FutureBuilder<List<orderModel>>(
+                future: completedOrders,
+                builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Text("Something went wrong");
                   }
@@ -253,108 +248,98 @@ class _OrderviewState extends State<Orderview> {
                   // }
 
                   if (snapshot.hasData) {
+                    List<orderModel>? data = snapshot.data;
                     print('has data in orders');
-                    return deliveredOrderslength != 0
-                        ? Column(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(
-                                    top: 10, left: 5, bottom: 5),
-                                alignment: Alignment.topLeft,
-                                child: const Text(
-                                  'Past Orders',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                              Container(
-                                height: pendingOrderslength == 0
-                                    ? MediaQuery.of(context).size.height - 280
-                                    : 270,
-                                child: ListView.builder(
-                                    scrollDirection: Axis.vertical,
-                                    shrinkWrap: true,
-                                    itemCount: snapshot.data!.docs.length,
-                                    itemBuilder: (BuildContext context, index) {
-                                      QueryDocumentSnapshot orders =
-                                          snapshot.data!.docs[index];
-
-                                      Timestamp orderTime = orders['orderTime'];
-                                      return Card(
-                                        color: Colors.grey[200],
-                                        child: Container(
-                                          margin: const EdgeInsets.all(20),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                      flex: 2,
-                                                      child: Text(
-                                                          'Order No: ${orders['orderid']}')),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Text(timeago.format(
-                                                        orderTime.toDate())),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Text(
-                                                        'Rs. ${orders['totalPrice']}'),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Container(
-                                                      margin:
-                                                          const EdgeInsets.all(
-                                                              15),
-                                                      child: TextButton(
-                                                        style: TextButton
-                                                            .styleFrom(
-                                                          primary: Colors.white,
-                                                          backgroundColor:
-                                                              Colors.blue,
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        0.0),
-                                                          ),
-                                                        ),
-                                                        onPressed: () {
-                                                          // Navigator.push<void>(
-                                                          //   context,
-                                                          //   MaterialPageRoute<
-                                                          //       void>(
-                                                          //     builder: (BuildContext
-                                                          //             context) =>
-                                                          //         TrackOrderView(
-                                                          //             orders[
-                                                          //                 'orderid']),
-                                                          //   ),
-                                                          // );
-                                                        },
-                                                        child:
-                                                            const Text('View'),
-                                                      ),
+                    return Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(top: 10, left: 5, bottom: 5),
+                          alignment: Alignment.topLeft,
+                          child: const Text(
+                            'Past Orders',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        Container(
+                          height: 290,
+                          child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: data!.length,
+                              itemBuilder: (BuildContext context, index) {
+                                DateTime orderTime =
+                                    DateTime.parse(data[index].dateTime);
+                                return Card(
+                                  color: Colors.grey[200],
+                                  child: Container(
+                                    margin: const EdgeInsets.all(20),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                                flex: 2,
+                                                child: Text(
+                                                    'Order No: ${data[index].orderId.toString()}')),
+                                            Expanded(
+                                              flex: 1,
+                                              child: Text(
+                                                  (timeago.format(orderTime))),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 1,
+                                              child: Text(
+                                                  'Rs. ${data[index].totalPrice.toString()}'),
+                                            ),
+                                            Expanded(
+                                              flex: 1,
+                                              child: Container(
+                                                margin:
+                                                    const EdgeInsets.all(15),
+                                                child: TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    primary: Colors.white,
+                                                    backgroundColor:
+                                                        Colors.blue,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              0.0),
                                                     ),
                                                   ),
-                                                ],
+                                                  onPressed: () {
+                                                    // Navigator.push<void>(
+                                                    //   context,
+                                                    //   MaterialPageRoute<
+                                                    //       void>(
+                                                    //     builder: (BuildContext
+                                                    //             context) =>
+                                                    //         TrackOrderView(
+                                                    //             orders[
+                                                    //                 'orderid']),
+                                                    //   ),
+                                                    // );
+                                                  },
+                                                  child: const Text('View'),
+                                                ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                      );
-                                    }),
-                              ),
-                            ],
-                          )
-                        : Container();
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ],
+                    );
                   }
                   return Center(
                     child: Container(
