@@ -112,18 +112,29 @@ class APIService {
     }
   }
 
-  // static Future getProductDetails(int productId) async {
-  //   http.Response response = await http.get(Uri.parse(
-  //       'https://10.0.2.2:7072/orders/getproductdetails?productId=$productId'));
-  //
-  //   if (response.statusCode == 200) {
-  //     print(response.statusCode);
-  //     String data = response.body;
-  //     print(data);
-  //     return jsonDecode(data);
-  //   } else {
-  //     print(response.statusCode);
-  //     print(response.reasonPhrase);
-  //   }
-  // }
+  static Future updateOrderStatus(int orderId, String orderStatus) async {
+    var headers = {'Content-Type': 'application/json'};
+    var request = http.Request(
+      'PUT',
+      Uri.parse(
+          'https://10.0.2.2:7072/orders/updateorderstatus?orderId=$orderId&orderStatus=$orderStatus'),
+    );
+    request.body = json.encode({
+      "OrderId": orderId,
+      "OrderStatus": orderStatus,
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+      print(await response.stream.bytesToString());
+      return true;
+    } else {
+      print(response.statusCode);
+      print(response.reasonPhrase);
+      return false;
+    }
+  }
 }

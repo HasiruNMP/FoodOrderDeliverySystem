@@ -398,14 +398,7 @@ class _OrderviewState extends State<Orderview> {
         ),
       ),
       onPressed: () async {
-        await FirebaseFirestore.instance
-            .collection("orders")
-            .doc(orderId)
-            .update({
-              "orderStatus": 'Recieved',
-            })
-            .then((value) => print("Status Updated Successfully!"))
-            .catchError((error) => print("Failed: $error"));
+        await APIService.updateOrderStatus(int.parse(orderId), 'completed');
 
         Navigator.pop(context);
         // CheckPendingOrders();

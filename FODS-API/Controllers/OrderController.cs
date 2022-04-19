@@ -18,7 +18,7 @@ namespace FODS_API.Controllers
         [HttpGet, Route("getneworderslist")]
         public JsonResult getNewOrders(int userId)
         {
-            string query = @"SELECT * FROM [dbo].[ORDERS] WHERE UserId='" + userId + "' AND OrderStatus='pending'";
+            string query = @"SELECT * FROM [dbo].[ORDERS] WHERE UserId='" + userId + "' AND OrderStatus='pending' OR OrderStatus='new'";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("FODSDB");
             SqlDataReader myReader;
@@ -99,6 +99,26 @@ namespace FODS_API.Controllers
                 }
             }
             return new JsonResult(table);
+        }
+
+        [HttpPut, Route("updateorderstatus")]
+        public JsonResult updateOrderStatus(int orderId,String orderStatus)
+        {
+            string query = @"UPDATE dbo.ORDERS SET OrderStatus='" + orderStatus + "' WHERE OrderId='"+orderId+"' ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("FODSDB");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                }
+            }
+            return new JsonResult("Updated Successfully!");
         }
 
     }
