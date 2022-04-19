@@ -314,17 +314,23 @@ class _OrderviewState extends State<Orderview> {
                                                     ),
                                                   ),
                                                   onPressed: () {
-                                                    // Navigator.push<void>(
-                                                    //   context,
-                                                    //   MaterialPageRoute<
-                                                    //       void>(
-                                                    //     builder: (BuildContext
-                                                    //             context) =>
-                                                    //         TrackOrderView(
-                                                    //             orders[
-                                                    //                 'orderid']),
-                                                    //   ),
-                                                    // );
+                                                    Navigator.push<void>(
+                                                      context,
+                                                      MaterialPageRoute<void>(
+                                                        builder: (BuildContext
+                                                                context) =>
+                                                            TrackOrderView(
+                                                          data[index]
+                                                              .orderId
+                                                              .toString(),
+                                                          data[index]
+                                                              .dateTime
+                                                              .toString(),
+                                                          data[index]
+                                                              .totalPrice,
+                                                        ),
+                                                      ),
+                                                    );
                                                   },
                                                   child: const Text('View'),
                                                 ),

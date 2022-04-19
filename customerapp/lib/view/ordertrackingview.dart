@@ -49,7 +49,7 @@ class _TrackOrderViewState extends State<TrackOrderView> {
   @override
   void initState() {
     super.initState();
-    orderItems = APIService.getOrderItems(1);
+    orderItems = APIService.getOrderItems(int.parse(widget.orderId));
   }
 
   late String status;
