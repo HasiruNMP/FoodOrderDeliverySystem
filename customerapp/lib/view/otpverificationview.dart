@@ -221,10 +221,7 @@ class _OtpSetupState extends State<OtpSetup> {
                       child: TextButton(
                         style: TextButton.styleFrom(
                           primary: Colors.white,
-                          backgroundColor: Color(0XFFD8352C),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              side: BorderSide(color: Colors.red)),
+                          backgroundColor: Colors.blue,
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
@@ -363,7 +360,7 @@ class _OtpSetupState extends State<OtpSetup> {
                         'RESEND OTP',
                         style: TextStyle(
                           fontSize: 15.0,
-                          color: Color(0XFFD8352C),
+                          color: Colors.blue,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -389,10 +386,7 @@ class _OtpSetupState extends State<OtpSetup> {
                   child: TextButton(
                     style: TextButton.styleFrom(
                       primary: Colors.white,
-                      backgroundColor: Color(0XFFD8352C),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          side: BorderSide(color: Colors.red)),
+                      backgroundColor: Colors.blue,
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {

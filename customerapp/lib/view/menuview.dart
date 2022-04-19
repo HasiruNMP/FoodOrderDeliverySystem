@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:customerapp/global.dart' as global;
+import '../api/apiservice.dart';
 import 'categoryview.dart';
 
 class MenuView extends StatefulWidget {
@@ -13,14 +14,27 @@ class MenuView extends StatefulWidget {
 
 class _MenuViewState extends State<MenuView> {
   late String phonNo;
+  var user;
+  int userId = 0;
   @override
   void initState() {
     super.initState();
+
     FirebaseAuth auth = FirebaseAuth.instance;
     if (auth.currentUser != null) {
       phonNo = auth.currentUser!.phoneNumber!;
       print(phonNo);
+      global.phoneNo = phonNo;
+      print(global.phoneNo);
     }
+    getUserId();
+  }
+
+  Future<void> getUserId() async {
+    user = await APIService.getUserDetails(global.phoneNo);
+    userId = user[0]["UserId"];
+    global.userId = userId;
+    print(global.userId);
   }
 
   @override

@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customerapp/controller/usermodel.dart';
 import 'package:customerapp/view/homeview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../api/apiservice.dart';
 
 class userRegister extends StatefulWidget {
   @override
@@ -23,21 +26,38 @@ class _userRegister extends State<userRegister> {
     }
   }
 
-  void addUserData() {
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(phonNo.toString())
-        .set({
-          "fname": _fnameController.text,
-          "lname": _lnameController.text,
-          "name": '${_fnameController.text} ${_lnameController.text}',
-          "mobileNo": phonNo,
-        })
-        .then(
-          (value) => print('Data Added Succesfully'),
-        )
-        .catchError((error) => print("Failed: $error"));
+  userModel user = userModel(
+    firstName: '',
+    lastName: '',
+    phone: '',
+    userId: 0,
+  );
+
+  Future<void> addUserData() async {
+    user.firstName = _fnameController.text;
+    user.lastName = _lnameController.text;
+    user.phone = phonNo;
+    bool saveResponse = await APIService.adduser(user);
+    saveResponse == true
+        ? Navigator.pushNamedAndRemoveUntil(context, 'home', (route) => false)
+        : showAlertDialog(context);
   }
+
+  // void addUserData() {
+  //   FirebaseFirestore.instance
+  //       .collection("users")
+  //       .doc(phonNo.toString())
+  //       .set({
+  //         "fname": _fnameController.text,
+  //         "lname": _lnameController.text,
+  //         "name": '${_fnameController.text} ${_lnameController.text}',
+  //         "mobileNo": phonNo,
+  //       })
+  //       .then(
+  //         (value) => print('Data Added Succesfully'),
+  //       )
+  //       .catchError((error) => print("Failed: $error"));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -131,8 +151,6 @@ class _userRegister extends State<userRegister> {
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   addUserData();
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, 'home', (route) => false);
                 } else {
                   return null;
                 }
@@ -144,4 +162,29 @@ class _userRegister extends State<userRegister> {
       ),
     );
   }
+}
+
+showAlertDialog(BuildContext context) {
+  // set up the button
+  Widget okButton = FlatButton(
+    child: Text("OK"),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Alert Box"),
+    content: Text('Something Wrong'),
+    actions: [
+      okButton,
+    ],
+  );
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }
