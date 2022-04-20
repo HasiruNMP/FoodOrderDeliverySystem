@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 import '../api/apiservice.dart';
 import '../model/orderitemsmodel.dart';
+import '../model/postEmployee.dart';
 import '../model/productmodel.dart';
 
 class Data {
@@ -120,11 +121,13 @@ class _NewOrdersViewState extends State<NewOrdersView> {
   late Future<List<productModel>> productDetails;
   late Future<List<orderItemModel>> orderItems;
   late Future<List<Data>> futureData;
+  late Future<List<PostEmployee>> futureEmployeeData;
   @override
   void initState() {
     super.initState();
     futureData = fetchData();
     orderItems = APIService.getOrderItems(0);
+    futureEmployeeData = APIService.getDeliveryEmployees();
   }
 
   var user;
@@ -193,15 +196,19 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                                       data[index].Longitude,
                                       data[index].Latitude);
                                   callUserDetailsApi();
-                                  orderItems = APIService.getOrderItems(1);
+                                  orderItems =
+                                      APIService.getOrderItems(OrderId);
                                   setSelectedOrderId(data[index].OrderId);
                                 },
-                                child: ListTile(
-                                  title: Text('Order No: ' +
-                                      data[index].OrderId.toString()),
-                                  subtitle: Text(
-                                      DateTime.parse(data[index].DateTime)
-                                          .toString()),
+                                child: Card(
+                                  elevation: 2,
+                                  child: ListTile(
+                                    title: Text('Order No: ' +
+                                        data[index].OrderId.toString()),
+                                    subtitle: Text(
+                                        DateTime.parse(data[index].DateTime)
+                                            .toString()),
+                                  ),
                                 ),
                               );
                             });
@@ -238,27 +245,61 @@ class _NewOrdersViewState extends State<NewOrdersView> {
               )),
               Expanded(
                 flex: 11,
-                child: SizedBox(),
-                // child: FirestoreListView<PostEmployee>(
-                //     pageSize: 4,
-                //     query: queryPost2,
-                //     itemBuilder: (context, snapshot) {
-                //       final post = snapshot.data();
-                //       return Padding(
-                //         padding: const EdgeInsets.all(8.0),
-                //         child: Card(
-                //           child: TextButton(
-                //             onPressed: () {
-                //               setDeliveryPerson(post.name);
-                //             },
-                //             child: ListTile(
-                //               title: Text(post.name),
-                //               subtitle: Text(post.phone),
-                //             ),
-                //           ),
-                //         ),
-                //       );
-                //     }),
+                child: FutureBuilder<List<PostEmployee>>(
+                    future: futureEmployeeData,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Text("Something went wrong");
+                      }
+                      //
+                      // if (snapshot.connectionState == ConnectionState.waiting ||
+                      //     !snapshot.hasData) {
+                      //   return CircularProgressIndicator();
+                      // }
+
+                      if (snapshot.hasData) {
+                        List<PostEmployee>? data = snapshot.data;
+                        return ListView.builder(
+                            itemCount: data!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Card(
+                                child: TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      deliveryPerson = data[index].name;
+                                      EmployeeId = data[index].employeeId;
+                                    });
+                                    // updateItemDetails(
+                                    //   data[index].ProductId,
+                                    //   data[index].CategoryId,
+                                    //   data[index].Description,
+                                    //   data[index].ImgUrl,
+                                    //   data[index].Name,
+                                    //   data[index].Price,
+                                    // );
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(data[index].name),
+                                      const Icon(Icons.navigate_next),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            });
+                      }
+                      return Center(
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      );
+                    }),
               ),
             ],
           ),
@@ -537,8 +578,36 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        //updateOrders(selectedOrderId, deliveryPerson);
+                      onPressed: () async {
+                        if (deliveryPerson != 'null') {
+                          var updateStatus =
+                              await APIService.updateOrderStatusNdelivery(
+                                  OrderId, EmployeeId);
+                          if (updateStatus == 0) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                backgroundColor: Colors.blue,
+                                content: Text('Assigned Successfully!'),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text('Failed to assigned!'),
+                              ),
+                            );
+                          }
+
+                          // updateOrders(selectedOrderId, deliveryPerson);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              backgroundColor: Colors.red,
+                              content: Text(' Please select a Delivery Person'),
+                            ),
+                          );
+                        }
                       },
                       child: const Text('ASSIGN'),
                     ),

@@ -12,6 +12,8 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:http/http.dart' as http;
 
+import '../model/postEmployee.dart';
+
 class Category {
   final int CategoryId;
   final String Name;
@@ -261,6 +263,11 @@ class _MenuViewState extends State<MenuView> {
       // If the server did return a 200 OK response,
       // then parse the JSON.
       //return Data.fromJson(jsonDecode(response.body));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Category Added!'),
+        ),
+      );
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
@@ -278,6 +285,11 @@ class _MenuViewState extends State<MenuView> {
       // If the server did return a 200 OK response,
       // then parse the JSON.
       //return Data.fromJson(jsonDecode(response.body));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Category Deleted!'),
+        ),
+      );
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
@@ -306,6 +318,11 @@ class _MenuViewState extends State<MenuView> {
           'Content-Type': 'application/json; charset=UTF-8',
         });
     if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Item Added!'),
+        ),
+      );
       // If the server did return a 200 OK response,
       // then parse the JSON.
       //return Data.fromJson(jsonDecode(response.body));
@@ -354,6 +371,7 @@ class _MenuViewState extends State<MenuView> {
 
   late Future<List<Category>> futureCategoryData;
   late Future<List<Product>> futureProductData;
+
   @override
   void initState() {
     super.initState();

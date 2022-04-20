@@ -1,7 +1,7 @@
 // ignore_for_file: file_names
 
 class PostEmployee {
-  final String employeeId;
+  final int employeeId;
   final String phone;
   final String name;
   final String nic;
@@ -19,16 +19,17 @@ class PostEmployee {
     required this.license,
   });
 
-  PostEmployee.fromJson(Map<String, Object?> json)
-      : this(
-          employeeId: json['employeeId'] as String,
-          phone: json['phone'] as String,
-          name: json['name'] as String,
-          nic: json['nic'] as String,
-          department: json['department'] as String,
-          username: json['username'] as String,
-          license: json['license'] as String,
-        );
+  factory PostEmployee.fromJson(Map<String, dynamic> json) {
+    return PostEmployee(
+      employeeId: json['EmployeeId'],
+      phone: json['Phone'],
+      name: json['Name'],
+      nic: json['NIC'],
+      department: json['Department'],
+      username: json['Username'],
+      license: json['License'],
+    );
+  }
 
   Map<String, Object?> toJson() => {
         'employeeId': employeeId,
@@ -40,3 +41,17 @@ class PostEmployee {
         'license': license,
       };
 }
+
+// PostEmployee.fromJson(Map<String, Object?> json)
+// : this(
+// employeeId: json['EmployeeId'] as String,
+//     phone: json['Phone'] as String,
+//     name: json['Name'] as String,
+//     nic: json['NIC'] as String,
+//     department: json['Department'] as String,
+//     username: json['Username'] as String,
+//     license: json['License'] as String,
+// );
+//
+
+// }

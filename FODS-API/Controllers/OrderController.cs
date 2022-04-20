@@ -124,7 +124,7 @@ namespace FODS_API.Controllers
         [HttpGet, Route("fetchneworders")]
         public JsonResult fetchNewOrders()
         {
-            string query = @"SELECT * FROM [dbo].[ORDERS] WHERE OrderStatus='new'";
+            string query = @"SELECT * FROM [dbo].[ORDERS] WHERE IsProcessed =0";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("FODSDB");
             SqlDataReader myReader;
@@ -141,6 +141,70 @@ namespace FODS_API.Controllers
             }
             return new JsonResult(table);
         }
+
+        [HttpGet, Route("getprocessedorders")]
+        public JsonResult GetProcessedOrders()
+        {
+            string query = @"SELECT * FROM [dbo].[ORDERS] WHERE IsProcessed != 0 AND (IsReceived = 0 OR IsDelivered = 0)";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("FODSDB");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+            return new JsonResult(table);
+        }
+
+        [HttpGet, Route("getcompletedorders")]
+        public JsonResult GetCompletedOrders()
+        {
+            string query = @"SELECT * FROM [dbo].[ORDERS] WHERE IsReceived != 0 AND IsDelivered != 0";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("FODSDB");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+            return new JsonResult(table);
+        }
+
+        [HttpPut, Route("putprocessed")]
+        public JsonResult PutProcessed(int orderId,int empId)
+        {
+            string query = @"UPDATE [dbo].[ORDERS] SET IsProcessed =1, EmployeeId='"+empId+"',  OrderStatus='processed' WHERE OrderId =" + orderId;
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("FODSDB");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+            return new JsonResult("Updated Successfully");
+        }
+
 
     }
 }

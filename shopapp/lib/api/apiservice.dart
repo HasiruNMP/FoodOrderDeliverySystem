@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../model/orderitemsmodel.dart';
+import '../model/postEmployee.dart';
 import '../model/productmodel.dart';
 
 class APIService {
@@ -43,6 +44,41 @@ class APIService {
           .toList();
     } else {
       throw Exception('Unexpected error occured!');
+    }
+  }
+
+  static Future<List<PostEmployee>> getDeliveryEmployees() async {
+    final response = await http.get(Uri.parse(
+        'https://localhost:7072/employee/getDeliveryEmployeesDetails'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse
+          .map((data) => new PostEmployee.fromJson(data))
+          .toList();
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
+  }
+
+  static Future updateOrderStatusNdelivery(int orderId, int empId) async {
+    var headers = {'Content-Type': 'application/json'};
+    var request = http.Request(
+      'PUT',
+      Uri.parse(
+          'https://localhost:7072/orders/putprocessed?orderId=$orderId&empId=$empId'),
+    );
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+      print(await response.stream.bytesToString());
+      return 0;
+    } else {
+      print(response.statusCode);
+      print(response.reasonPhrase);
+      return -1;
     }
   }
 }
