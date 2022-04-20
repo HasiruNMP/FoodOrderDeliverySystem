@@ -86,12 +86,21 @@ namespace FODS_API.Controllers
         public JsonResult DeleteCategory(int CategoryId)
         {
             string query = @"delete from dbo.CATEGORIES where CategoryId=" + CategoryId;
+            string query1= @"delete from dbo.PRODUCTS where CategoryId=" + CategoryId;
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("FODSDB");
             SqlDataReader myReader;
             using (SqlConnection myCon = new SqlConnection(sqlDataSource))
             {
                 myCon.Open();
+
+                using (SqlCommand myCommand = new SqlCommand(query1, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+          
+                }
 
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {

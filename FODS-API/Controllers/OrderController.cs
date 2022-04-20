@@ -121,5 +121,26 @@ namespace FODS_API.Controllers
             return new JsonResult("Updated Successfully!");
         }
 
+        [HttpGet, Route("fetchneworders")]
+        public JsonResult fetchNewOrders()
+        {
+            string query = @"SELECT * FROM [dbo].[ORDERS] WHERE OrderStatus='new'";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("FODSDB");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+            return new JsonResult(table);
+        }
+
     }
 }

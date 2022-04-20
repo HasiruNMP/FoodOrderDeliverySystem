@@ -7,6 +7,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../api/apiservice.dart';
+import '../model/orderitemsmodel.dart';
+import '../model/productmodel.dart';
+
 class Data {
   final int OrderId;
   final int UserId;
@@ -15,7 +19,7 @@ class Data {
   final bool IsDelivered;
   final bool IsProcessed;
   final bool IsReceived;
-  final Timestamp DateTime;
+  final String DateTime;
   final double TotalPrice;
   final double Longitude;
   final double Latitude;
@@ -42,7 +46,7 @@ class Data {
       IsDelivered: json['IsDelivered'],
       IsProcessed: json['IsProcessed'],
       IsReceived: json['IsReceived'],
-      DateTime: json['DateTime'],
+      DateTime: json['datetime'],
       TotalPrice: json['TotalPrice'],
       Longitude: json['Longitude'],
       Latitude: json['Latitude'],
@@ -59,8 +63,8 @@ class NewOrdersView extends StatefulWidget {
 
 class _NewOrdersViewState extends State<NewOrdersView> {
   Future<List<Data>> fetchData() async {
-    final response =
-        await http.get(Uri.parse('https://localhost:7072/orders/getneworders'));
+    final response = await http
+        .get(Uri.parse('https://localhost:7072/orders/fetchneworders'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => new Data.fromJson(data)).toList();
@@ -76,7 +80,7 @@ class _NewOrdersViewState extends State<NewOrdersView> {
   bool IsDelivered = false;
   bool IsProcessed = false;
   bool IsReceived = false;
-  Timestamp DateTime = Timestamp.now();
+  String dateTime = '';
   double TotalPrice = 0.0;
   double Longitude = 0.0;
   double Latitude = 0.0;
@@ -91,7 +95,7 @@ class _NewOrdersViewState extends State<NewOrdersView> {
       this.IsDelivered = IsDelivered;
       this.IsProcessed = IsProcessed;
       this.IsReceived = IsReceived;
-      this.DateTime = DateTime;
+      this.dateTime = DateTime;
       this.TotalPrice = TotalPrice;
       this.Longitude = Longitude;
       this.Latitude = Latitude;
@@ -113,11 +117,32 @@ class _NewOrdersViewState extends State<NewOrdersView> {
     });
   }
 
+  late Future<List<productModel>> productDetails;
+  late Future<List<orderItemModel>> orderItems;
   late Future<List<Data>> futureData;
   @override
   void initState() {
     super.initState();
     futureData = fetchData();
+    orderItems = APIService.getOrderItems(0);
+  }
+
+  var user;
+  String fname = '';
+  String lname = '';
+  String phoneNo = '';
+
+  Future<void> callUserDetailsApi() async {
+    user = await APIService.getUserDetailsbyUserId(UserId);
+    updateUi(user);
+  }
+
+  void updateUi(dynamic user) {
+    setState(() {
+      fname = user[0]["FirstName"];
+      lname = user[0]["LastName"];
+      phoneNo = user[0]["Phone"];
+    });
   }
 
   @override
@@ -162,17 +187,21 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                                       data[index].IsDelivered,
                                       data[index].IsProcessed,
                                       data[index].IsReceived,
-                                      data[index].DateTime,
+                                      DateTime.parse(data[index].DateTime)
+                                          .toString(),
                                       data[index].TotalPrice,
                                       data[index].Longitude,
                                       data[index].Latitude);
+                                  callUserDetailsApi();
+                                  orderItems = APIService.getOrderItems(1);
                                   setSelectedOrderId(data[index].OrderId);
                                 },
                                 child: ListTile(
                                   title: Text('Order No: ' +
                                       data[index].OrderId.toString()),
                                   subtitle: Text(
-                                      data[index].DateTime.toDate().toString()),
+                                      DateTime.parse(data[index].DateTime)
+                                          .toString()),
                                 ),
                               );
                             });
@@ -264,7 +293,24 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                       Expanded(
                         flex: 10,
                         child: Text(
-                          UserId.toString(),
+                          '$fname $lname',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Expanded(flex: 2, child: Text("Phone No")),
+                      const Expanded(child: Text(":")),
+                      Expanded(
+                        flex: 10,
+                        child: Text(
+                          '$phoneNo',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -281,7 +327,7 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                       Expanded(
                         flex: 10,
                         child: Text(
-                          DateTime.toDate().toString(),
+                          dateTime,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -291,23 +337,142 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                   ),
                 ),
                 Expanded(
-                  flex: 4,
-                  child: Container(
-                    alignment: Alignment.centerLeft,
-                    child: ListView(
-                      children: const [
-                        TextField(
-                          keyboardType: TextInputType.multiline,
-                          minLines: 10,
-                          maxLines: null,
-                          decoration: InputDecoration(
-                            labelText: 'Order Items',
-                            //errorText: 'Error message',
-                            border: OutlineInputBorder(),
+                  flex: 3,
+                  child: Row(
+                    children: [
+                      Expanded(flex: 2, child: Text("Order Items")),
+                      Expanded(child: Text(":")),
+                      Expanded(
+                        flex: 10,
+                        child: Card(
+                          child: Container(
+                            height: MediaQuery.of(context).size.height / 5,
+                            child: FutureBuilder<List<orderItemModel>>(
+                                future: orderItems,
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasError) {
+                                    return Text("Something went wrong ");
+                                  }
+
+                                  // if (snapshot.connectionState ==
+                                  //         ConnectionState.waiting ||
+                                  //     !snapshot.hasData) {
+                                  //   return CircularProgressIndicator();
+                                  // }
+
+                                  if (snapshot.hasData) {
+                                    print('has data in Order Items');
+                                    List<orderItemModel>? data = snapshot.data;
+
+                                    return ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        itemCount: data!.length,
+                                        itemBuilder: (BuildContext context, i) {
+                                          productDetails =
+                                              APIService.getProductDetails(
+                                                  data[i].productId);
+
+                                          return FutureBuilder<
+                                                  List<productModel>>(
+                                              future: productDetails,
+                                              builder: (context, snapshot) {
+                                                if (snapshot.hasError) {
+                                                  return Text(
+                                                      "Something went wrong future 2");
+                                                }
+
+                                                // if (snapshot.connectionState ==
+                                                //         ConnectionState.waiting ||
+                                                //     !snapshot.hasData) {
+                                                //   return CircularProgressIndicator();
+                                                // }
+
+                                                if (snapshot.hasData) {
+                                                  print(
+                                                      'has data in Order Items');
+                                                  List<productModel>? product =
+                                                      snapshot.data;
+
+                                                  return Container(
+                                                    margin: EdgeInsets.only(
+                                                        top: 10),
+                                                    child: ListView.builder(
+                                                        scrollDirection:
+                                                            Axis.vertical,
+                                                        shrinkWrap: true,
+                                                        itemCount:
+                                                            product!.length,
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                index) {
+                                                          return Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child: Text(
+                                                                  '${product[index].name}  ',
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Expanded(
+                                                                child: Text(
+                                                                  ' ${data[i].quantity} x ${product[index].price}',
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .right,
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Expanded(
+                                                                child: Text(
+                                                                  '=${product[index].price * data[i].quantity}',
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        }),
+                                                  );
+                                                }
+                                                return Container(
+                                                  height: 100,
+                                                  width: 100,
+                                                  child: const Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                );
+                                              });
+                                        });
+                                  }
+                                  return Container(
+                                    height: 100,
+                                    width: 100,
+                                    child: const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                }),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(

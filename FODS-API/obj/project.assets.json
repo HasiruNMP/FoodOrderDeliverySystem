@@ -7074,19 +7074,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\vipar\\.nuget\\packages\\": {}
+    "C:\\Users\\PC\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\vipar\\Source\\Repos\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj",
+      "projectUniqueName": "D:\\github\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj",
       "projectName": "FODS-API",
-      "projectPath": "C:\\Users\\vipar\\Source\\Repos\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj",
-      "packagesPath": "C:\\Users\\vipar\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\vipar\\Source\\Repos\\FoodOrderDeliverySystem\\FODS-API\\obj\\",
+      "projectPath": "D:\\github\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj",
+      "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
+      "outputPath": "D:\\github\\FoodOrderDeliverySystem\\FODS-API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\vipar\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -7164,13 +7164,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200\\RuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file C:\\Users\\vipar\\Source\\Repos\\FoodOrderDeliverySystem\\FODS-API\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
-    }
-  ]
+  }
 }

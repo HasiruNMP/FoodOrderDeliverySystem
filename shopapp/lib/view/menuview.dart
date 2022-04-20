@@ -270,8 +270,7 @@ class _MenuViewState extends State<MenuView> {
 
   Future deleteCategory(int CategoryId) async {
     final response = await http.delete(
-        Uri.parse(
-            '  https://localhost:7072/api/Category?CategoryId=$CategoryId'),
+        Uri.parse('https://localhost:7072/api/Category?CategoryId=$CategoryId'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         });
@@ -398,38 +397,52 @@ class _MenuViewState extends State<MenuView> {
                 Expanded(
                   flex: 2,
                   child: FutureBuilder<List<Category>>(
-                    future: futureCategoryData,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<Category>? data = snapshot.data;
-                        return ListView.builder(
-                            itemCount: data!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  setCategoryId(data[index].CategoryId,
-                                      data[index].Name, data[index].ImgUrl);
-                                  updateItemDetails("null", "null", "null",
-                                      "null", "null", "null");
-                                  fetchProducts();
-                                },
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(data[index].Name),
-                                    const Icon(Icons.navigate_next),
-                                  ],
-                                ),
-                              );
-                            });
-                      } else if (snapshot.hasError) {
-                        return Text("${snapshot.error}");
-                      }
-                      // By default show a loading spinner.
-                      return CircularProgressIndicator();
-                    },
-                  ),
+                      future: futureCategoryData,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text("Something went wrong");
+                        }
+                        //
+                        // if (snapshot.connectionState == ConnectionState.waiting ||
+                        //     !snapshot.hasData) {
+                        //   return CircularProgressIndicator();
+                        // }
+
+                        if (snapshot.hasData) {
+                          List<Category>? data = snapshot.data;
+                          return ListView.builder(
+                              itemCount: data!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    print(data[index].CategoryId);
+                                    setCategoryId(data[index].CategoryId,
+                                        data[index].Name, data[index].ImgUrl);
+                                    updateItemDetails("null", "null", "null",
+                                        "null", "null", "null");
+                                    futureProductData = fetchProducts();
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(data[index].Name),
+                                      const Icon(Icons.navigate_next),
+                                    ],
+                                  ),
+                                );
+                              });
+                        }
+                        return Center(
+                          child: Container(
+                            height: 100,
+                            width: 100,
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        );
+                      }),
                 ),
                 Divider(),
                 Expanded(
@@ -460,7 +473,7 @@ class _MenuViewState extends State<MenuView> {
                         OutlinedButton(
                           onPressed: () {
                             if (_formKey2.currentState!.validate()) {
-                              addCategory(newCategory.text, newImgUrl.text);
+                              addCategory(newCategory.text, 'img.urllll');
                             }
                           },
                           child: Text("Add New"),
@@ -499,33 +512,53 @@ class _MenuViewState extends State<MenuView> {
                   child: FutureBuilder<List<Product>>(
                       future: futureProductData,
                       builder: (context, snapshot) {
-                        List<Product>? data = snapshot.data;
-                        return ListView.builder(
-                            itemCount: data!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Card(
-                                child: TextButton(
-                                  onPressed: () {
-                                    updateItemDetails(
-                                      data[index].ProductId,
-                                      data[index].CategoryId,
-                                      data[index].Description,
-                                      data[index].ImgUrl,
-                                      data[index].Name,
-                                      data[index].Price,
-                                    );
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(data[index].Name),
-                                      const Icon(Icons.navigate_next),
-                                    ],
+                        if (snapshot.hasError) {
+                          return Text("Something went wrong");
+                        }
+                        //
+                        // if (snapshot.connectionState == ConnectionState.waiting ||
+                        //     !snapshot.hasData) {
+                        //   return CircularProgressIndicator();
+                        // }
+
+                        if (snapshot.hasData) {
+                          List<Product>? data = snapshot.data;
+                          return ListView.builder(
+                              itemCount: data!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Card(
+                                  child: TextButton(
+                                    onPressed: () {
+                                      updateItemDetails(
+                                        data[index].ProductId,
+                                        data[index].CategoryId,
+                                        data[index].Description,
+                                        data[index].ImgUrl,
+                                        data[index].Name,
+                                        data[index].Price,
+                                      );
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(data[index].Name),
+                                        const Icon(Icons.navigate_next),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            });
+                                );
+                              });
+                        }
+                        return Center(
+                          child: Container(
+                            height: 100,
+                            width: 100,
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        );
                       }),
                 ),
                 Divider(),
@@ -592,7 +625,7 @@ class _MenuViewState extends State<MenuView> {
                                     newName.text,
                                     newDescription.text,
                                     double.parse(newPrice.text),
-                                    imgUrl);
+                                    'img.url');
                               }
                             },
                             child: Text("Add New"),
