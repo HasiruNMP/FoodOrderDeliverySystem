@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../model/deliverypersoninfo.dart';
 import '../model/orderitemsmodel.dart';
 import '../model/postEmployee.dart';
 import '../model/productmodel.dart';
@@ -79,6 +80,21 @@ class APIService {
       print(response.statusCode);
       print(response.reasonPhrase);
       return -1;
+    }
+  }
+
+  static Future getDeliveryInfo(int empId) async {
+    http.Response response = await http.get(Uri.parse(
+        'https://localhost:7072/employee/getemployeedetails?empId=$empId'));
+
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+      String data = response.body;
+      print(data);
+      return jsonDecode(data);
+    } else {
+      print(response.statusCode);
+      print(response.reasonPhrase);
     }
   }
 }

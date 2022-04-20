@@ -42,7 +42,7 @@ class Data {
     return Data(
       OrderId: json['OrderId'],
       UserId: json['UserId'],
-      EmployeeId: json['OrderId'],
+      EmployeeId: json['EmployeeId'],
       OrderStatus: json['OrderStatus'],
       IsDelivered: json['IsDelivered'],
       IsProcessed: json['IsProcessed'],
@@ -130,6 +130,7 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
     futureEmployeeData = APIService.getDeliveryEmployees();
   }
 
+  var deliveryInfo;
   var user;
   String fname = '';
   String lname = '';
@@ -162,7 +163,7 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
-                      "New Orders",
+                      "Pending Orders",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                       textAlign: TextAlign.center,
@@ -181,7 +182,7 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                             itemCount: data!.length,
                             itemBuilder: (BuildContext context, int index) {
                               return GestureDetector(
-                                onTap: () {
+                                onTap: () async {
                                   updateOrderDetails(
                                       data[index].OrderId,
                                       data[index].UserId,
@@ -199,6 +200,15 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                                   orderItems =
                                       APIService.getOrderItems(OrderId);
                                   setSelectedOrderId(data[index].OrderId);
+
+                                  print(data[index].EmployeeId);
+                                  deliveryInfo =
+                                      await APIService.getDeliveryInfo(
+                                          data[index].EmployeeId);
+                                  setState(() {
+                                    deliveryPerson = deliveryInfo[0]["Name"];
+                                  });
+                                  //  deliverPersonInfo(deliveryInfo);
                                 },
                                 child: Card(
                                   elevation: 2,
@@ -217,87 +227,6 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                       }
                       // By default show a loading spinner.
                       return CircularProgressIndicator();
-                    }),
-              ),
-            ],
-          ),
-        ),
-        const VerticalDivider(
-          color: Colors.black26,
-        ),
-        Expanded(
-          child: Column(
-            children: [
-              const Expanded(
-                  child: SizedBox(
-                width: double.infinity,
-                child: Card(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      "Delivery Person",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              )),
-              Expanded(
-                flex: 11,
-                child: FutureBuilder<List<PostEmployee>>(
-                    future: futureEmployeeData,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return Text("Something went wrong");
-                      }
-                      //
-                      // if (snapshot.connectionState == ConnectionState.waiting ||
-                      //     !snapshot.hasData) {
-                      //   return CircularProgressIndicator();
-                      // }
-
-                      if (snapshot.hasData) {
-                        List<PostEmployee>? data = snapshot.data;
-                        return ListView.builder(
-                            itemCount: data!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Card(
-                                child: TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      deliveryPerson = data[index].name;
-                                    });
-                                    // updateItemDetails(
-                                    //   data[index].ProductId,
-                                    //   data[index].CategoryId,
-                                    //   data[index].Description,
-                                    //   data[index].ImgUrl,
-                                    //   data[index].Name,
-                                    //   data[index].Price,
-                                    // );
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(data[index].name),
-                                      const Icon(Icons.navigate_next),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            });
-                      }
-                      return Center(
-                        child: Container(
-                          height: 100,
-                          width: 100,
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                      );
                     }),
               ),
             ],
@@ -572,26 +501,6 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                     )),
                 Expanded(
                   child: Text("\nDelivery Person: " + deliveryPerson),
-                ),
-                Expanded(
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (deliveryPerson != 'null') {
-                          // updateOrders(selectedOrderId, deliveryPerson);
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              backgroundColor: Colors.red,
-                              content: Text(' Please select a Delivery Person'),
-                            ),
-                          );
-                        }
-                      },
-                      child: const Text('ASSIGN'),
-                    ),
-                  ),
                 ),
               ],
             ),
