@@ -64,9 +64,9 @@ namespace FODS_API.Controllers
         }
 
          [HttpPut,Route("putproductdetails")]
-        public JsonResult PutProductDetails(int ProductId,int CategoryId,string Name,string Description,float Price,string ImgUrl)
+        public JsonResult PutProductDetails(int ProductId,string Name,string Description,float Price,string ImgUrl)
         {
-            string query = @"UPDATE [dbo].[PRODUCTS] SET CategoryId = " + CategoryId + ",Name = '" + Name + "',Description = '" + Description + "',Price = " + Price + ",ImgUrl = '" + ImgUrl + "' WHERE ProductId =" + ProductId;
+            string query = @"UPDATE [dbo].[PRODUCTS] SET Name = '" + Name + "',Description = '" + Description + "',Price = " + Price + ",ImgUrl = '" + ImgUrl + "' WHERE ProductId =" + ProductId;
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("FODSDB");
             SqlDataReader myReader;

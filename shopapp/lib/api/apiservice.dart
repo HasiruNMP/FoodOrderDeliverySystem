@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-import '../model/deliverypersoninfo.dart';
 import '../model/orderitemsmodel.dart';
 import '../model/postEmployee.dart';
 import '../model/productmodel.dart';
@@ -95,6 +93,45 @@ class APIService {
     } else {
       print(response.statusCode);
       print(response.reasonPhrase);
+    }
+  }
+
+  static Future updateProductDetails(int prodId, String name,
+      String description, double price, String imgUrl) async {
+    var headers = {'Content-Type': 'application/json'};
+    var request = http.Request(
+      'PUT',
+      Uri.parse(
+          'https://localhost:7072/products/putproductdetails?ProductId=$prodId&Name=$name&Description=$description&Price=$price&ImgUrl=$imgUrl'),
+    );
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+      print(await response.stream.bytesToString());
+      return 0;
+    } else {
+      print(response.statusCode);
+      print(response.reasonPhrase);
+      return -1;
+    }
+  }
+
+  static Future deleteAccount(int prodId) async {
+    var request = http.Request('DELETE',
+        Uri.parse('https://localhost:7072/products?ProductId=$prodId'));
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      print('deleted');
+      return 0;
+    } else {
+      print(response.reasonPhrase);
+      return -1;
     }
   }
 }

@@ -42,7 +42,7 @@ class Data {
     return Data(
       OrderId: json['OrderId'],
       UserId: json['UserId'],
-      EmployeeId: json['OrderId'],
+      EmployeeId: json['EmployeeId'],
       OrderStatus: json['OrderStatus'],
       IsDelivered: json['IsDelivered'],
       IsProcessed: json['IsProcessed'],
