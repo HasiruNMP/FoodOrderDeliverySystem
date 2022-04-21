@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/firestore.dart';
+import 'package:shopapp/api/apiservice.dart';
 import 'package:shopapp/model/postCategory.dart';
 import 'package:shopapp/model/postEmployee.dart';
 import 'package:shopapp/view/homeview.dart';
@@ -147,17 +148,6 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
   String username = "null";
   String license = "null";
 
-  void updateEmployee(employeeId, phone, name, nic, username, license) {
-    setState(() {
-      this.employeeId = employeeId;
-      this.phone = phone;
-      this.name = name;
-      this.nic = nic;
-      this.username = username;
-      this.license;
-    });
-  }
-
   TextEditingController newLicense = TextEditingController();
   TextEditingController newNic = TextEditingController();
   TextEditingController newFirstName = TextEditingController();
@@ -171,91 +161,17 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
   TextEditingController updatePhone = TextEditingController();
   TextEditingController updateUsername = TextEditingController();
 
-  final queryPost = FirebaseFirestore.instance
-      .collection('employees')
-      .where('department', isEqualTo: "delivery")
-      .withConverter<PostEmployee>(
-        fromFirestore: (snapshot, _) => PostEmployee.fromJson(snapshot.data()!),
-        toFirestore: (nic, _) => nic.toJson(),
-      );
-
-  CollectionReference deliveryPersonConnect =
-      FirebaseFirestore.instance.collection('employees');
-  Future<void> addEmployee(newPhone, newName, newNic, newUsername, newLicense) {
-    return deliveryPersonConnect
-        .add({
-          'employeeId': "null",
-          'phone': newPhone,
-          'name': newName,
-          'nic': newNic,
-          'department': "delivery",
-          'username': newUsername,
-          'license': newLicense,
-        })
-        .then((value) => deliveryPersonConnect
-            .doc(value.id)
-            .update({'employeeId': value.id}))
-        .then(
-          (value) => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Delivery Person Added'),
-            ),
-          ),
-        )
-        .catchError(
-          (error) => ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to add: $error'),
-            ),
-          ),
-        );
-  }
-
-  void update(String id, String fieldName, String newValue) {
-    deliveryPersonConnect
-        .doc(id)
-        .update({
-          fieldName: newValue,
-        })
-        .then(
-          (value) => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Value Updated'),
-            ),
-          ),
-        )
-        .catchError(
-          (error) => ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to update: $error'),
-            ),
-          ),
-        );
-  }
-
-  void deleteEmployee() {
-    deliveryPersonConnect
-        .doc(employeeId)
-        .delete()
-        .then(
-          (value) => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Delivery Person Deleted'),
-            ),
-          ),
-        )
-        .catchError(
-          (error) => ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to delete: $error'),
-            ),
-          ),
-        );
+  late Future<List<PostEmployee>> futureEmployeeData;
+  @override
+  void initState() {
+    super.initState();
+    futureEmployeeData = APIService.getDeliveryEmployees();
   }
 
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
+    final _formKey2 = GlobalKey<FormState>();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -352,16 +268,44 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                             },
                           ),
                           OutlinedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                String fullName =
-                                    newFirstName.text + " " + newLastName.text;
-                                addEmployee(
-                                    newPhone.text,
-                                    fullName,
-                                    newNic.text,
-                                    newUsername.text,
-                                    newLicense.text);
+                                PostEmployee deliver = PostEmployee(
+                                    name: newFirstName.text +
+                                        " " +
+                                        newLastName.text,
+                                    phone: newPhone.text,
+                                    username: newUsername.text,
+                                    department: 'Delivery',
+                                    employeeId: 0,
+                                    license: newLicense.text,
+                                    nic: newNic.text);
+                                var addStatus =
+                                    await APIService.addDeliveryPerson(deliver);
+                                print(addStatus);
+                                if (addStatus == 0) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.blue,
+                                      content: Text('Data Added Successfully!'),
+                                    ),
+                                  );
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          DeliveryView(),
+                                    ),
+                                    (route) => false,
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content: Text('Failed to add data!'),
+                                    ),
+                                  );
+                                }
                               }
                             },
                             child: Text("Add New"),
@@ -380,48 +324,85 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
             child: Column(
               children: [
                 Expanded(
-                    child: SizedBox(
-                  width: double.infinity,
-                  child: Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        "Delivery Persons",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                )),
-                Expanded(
-                  flex: 11,
-                  child: FirestoreListView<PostEmployee>(
-                    pageSize: 4,
-                    query: queryPost,
-                    itemBuilder: (context, snapshot) {
-                      final post = snapshot.data();
-                      return Card(
-                        child: TextButton(
-                          onPressed: () {
-                            updateEmployee(
-                                post.employeeId,
-                                post.phone,
-                                post.name,
-                                post.nic,
-                                post.username,
-                                post.license);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(post.name),
-                              const Icon(Icons.navigate_next),
-                            ],
+                  child: Column(
+                    children: [
+                      const Expanded(
+                          child: SizedBox(
+                        width: double.infinity,
+                        child: Card(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              "Delivery Person",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ),
-                      );
-                    },
+                      )),
+                      Expanded(
+                        flex: 11,
+                        child: FutureBuilder<List<PostEmployee>>(
+                            future: futureEmployeeData,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return Text("Something went wrong");
+                              }
+                              //
+                              // if (snapshot.connectionState == ConnectionState.waiting ||
+                              //     !snapshot.hasData) {
+                              //   return CircularProgressIndicator();
+                              // }
+
+                              if (snapshot.hasData) {
+                                List<PostEmployee>? data = snapshot.data;
+                                return ListView.builder(
+                                    itemCount: data!.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Card(
+                                        child: TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              employeeId = data[index]
+                                                  .employeeId
+                                                  .toString();
+                                              updatePhone.text =
+                                                  data[index].phone;
+                                              updateName.text =
+                                                  data[index].name;
+                                              updateNic.text = data[index].nic;
+                                              updateUsername.text =
+                                                  data[index].username;
+                                              updateLicense.text =
+                                                  data[index].license;
+                                            });
+                                          },
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(data[index].name),
+                                              const Icon(Icons.navigate_next),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    });
+                              }
+                              return Center(
+                                child: Container(
+                                  height: 100,
+                                  width: 100,
+                                  child: const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ),
+                              );
+                            }),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -439,7 +420,7 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                     child: Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                        name,
+                        'Delivery Person Details',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                         textAlign: TextAlign.center,
@@ -448,7 +429,9 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                   ),
                 )),
                 Expanded(
-                    flex: 11,
+                  flex: 11,
+                  child: Form(
+                    key: _formKey2,
                     child: Column(
                       children: [
                         SizedBox(
@@ -456,25 +439,26 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                         ),
                         Column(
                           children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Employee ID:",
-                              ),
-                            ),
                             Row(
                               children: [
                                 Expanded(
-                                  child: SizedBox(),
+                                  flex: 1,
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      "Employee ID:",
+                                    ),
+                                  ),
                                 ),
                                 Expanded(
-                                  flex: 2,
+                                  flex: 1,
                                   child: Text(
                                     employeeId,
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
                                 Expanded(
+                                  flex: 9,
                                   child: SizedBox(),
                                 ),
                               ],
@@ -487,20 +471,16 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                         ),
                         Column(
                           children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Delivery Person Name:",
-                              ),
-                            ),
                             Row(
                               children: [
                                 Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(name),
+                                  flex: 3,
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      "Delivery Person Name:",
+                                    ),
+                                  ),
                                 ),
                                 Expanded(
                                   flex: 2,
@@ -512,41 +492,26 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                                   ),
                                 ),
                                 Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      update(
-                                          employeeId, "name", updateName.text);
-                                    },
-                                    child: Text("Update"),
-                                  ),
-                                ),
-                                Expanded(
+                                  flex: 3,
                                   child: SizedBox(),
                                 ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                         Divider(),
                         Column(
                           children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "NIC:",
-                              ),
-                            ),
                             Row(
                               children: [
                                 Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(nic),
+                                  flex: 3,
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      "NIC:",
+                                    ),
+                                  ),
                                 ),
                                 Expanded(
                                   flex: 2,
@@ -558,40 +523,26 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                                   ),
                                 ),
                                 Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      update(employeeId, "nic", updateNic.text);
-                                    },
-                                    child: Text("Update"),
-                                  ),
-                                ),
-                                Expanded(
+                                  flex: 3,
                                   child: SizedBox(),
                                 ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                         Divider(),
                         Column(
                           children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Phone:",
-                              ),
-                            ),
                             Row(
                               children: [
                                 Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(phone),
+                                  flex: 3,
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      "Phone:",
+                                    ),
+                                  ),
                                 ),
                                 Expanded(
                                   flex: 2,
@@ -603,41 +554,26 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                                   ),
                                 ),
                                 Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      update(employeeId, "phone",
-                                          updatePhone.text);
-                                    },
-                                    child: Text("Update"),
-                                  ),
-                                ),
-                                Expanded(
+                                  flex: 3,
                                   child: SizedBox(),
                                 ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                         Divider(),
                         Column(
                           children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Username:",
-                              ),
-                            ),
                             Row(
                               children: [
                                 Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(username),
+                                  flex: 3,
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      "Username:",
+                                    ),
+                                  ),
                                 ),
                                 Expanded(
                                   flex: 2,
@@ -649,41 +585,26 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                                   ),
                                 ),
                                 Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      update(employeeId, "username",
-                                          updateUsername.text);
-                                    },
-                                    child: Text("Update"),
-                                  ),
-                                ),
-                                Expanded(
+                                  flex: 3,
                                   child: SizedBox(),
                                 ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                         Divider(),
                         Column(
                           children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "License:",
-                              ),
-                            ),
                             Row(
                               children: [
                                 Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(license),
+                                  flex: 3,
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      "License:",
+                                    ),
+                                  ),
                                 ),
                                 Expanded(
                                   flex: 2,
@@ -695,38 +616,115 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                                   ),
                                 ),
                                 Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      update(employeeId, "license",
-                                          updateLicense.text);
-                                    },
-                                    child: Text("Update"),
-                                  ),
-                                ),
-                                Expanded(
+                                  flex: 3,
                                   child: SizedBox(),
                                 ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                         Divider(),
-                        SizedBox(
-                          width: double.infinity,
+                        Container(
+                          width: double.maxFinite,
                           child: ElevatedButton(
-                              onPressed: () {
-                                deleteEmployee();
-                              },
-                              child: Text("Delete Employee")),
+                            onPressed: () async {
+                              if (_formKey2.currentState!.validate()) {
+                                var updateStatus =
+                                    await APIService.updateDeliveryPerson(
+                                        int.parse(employeeId),
+                                        updateNic.text,
+                                        updateName.text,
+                                        updateLicense.text,
+                                        updatePhone.text,
+                                        updateUsername.text);
+                                if (updateStatus == 0) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.blue,
+                                      content: Text('Updated Successfully!'),
+                                    ),
+                                  );
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          DeliveryView(),
+                                    ),
+                                    (route) => false,
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content: Text('Failed to Update!'),
+                                    ),
+                                  );
+                                }
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    backgroundColor: Colors.red,
+                                    content: Text('Failed to update data!'),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Text("Update"),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 10),
+                          width: double.maxFinite,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (employeeId != 'null') {
+                                var deleteStatus =
+                                    await APIService.deleteEmployee(
+                                  int.parse(employeeId),
+                                );
+                                if (deleteStatus == 0) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.blue,
+                                      content: Text('Deleted Successfully!'),
+                                    ),
+                                  );
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          DeliveryView(),
+                                    ),
+                                    (route) => false,
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content: Text('Failed to Delete!'),
+                                    ),
+                                  );
+                                }
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    backgroundColor: Colors.red,
+                                    content: Text(
+                                        'Please select delivery person you want to delete!'),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Text("Delete Employee"),
+                          ),
                         ),
                         Expanded(
                           child: SizedBox(),
                         ),
                       ],
-                    )),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

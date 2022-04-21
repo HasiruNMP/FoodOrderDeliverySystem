@@ -279,6 +279,13 @@ class _MenuViewState extends State<MenuView> {
           content: Text('Category Added!'),
         ),
       );
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => MenuHomeView(),
+        ),
+        (route) => false,
+      );
     } else {
       throw Exception('Failed to add.');
     }
@@ -295,6 +302,13 @@ class _MenuViewState extends State<MenuView> {
         const SnackBar(
           content: Text('Category Deleted!'),
         ),
+      );
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => MenuHomeView(),
+        ),
+        (route) => false,
       );
     } else {
       throw Exception('Failed to add.');
@@ -325,6 +339,13 @@ class _MenuViewState extends State<MenuView> {
         const SnackBar(
           content: Text('Item Added!'),
         ),
+      );
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => MenuHomeView(),
+        ),
+        (route) => false,
       );
     } else {
       throw Exception('Failed to add.');
@@ -848,6 +869,14 @@ class _MenuViewState extends State<MenuView> {
                                     content: Text('Updated Successfully!'),
                                   ),
                                 );
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        MenuHomeView(),
+                                  ),
+                                  (route) => false,
+                                );
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -880,6 +909,14 @@ class _MenuViewState extends State<MenuView> {
                                     backgroundColor: Colors.blue,
                                     content: Text('Deleted Successfully!'),
                                   ),
+                                );
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        MenuHomeView(),
+                                  ),
+                                  (route) => false,
                                 );
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(

@@ -590,6 +590,14 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                                 content: Text('Assigned Successfully!'),
                               ),
                             );
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    NewOrdersView(),
+                              ),
+                              (route) => false,
+                            );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
