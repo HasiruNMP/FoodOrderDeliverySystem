@@ -7074,19 +7074,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\PC\\.nuget\\packages\\": {}
+    "C:\\Users\\Ravidu\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\github\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj",
+      "projectUniqueName": "D:\\ds\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj",
       "projectName": "FODS-API",
-      "projectPath": "D:\\github\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj",
-      "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-      "outputPath": "D:\\github\\FoodOrderDeliverySystem\\FODS-API\\obj\\",
+      "projectPath": "D:\\ds\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj",
+      "packagesPath": "C:\\Users\\Ravidu\\.nuget\\packages\\",
+      "outputPath": "D:\\ds\\FoodOrderDeliverySystem\\FODS-API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Ravidu\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
