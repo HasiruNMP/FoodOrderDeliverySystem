@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\ds\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj": {}
+    "C:\\Development\\DevProjects\\GitHub\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj": {}
   },
   "projects": {
-    "D:\\ds\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj": {
+    "C:\\Development\\DevProjects\\GitHub\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\ds\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj",
+        "projectUniqueName": "C:\\Development\\DevProjects\\GitHub\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj",
         "projectName": "FODS-API",
-        "projectPath": "D:\\ds\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj",
-        "packagesPath": "C:\\Users\\Ravidu\\.nuget\\packages\\",
-        "outputPath": "D:\\ds\\FoodOrderDeliverySystem\\FODS-API\\obj\\",
+        "projectPath": "C:\\Development\\DevProjects\\GitHub\\FoodOrderDeliverySystem\\FODS-API\\FODS-API.csproj",
+        "packagesPath": "C:\\Users\\Hasiru\\.nuget\\packages\\",
+        "outputPath": "C:\\Development\\DevProjects\\GitHub\\FoodOrderDeliverySystem\\FODS-API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Ravidu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Hasiru\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -89,7 +89,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.102\\RuntimeIdentifierGraph.json"
         }
       }
     }
