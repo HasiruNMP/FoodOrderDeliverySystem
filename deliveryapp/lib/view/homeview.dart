@@ -1,5 +1,6 @@
 import 'package:deliveryapp/view/historyview.dart';
 import 'package:deliveryapp/view/orderview.dart';
+import 'package:deliveryapp/view/pendingview.dart';
 import 'package:deliveryapp/view/profileview.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +27,7 @@ class _HomeViewState extends State<HomeView> {
   ];*/
   static final List<Widget> _widgetOptions = <Widget>[
     // PENDING ORDERS TAB
-    const OrderView(),
+    const PendingOrdersView(),
 
     // ORDER HISTORY TAB
     const HistoryView(),

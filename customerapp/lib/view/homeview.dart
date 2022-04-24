@@ -60,7 +60,7 @@ class _HomeViewState extends State<HomeView> {
             ),
           ],
           currentIndex: _selectedIndex,
-          selectedItemColor: Colors.amber[800],
+          //selectedItemColor: Colors.orange,
           onTap: _onItemTapped,
         ),
       );

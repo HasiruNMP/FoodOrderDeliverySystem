@@ -37,7 +37,7 @@ class _DeliverViewState extends State<DeliverView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.orderID),
+        title: Text("Order ID: ${widget.orderID}"),
       ),
       body: SafeArea(
         child: Padding(

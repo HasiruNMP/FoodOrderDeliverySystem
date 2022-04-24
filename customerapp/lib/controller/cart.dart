@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'item.dart';
 
 class Cart extends ChangeNotifier {
-  static List<Item> _items = [];
+  static List<Item> _items = [Item(id: 1, name: "Cheese Burger", price: 450.0, imgUrl: "", quantity: 1),Item(id: 3, name: "Pizza", price: 950.0, imgUrl: "", quantity: 1)];
   static int noificationCount = 0;
   static void EmptyCart() {
     _items.removeRange(0, _items.length);

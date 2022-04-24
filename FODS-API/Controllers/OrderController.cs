@@ -208,7 +208,7 @@ namespace FODS_API.Controllers
         [HttpGet, Route("getorderlist")]
         public JsonResult getOrderlist(int EmployeeId)
         {
-            string query = @"SELECT * FROM [dbo].[ORDERS] WHERE EmployeeId='" + EmployeeId + "' AND OrderStatus='pending'";
+            string query = @"SELECT * FROM [dbo].[OrderDetails] WHERE EmployeeId='" + EmployeeId + "' AND OrderStatus='pending'";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("FODSDB");
             SqlDataReader myReader;

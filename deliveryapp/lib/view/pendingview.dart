@@ -25,6 +25,7 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
     if (response.statusCode == 200) {
       var a = resJson as List;
       pendingorders = a.toList();
+      print(pendingorders);
       setState(() => loaded = true);
     }
     else {
@@ -34,7 +35,6 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
   @override
   void initState() {
     fetchpendingorders();
-    // TODO: implement initState
     super.initState();
   }
   @override
@@ -49,12 +49,27 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
           child: (pendingorders.length != 0)?
           ListView(
               children: List.generate(pendingorders.length, (index) {
-                return Card(
-                  child: ListTile(
-                    title: pendingorders[index]['OrderId'],
-                    subtitle: pendingorders[index]['datetime'],
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    child: TextButton(
+                      onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => DeliverView(
+                          pendingorders[index]['OrderId'].toString(),
+                          "${pendingorders[index]['FirstName']} ${pendingorders[index]['LastName']}",
+                          pendingorders[index]['Phone'],
+                          GeoPoint(pendingorders[index]['Latitude'],pendingorders[index]['Longitude']),
+                          pendingorders[index]['TotalPrice'].toString(),
+                        ),
+                        ),
+                        );
+                      },
+                      child: ListTile(
+                        title: Text(pendingorders[index]['OrderId'].toString()),
+                        subtitle: Text(pendingorders[index]['datetime'].toString()),
+                      ),
+                    ),
                   ),
-
                 );
               })
           ):

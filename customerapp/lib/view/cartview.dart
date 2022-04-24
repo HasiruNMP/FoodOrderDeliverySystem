@@ -71,11 +71,14 @@ class _CartViewState extends State<CartView> {
                                   child: Card(
                                     child: Row(
                                       children: [
-                                        Container(
-                                          margin: EdgeInsets.all(10),
-                                          child: Image.network(
-                                            Cart.basketItems[index].imgUrl,
-                                            width: 150,
+                                        AspectRatio(
+                                          aspectRatio: 1,
+                                          child: Container(
+                                            margin: EdgeInsets.all(10),
+                                            child: Image.network(
+                                              Cart.basketItems[index].imgUrl,
+                                              width: 150,
+                                            ),
                                           ),
                                         ),
                                         Column(
