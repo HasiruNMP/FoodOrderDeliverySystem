@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:customerapp/global.dart' as global;
 import '../api/apiservice.dart';
 import 'categoryview.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class MenuView extends StatefulWidget {
   const MenuView({Key? key}) : super(key: key);
@@ -35,6 +37,23 @@ class _MenuViewState extends State<MenuView> {
     userId = user[0]["UserId"];
     global.userId = userId;
     print(global.userId);
+  }
+  
+    List categories = [];
+  bool isLoaded = false;
+
+  Future<void> getCategories() async {
+    String url = "https://localhost:7072/api/Category/getcategories";
+    final response = await http.get(Uri.parse(url));
+    var resJson = json.decode(response.body);
+    if (response.statusCode == 200) {
+      var a = resJson as List;
+      categories = a.toList();
+      print(categories);
+      setState(() => isLoaded = true);
+    } else {
+      print(response.reasonPhrase);
+    }
   }
 
   @override
