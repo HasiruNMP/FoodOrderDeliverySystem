@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:advance_notification/advance_notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customerapp/controller/makepayment.dart';
 import 'package:customerapp/view/selectlocationview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:payhere_mobilesdk_flutter/payhere_mobilesdk_flutter.dart';
 
 import '../controller/cart.dart';
 import 'homeview.dart';
+import 'package:pay/pay.dart';
 
 class CheckoutView extends StatefulWidget {
   const CheckoutView({Key? key}) : super(key: key);
@@ -251,6 +253,7 @@ class _CheckoutViewState extends State<CheckoutView> {
     location = LatLng(position.latitude, position.longitude);
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -463,7 +466,8 @@ class _CheckoutViewState extends State<CheckoutView> {
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  getOrderId();
+                  //getOrderId();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => MakePayment(),),);
                 },
                 child: Text('PAY'),
               ),

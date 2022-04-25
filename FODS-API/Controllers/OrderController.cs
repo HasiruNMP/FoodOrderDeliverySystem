@@ -124,7 +124,7 @@ namespace FODS_API.Controllers
         [HttpGet, Route("fetchneworders")]
         public JsonResult fetchNewOrders()
         {
-            string query = @"SELECT * FROM [dbo].[ORDERS] WHERE IsProcessed =0";
+            string query = @"SELECT * FROM [dbo].[ORDERS] WHERE IsProcessed = 0";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("FODSDB");
             SqlDataReader myReader;
@@ -224,6 +224,49 @@ namespace FODS_API.Controllers
                 }
             }
             return new JsonResult(table);
+        }
+
+        [HttpPost, Route("placeneworder")]
+        public JsonResult placeOrder(int userId,double price, double lat, double lng, DateTime time)
+        {
+            string query = @$"INSERT INTO [dbo].[ORDERS] ([UserId],[EmployeeId],[OrderStatus],[IsDelivered],[IsProcessed],[IsReceived],[TotalPrice],[Longitude],[Latitude],[datetime]) 
+                VALUES ({userId}, 1, 'pending', 0, 0, 0, {price}, {lng}, {lat}, '{time}') SELECT SCOPE_IDENTITY()";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("FODSDB");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+            return new JsonResult(table);
+        }
+
+        [HttpPost, Route("neworder/additem")]
+        public JsonResult addOrderItem(int orderId, int prodId, int qt)
+        {
+            string query = @$"INSERT INTO [dbo].[ORDER_ITEMS] ([OrderId],[ProductId],[Quantity]) VALUES ({orderId},{prodId},{qt})";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("FODSDB");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+            return new JsonResult("Item Added!");
         }
 
 

@@ -47,6 +47,7 @@ dependencies:
   timeago: ^3.2.2
   firebase_auth: ^3.3.11
   http: ^0.13.4
+  pay: ^1.0.8
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -63,6 +64,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+  assets:
+    - assets/gpay.json
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
