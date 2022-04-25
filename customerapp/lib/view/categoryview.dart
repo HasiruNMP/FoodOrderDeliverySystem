@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customerapp/view/itemview.dart';
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../controller/cart.dart';
 import 'cartview.dart';
 
@@ -19,6 +20,30 @@ class _CategoryViewState extends State<CategoryView> {
   String categoryId;
   String name;
   _CategoryViewState(this.categoryId, this.name);
+  
+  List products = [];
+  bool isLoaded = false;
+
+  Future<void> getProductsByCategory(int categoryId) async {
+    String url =
+        "https://localhost:7072/products/getcategoryproducts?categoryId=" +
+            categoryId.toString();
+    final response = await http.get(Uri.parse(url));
+    var resJson = json.decode(response.body);
+    if (response.statusCode == 200) {
+      var a = resJson as List;
+      products = a.toList();
+      print(products);
+      setState(() => isLoaded = true);
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  @override
+  void initState() {
+    getProductsByCategory(1);
+  }
 
   @override
   Widget build(BuildContext context) {
