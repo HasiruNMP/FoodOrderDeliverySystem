@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      //   initialRoute: '/',
+         initialRoute: 'home',
       routes: {
         'otpsetup': (context) => OtpSetup(),
         'home': (context) => const HomeView(),
@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
         'track': (context) => TrackOrderView('0', '1', 3.4),
         'orders': (context) => Orderview(),
       },
-      home: ViewController(streamController.stream),
+      //home: ViewController(streamController.stream),
       debugShowCheckedModeBanner: false,
     );
   }
