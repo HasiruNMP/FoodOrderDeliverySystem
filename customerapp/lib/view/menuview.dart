@@ -43,7 +43,7 @@ class _MenuViewState extends State<MenuView> {
   bool isLoaded = false;
 
   Future<void> getCategories() async {
-    String url = "https://localhost:7072/api/Category/getcategories";
+    String url = "https://10.0.2.2:7072/api/Category/getcategories";
     final response = await http.get(Uri.parse(url));
     var resJson = json.decode(response.body);
     if (response.statusCode == 200) {

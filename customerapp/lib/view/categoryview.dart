@@ -26,7 +26,7 @@ class _CategoryViewState extends State<CategoryView> {
 
   Future<void> getProductsByCategory(int categoryId) async {
     String url =
-        "https://localhost:7072/products/getcategoryproducts?categoryId=" +
+        "https://10.0.2.2:7072/products/getcategoryproducts?categoryId=" +
             categoryId.toString();
     final response = await http.get(Uri.parse(url));
     var resJson = json.decode(response.body);
