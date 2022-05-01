@@ -216,7 +216,15 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                         return Text("${snapshot.error}");
                       }
                       // By default show a loading spinner.
-                      return CircularProgressIndicator();
+                      return Center(
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      );
                     }),
               ),
             ],

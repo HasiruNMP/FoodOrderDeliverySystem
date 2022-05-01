@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shopapp/firebase_options.dart';
 import 'package:shopapp/view/homeview.dart';
+import 'package:shopapp/view/loginview.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
             print("Error");
           }
           if (snapshot.connectionState == ConnectionState.done) {
-            return const HomeView();
+            return HomeView();
           }
           return const CircularProgressIndicator();
         },

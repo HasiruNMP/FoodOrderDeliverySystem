@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shopapp/view/deliveryview.dart';
 import 'package:shopapp/view/menuview.dart';
 import 'package:shopapp/view/ordersview.dart';
+
+import 'loginview.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -122,7 +125,80 @@ class SideBar extends StatelessWidget {
           ),
         ),
         const Divider(color: Colors.black),
+        AspectRatio(
+          aspectRatio: 1,
+          child: TextButton(
+            onPressed: () {
+              showAlertDialog1(context);
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(
+                  Icons.exit_to_app,
+                  color: Colors.black,
+                ),
+                Text(
+                  'Sign Out',
+                  style: TextStyle(color: Colors.black),
+                )
+              ],
+            ),
+          ),
+        ),
+        const Divider(color: Colors.black),
       ],
+    );
+  }
+
+  void logout() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
+  showAlertDialog1(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(
+        "YES",
+        style: TextStyle(
+          fontSize: 16.0,
+          color: Colors.red,
+        ),
+      ),
+      onPressed: () {
+        logout();
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => LoginView()),
+            (route) => false);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text(
+        "NO",
+        style: TextStyle(
+          fontSize: 16.0,
+          color: Colors.black,
+        ),
+      ),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop();
+      },
+    );
+    AlertDialog alert = AlertDialog(
+      title: Text("Log Out"),
+      content: Text("Are you sure you want to log out?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
