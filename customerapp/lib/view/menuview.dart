@@ -85,7 +85,7 @@ class _MenuViewState extends State<MenuView> {
                                   Container(
                                     height: 110,
                                     width: double.infinity,
-                                    child: Image.network(""),
+                                    child: Image.network("https://fodsfiles.herokuapp.com/static/images/Burger.jpg"),
                                   ),
                                   Container(
                                     child: Padding(

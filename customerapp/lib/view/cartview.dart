@@ -76,7 +76,8 @@ class _CartViewState extends State<CartView> {
                                           child: Container(
                                             margin: EdgeInsets.all(10),
                                             child: Image.network(
-                                              Cart.basketItems[index].imgUrl,
+                                              "https://fodsfiles.herokuapp.com/static/images/Burger.jpg",
+                                              //Cart.basketItems[index].imgUrl,
                                               width: 150,
                                             ),
                                           ),
