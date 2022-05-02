@@ -137,5 +137,26 @@ namespace FODS_API.Controllers
             return new JsonResult("Deleted Successfully!");
         }
 
+        [HttpGet, Route("getprofiledetails")]
+        public JsonResult getprofiledetails(int EmployeeId)
+        {
+            string query = @"SELECT * FROM [dbo].[EMPLOYEES] WHERE EmployeeId =1";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("FODSDB");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+            return new JsonResult(table);
+        }
+
     }
 }

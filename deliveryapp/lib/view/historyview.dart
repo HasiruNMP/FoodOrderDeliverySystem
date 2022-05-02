@@ -1,184 +1,82 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'dart:convert';
 
-class HistoryView extends StatefulWidget {
-  const HistoryView({Key? key}) : super(key: key);
+import 'package:deliveryapp/model/order.dart';
+import 'package:deliveryapp/view/deliverview.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart'as http;
+
+class CompletedOrdersView extends StatefulWidget {
+  const CompletedOrdersView({Key? key}) : super(key: key);
 
   @override
-  _HistoryViewState createState() => _HistoryViewState();
+  _CompletedOrdersViewState createState() => _CompletedOrdersViewState();
 }
 
-class _HistoryViewState extends State<HistoryView> {
+class _CompletedOrdersViewState extends State<CompletedOrdersView> {
+  var pendingorders = [];
+  bool loaded = false;
+  Future fetchpendingorders() async {
+    String url = "https://10.0.2.2:7072/orders/getcompletedorderlist?EmployeeId=1";
+
+    final response = await http.get(Uri.parse(url));
+    var resJson = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      var a = resJson as List;
+      pendingorders = a.toList();
+      print(pendingorders);
+      setState(() => loaded = true);
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
+  @override
+  void initState() {
+    fetchpendingorders();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       appBar: AppBar(
-        title: Text('Orders History'),
+        title: Text('Completed'),
       ),
       body: SafeArea(
-        child: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection("orders")
-              .where("deliveryPerson", isEqualTo: "jagathg")
-              .where("orderStatus", isEqualTo: "pending")
-              .snapshots(),
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return Text("Something went wrong");
-            }
-
-            if (snapshot.connectionState == ConnectionState.waiting ||
-                !snapshot.hasData) {
-              //  return CircularProgressIndicator();
-            }
-
-            if (snapshot.hasData) {
-              print('has data');
-              return Container(
-                height: 529,
-                color: Colors.white,
-                child: ListView.builder(
-
-                  itemCount: snapshot.data!.docs.length,
-
-                  // ignore: missing_return
-                  itemBuilder: (BuildContext context, index) {
-                    QueryDocumentSnapshot category =
-                    snapshot.data!.docs[index];
-                    GeoPoint cLocation=category['customerLocation'];
-                    String cName=category['customerName'];
-                    String cPhone=category['customerPhone'];
-                    String deliveryPerson=category['deliveryPerson'];
-                    //String itemCounts=category['itemCounts'];
-                    String itemID=category['orderid'];
-                    Timestamp orderTime=category['orderTime'];
-                    var time = DateTime.fromMicrosecondsSinceEpoch(orderTime.microsecondsSinceEpoch);
-                    String orderId=category['orderid'];
-                    String  totalPrice=category['totalPrice'];
-
-
-                    return ListTile(
-                      title: Card(
-                        child: TextButton(
-                          onPressed: () {
-                            // showDialog(
-                            //     context: context,
-                            //     builder: (context) {
-                            //       return const AlertDialog(
-                            //         title: Text('test'),
-                            //       );
-                            //     });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Text(
-                                          'OderID',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          ':',
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 4,
-                                        child: Text(
-                                          itemID.toString(),
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:  EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children:  [
-                                      Expanded(
-                                          flex: 2,
-                                          child: Text('Time',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black))),
-                                      Expanded(
-                                        child: Text(
-                                          ':',
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 4,
-                                        child: Text(
-                                          '${time.hour} : ${time.minute}',
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:  EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children:  [
-                                      Expanded(
-                                          flex: 2,
-                                          child: Text('Name',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black))),
-                                      Expanded(
-                                        child: Text(
-                                          ':',
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 4,
-                                        child: Text(
-                                          cName.toString(),
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+        child: (loaded)?
+        Container(
+          child: (pendingorders.length != 0)?
+          ListView(
+              children: List.generate(pendingorders.length, (index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    child: TextButton(
+                      onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => DeliverView(
+                          pendingorders[index]['OrderId'].toString(),
+                          "${pendingorders[index]['FirstName']} ${pendingorders[index]['LastName']}",
+                          pendingorders[index]['Phone'],
+                          GeoPoint(pendingorders[index]['Latitude'],pendingorders[index]['Longitude']),
+                          pendingorders[index]['TotalPrice'].toString(),
                         ),
+                        ),
+                        );
+                      },
+                      child: ListTile(
+                        title: Text(pendingorders[index]['OrderId'].toString()),
+                        subtitle: Text(pendingorders[index]['datetime'].toString()),
                       ),
-                    );
-                  },
-                ),
-              );
-            }
-
-            return const SizedBox(
-              height: 100,
-              width: 100,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          },
-        ),
+                    ),
+                  ),
+                );
+              })
+          ):
+          Center(child: Text("No Results"),),
+        ):
+        Center(child: Text("Press Search"),),
       ),
     );
   }
 }
-

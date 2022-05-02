@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:deliveryapp/auth/authservice.dart';
 import 'package:deliveryapp/view/homeview.dart';
 import 'package:deliveryapp/view/loginview.dart';
+import 'package:deliveryapp/view/orderview.dart';
 import 'package:deliveryapp/view/statemanager.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -45,7 +46,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.red,
         ),
-        home: StateManager(),
+        home: HomeView(),
       ),
     );
   }

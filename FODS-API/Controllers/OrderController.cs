@@ -227,7 +227,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpPost, Route("placeneworder")]
-        public JsonResult placeOrder(int userId,double price, double lat, double lng, DateTime time)
+        public JsonResult placeOrder(int userId, double price, double lat, double lng, DateTime time)
         {
             string query = @$"INSERT INTO [dbo].[ORDERS] ([UserId],[EmployeeId],[OrderStatus],[IsDelivered],[IsProcessed],[IsReceived],[TotalPrice],[Longitude],[Latitude],[datetime]) 
                 VALUES ({userId}, 1, 'pending', 0, 0, 0, {price}, {lng}, {lat}, '{time}') SELECT SCOPE_IDENTITY()";
@@ -268,7 +268,6 @@ namespace FODS_API.Controllers
             }
             return new JsonResult("Item Added!");
         }
-
 
     }
 }
