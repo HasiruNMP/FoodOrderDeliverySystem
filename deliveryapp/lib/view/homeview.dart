@@ -30,10 +30,10 @@ class _HomeViewState extends State<HomeView> {
     const PendingOrdersView(),
 
     // ORDER HISTORY TAB
-    const HistoryView(),
+    const CompletedOrdersView(),
 
     // PROFILE TAB
-    const ProfileView()
+    const ProfileDetails(),
   ];
 
   void _onItemTapped(int index) {

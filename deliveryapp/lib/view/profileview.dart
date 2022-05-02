@@ -1,19 +1,44 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:deliveryapp/auth/authservice.dart';
-import 'package:deliveryapp/common/globals.dart';
-import 'package:flutter/material.dart';
-import 'loginview.dart';
+import 'dart:convert';
 
-class ProfileView extends StatefulWidget {
-  const ProfileView({Key? key}) : super(key: key);
+
+import 'package:deliveryapp/auth/authservice.dart';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart'as http;
+
+class ProfileDetails extends StatefulWidget {
+  const ProfileDetails({Key? key}) : super(key: key);
 
   @override
-  _ProfileViewState createState() => _ProfileViewState();
+  _ProfileDetailsState createState() => _ProfileDetailsState();
 }
 
-class _ProfileViewState extends State<ProfileView> {
+class _ProfileDetailsState extends State<ProfileDetails> {
+  var profiledetails = [];
+  bool loaded = false;
 
-  CollectionReference employees = FirebaseFirestore.instance.collection('employees');
+
+  Future fetchprofiledetails() async {
+    String url = "https://10.0.2.2:7072/employee/getprofiledetails?EmployeeId=1";
+
+    final response = await http.get(Uri.parse(url));
+    var resJson = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      var a = resJson as List;
+      profiledetails = a.toList();
+      print(profiledetails);
+      setState(() => loaded = true);
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
+  @override
+  void initState() {
+    fetchprofiledetails();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,76 +47,64 @@ class _ProfileViewState extends State<ProfileView> {
         title: Text('Profile'),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 8,
-                child: Container(
-                  child: FutureBuilder<DocumentSnapshot>(
-                    future: employees.doc('sample-delivery-person').get(),
-                    builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+      child: (loaded)?
+      Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 8,
+                  child: Container(
 
-                      if (snapshot.hasError) {
-                        return Text("Something went wrong");
-                      }
 
-                      if (snapshot.hasData && !snapshot.data!.exists) {
-                        return Text("Document does not exist");
-                      }
+                            child: Column(
 
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-                        return Column(
-                          children: [
-                            ListTile(
-                              title: Text('Name'),
-                              subtitle: Text(data['name']),
-                            ),
-                            ListTile(
-                              title: Text('Username'),
-                              subtitle: Text(data['username']),
-                            ),
-                            ListTile(
-                              title: Text('Phone'),
-                              subtitle: Text(data['phone']),
-                            ),
-                            ListTile(
-                              title: Text('NIC'),
-                              subtitle: Text(data['nic']),
-                            ),
-                            ListTile(
-                              title: Text('License No'),
-                              subtitle: Text(data['license']),
-                            ),
-                          ],
-                        );
-                      }
+                              children: [
 
-                      return Text("loading");
-                    },
+                                ListTile(
+                                  title: Text('Name'),
+                                  subtitle: Text(profiledetails[0]['Name'].toString()),
+                                ),
+                                ListTile(
+                                  title: Text('Username'),
+                                   subtitle: Text(profiledetails[0]['Username'].toString()),
+                                ),
+                                ListTile(
+                                  title: Text('Phone'),
+                                   subtitle: Text(profiledetails[0]['Phone'].toString()),
+                                ),
+                                ListTile(
+                                  title: Text('NIC'),
+                                   subtitle: Text(profiledetails[0]['NIC'].toString()),
+                                ),
+                                ListTile(
+                                  title: Text('License No'),
+                                  subtitle: Text(profiledetails[0]['License'].toString()),
+                                ),
+                              ],
+                            ),
+
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Container(
-                  //color: Colors.teal,
-                  child: Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Auth().signOut();
-                      },
-                      child: const Text('SIGN OUT'),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    //color: Colors.teal,
+                    child: Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Auth().signOut();
+                        },
+                        child: const Text('SIGN OUT'),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
+              ],
+            ),
+          ):
+      Center(child: Text("Loading"),
+      ),
       ),
     );
   }
