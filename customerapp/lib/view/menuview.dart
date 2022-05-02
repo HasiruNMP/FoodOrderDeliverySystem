@@ -20,7 +20,7 @@ class _MenuViewState extends State<MenuView> {
   int userId = 0;
   @override
   void initState() {
-    super.initState();
+    getCategories();
 
     FirebaseAuth auth = FirebaseAuth.instance;
     if (auth.currentUser != null) {
@@ -39,7 +39,7 @@ class _MenuViewState extends State<MenuView> {
     print(global.userId);
   }
   
-    List categories = [];
+  List categories = [];
   bool isLoaded = false;
 
   Future<void> getCategories() async {
@@ -66,122 +66,46 @@ class _MenuViewState extends State<MenuView> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            height: MediaQuery.of(context).size.height,
-            child: ListView(
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height,
-                  child: GridView.count(
-                    crossAxisCount: 2,
-                    children: List.generate(2, (index) {
-                        return Container(
-                          child: Card(
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryView("category id", "category name")));
-                              },
+            child: (isLoaded)? Container(
+              child: GridView.count(
+                crossAxisCount: 2,
+                children: List.generate(categories.length, (index) {
+                  return Container(
+                    child: Card(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryView(categories[index]['CategoryId'].toString(), categories[index]['Name'])));
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
+                                children: [
                                   Container(
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: 110,
-                                          width: double.infinity,
-                                          child: Image.network(""),
-                                        ),
-                                        Container(
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 7),
-                                            child: Text("category name"),
-                                          ),
-                                        ),
-                                      ],
+                                    height: 110,
+                                    width: double.infinity,
+                                    child: Image.network(""),
+                                  ),
+                                  Container(
+                                    child: Padding(
+                                      padding:
+                                      const EdgeInsets.only(top: 7),
+                                      child: Text(categories[index]['Name'].toString()),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                        );
-                      },
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                  );
+                },
                 ),
-                /*Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: AspectRatio(
-                        aspectRatio: 1 / 1,
-                        child: Card(
-                            child: TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, 'category');
-                          },
-                          child: const Text("category 1"),
-                        )),
-                      ),
-                    ),
-                    const Expanded(
-                      flex: 1,
-                      child: AspectRatio(
-                        aspectRatio: 1 / 1,
-                        child: Card(
-                          child: Text("category 2"),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                Row(
-                  children: const [
-                    Expanded(
-                      flex: 1,
-                      child: AspectRatio(
-                        aspectRatio: 1 / 1,
-                        child: Card(
-                          child: Text("category 3"),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: AspectRatio(
-                        aspectRatio: 1 / 1,
-                        child: Card(
-                          child: Text("category 4"),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                Row(
-                  children: const [
-                    Expanded(
-                      flex: 1,
-                      child: AspectRatio(
-                        aspectRatio: 1 / 1,
-                        child: Card(
-                          child: Text("category 5"),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: AspectRatio(
-                        aspectRatio: 1 / 1,
-                        child: Card(
-                          child: Text("category 6"),
-                        ),
-                      ),
-                    )
-                  ],
-                ),*/
-              ],
-            ),
+              ),
+            ) : Center(child: CircularProgressIndicator()),
           ),
         ),
       ),

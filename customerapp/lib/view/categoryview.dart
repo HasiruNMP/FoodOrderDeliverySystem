@@ -12,8 +12,7 @@ class CategoryView extends StatefulWidget {
   CategoryView(this.categoryId, this.name);
 
   @override
-  _CategoryViewState createState() =>
-      _CategoryViewState(this.categoryId, this.name);
+  _CategoryViewState createState() => _CategoryViewState(this.categoryId, this.name);
 }
 
 class _CategoryViewState extends State<CategoryView> {
@@ -25,9 +24,7 @@ class _CategoryViewState extends State<CategoryView> {
   bool isLoaded = false;
 
   Future<void> getProductsByCategory(int categoryId) async {
-    String url =
-        "https://10.0.2.2:7072/products/getcategoryproducts?categoryId=" +
-            categoryId.toString();
+    String url = "https://10.0.2.2:7072/products/getcategoryproducts?categoryId=" + categoryId.toString();
     final response = await http.get(Uri.parse(url));
     var resJson = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -58,8 +55,8 @@ class _CategoryViewState extends State<CategoryView> {
               size: 35,
             ),
             onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
+              //Navigator.pop(context);
+              //Navigator.pop(context);
               Navigator.push<void>(
                 context,
                 MaterialPageRoute<void>(
@@ -84,54 +81,56 @@ class _CategoryViewState extends State<CategoryView> {
         ],
       ),
       body: SafeArea(
-        child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: 3,
-          itemBuilder: (BuildContext context, index) {
-            return Container(
-              margin: const EdgeInsets.all(5),
-              height: 250,
-              child: Card(
-                  child: InkWell(
-                    highlightColor: Colors.blue.withOpacity(0.6),
-                    splashColor: Colors.blue.withOpacity(0.3),
-                    onTap: () {
-                    },
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.all(8),
-                          child: Image.network(
-                            "",
-                            height: 200,
+        child: Container(
+          child: (isLoaded)? ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: products.length,
+            itemBuilder: (BuildContext context, index) {
+              return Container(
+                margin: const EdgeInsets.all(5),
+                height: 250,
+                child: Card(
+                    child: InkWell(
+                      highlightColor: Colors.blue.withOpacity(0.6),
+                      splashColor: Colors.blue.withOpacity(0.3),
+                      onTap: () {
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.all(8),
+                            child: Image.network(
+                              "",
+                              height: 200,
+                            ),
                           ),
-                        ),
-                        Container(
-                          margin:
-                          EdgeInsets.only(left: 10, right: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("",
-                                style: const TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.black),
-                              ),
-                              Text(
-                                '',
-                                style: const TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.black),
-                              ),
-                            ],
+                          Container(
+                            margin:
+                            EdgeInsets.only(left: 10, right: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(products[index]['Name'].toString(),
+                                  style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.black),
+                                ),
+                                Text(
+                                  "Rs. "+products[index]['Price'].toString(),
+                                  style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )),
-            );
-          },
+                        ],
+                      ),
+                    )),
+              );
+            },
+          ): Center(child: CircularProgressIndicator(),),
         ),
       ),
     );
