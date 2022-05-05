@@ -2,6 +2,7 @@ import 'dart:convert';
 
 
 import 'package:deliveryapp/auth/authservice.dart';
+import 'package:deliveryapp/common/globals.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart'as http;
@@ -19,7 +20,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
 
 
   Future fetchprofiledetails() async {
-    String url = "https://10.0.2.2:7072/employee/getprofiledetails?EmployeeId=1";
+    String url = "${Urls.apiUrl}/employee/getprofiledetails?EmployeeId=1";
 
     final response = await http.get(Uri.parse(url));
     var resJson = json.decode(response.body);
@@ -39,6 +40,12 @@ class _ProfileDetailsState extends State<ProfileDetails> {
     fetchprofiledetails();
     super.initState();
   }
+
+  TextStyle st1 = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 18,
+    color: Colors.black87
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -63,23 +70,23 @@ class _ProfileDetailsState extends State<ProfileDetails> {
 
                                 ListTile(
                                   title: Text('Name'),
-                                  subtitle: Text(profiledetails[0]['Name'].toString()),
+                                  subtitle: Text(profiledetails[0]['Name'].toString(),style: st1,),
                                 ),
                                 ListTile(
                                   title: Text('Username'),
-                                   subtitle: Text(profiledetails[0]['Username'].toString()),
+                                   subtitle: Text(profiledetails[0]['Username'].toString(),style: st1,),
                                 ),
                                 ListTile(
                                   title: Text('Phone'),
-                                   subtitle: Text(profiledetails[0]['Phone'].toString()),
+                                   subtitle: Text(profiledetails[0]['Phone'].toString(),style: st1,),
                                 ),
                                 ListTile(
                                   title: Text('NIC'),
-                                   subtitle: Text(profiledetails[0]['NIC'].toString()),
+                                   subtitle: Text(profiledetails[0]['NIC'].toString(),style: st1,),
                                 ),
                                 ListTile(
                                   title: Text('License No'),
-                                  subtitle: Text(profiledetails[0]['License'].toString()),
+                                  subtitle: Text(profiledetails[0]['License'].toString(),style: st1,),
                                 ),
                               ],
                             ),
@@ -103,7 +110,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
               ],
             ),
           ):
-      Center(child: Text("Loading"),
+      Center(child: CircularProgressIndicator(),
       ),
       ),
     );

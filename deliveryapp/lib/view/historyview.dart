@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:deliveryapp/common/globals.dart';
 import 'package:deliveryapp/model/order.dart';
 import 'package:deliveryapp/view/deliverview.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,7 +18,7 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
   var pendingorders = [];
   bool loaded = false;
   Future fetchpendingorders() async {
-    String url = "https://10.0.2.2:7072/orders/getcompletedorderlist?EmployeeId=1";
+    String url = "${Urls.apiUrl}/orders/getcompletedorderlist?EmployeeId=19";
 
     final response = await http.get(Uri.parse(url));
     var resJson = json.decode(response.body);
@@ -30,6 +31,7 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
     }
     else {
       print(response.reasonPhrase);
+      setState(() => loaded = true);
     }
   }
   @override
@@ -41,7 +43,7 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Completed'),
+        title: Text('Completed Orders'),
       ),
       body: SafeArea(
         child: (loaded)?
@@ -52,8 +54,9 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
-                    child: TextButton(
-                      onPressed: (){
+                    color: Colors.brown.shade50,
+                    child: InkWell(
+                      onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (context) => DeliverView(
                           pendingorders[index]['OrderId'].toString(),
                           "${pendingorders[index]['FirstName']} ${pendingorders[index]['LastName']}",
@@ -75,7 +78,7 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
           ):
           Center(child: Text("No Results"),),
         ):
-        Center(child: Text("Press Search"),),
+        Center(child: CircularProgressIndicator(),),
       ),
     );
   }

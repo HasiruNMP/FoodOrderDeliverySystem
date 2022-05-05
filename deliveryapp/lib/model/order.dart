@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:deliveryapp/common/globals.dart';
 import 'package:http/http.dart'as http;
 
 class Order {
@@ -6,7 +7,7 @@ class Order {
   CollectionReference orders = FirebaseFirestore.instance.collection('orders');
 
   Future<void> markAsDelivered(String orderID) async {
-    var request = http.Request('PUT', Uri.parse('https://10.0.2.2:7072/orders/updateorderstatus?orderId=1&orderStatus=completed'));
+    var request = http.Request('PUT', Uri.parse('${Urls.apiUrl}/orders/updateorderstatus?orderId=1&orderStatus=completed'));
 
 
     http.StreamedResponse response = await request.send();

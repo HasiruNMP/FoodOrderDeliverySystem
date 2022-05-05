@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:deliveryapp/common/globals.dart';
 import 'package:deliveryapp/model/order.dart';
 import 'package:deliveryapp/view/deliverview.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,7 +18,7 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
   var pendingorders = [];
   bool loaded = false;
   Future fetchpendingorders() async {
-    String url = "https://10.0.2.2:7072/orders/getorderlist?EmployeeId=1";
+    String url = "${Urls.apiUrl}/orders/getorderlist?EmployeeId=19";
 
     final response = await http.get(Uri.parse(url));
     var resJson = json.decode(response.body);
@@ -50,10 +51,12 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
           ListView(
               children: List.generate(pendingorders.length, (index) {
                 return Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                   child: Card(
-                    child: TextButton(
-                      onPressed: (){
+                    //elevation: 0,
+                    color: Colors.brown.shade50,
+                    child: InkWell(
+                      onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (context) => DeliverView(
                           pendingorders[index]['OrderId'].toString(),
                           "${pendingorders[index]['FirstName']} ${pendingorders[index]['LastName']}",
@@ -65,7 +68,7 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                         );
                       },
                       child: ListTile(
-                        title: Text(pendingorders[index]['OrderId'].toString()),
+                        title: Text("Order ID: " + pendingorders[index]['OrderId'].toString()),
                         subtitle: Text(pendingorders[index]['datetime'].toString()),
                       ),
                     ),
@@ -75,7 +78,7 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
           ):
           Center(child: Text("No Results"),),
         ):
-        Center(child: Text("Press Search"),),
+        Center(child: CircularProgressIndicator(),),
       ),
     );
   }

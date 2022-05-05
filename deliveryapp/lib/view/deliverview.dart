@@ -40,67 +40,110 @@ class _DeliverViewState extends State<DeliverView> {
         title: Text("Order ID: ${widget.orderID}"),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListView(
-            children: [
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(widget.customerName),
-              ),
-              Row(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Delivery Location',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+                  ),
                   Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text(widget.phoneNo),
+                    height: MediaQuery.of(context).size.height / 1.5,
+                    color: Colors.teal,
+                    child: GoogleMap(
+                      onMapCreated: _onMapCreated,
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(widget.customerLocation.latitude, widget.customerLocation.longitude),
+                        zoom: 10.0,
+                      ),
+                      myLocationEnabled: true,
+                      mapType: MapType.normal,
+                      compassEnabled: true,
+                      onCameraMove: _onCameraMove,
+                      markers: _markers,
+
+                    ),
                   ),
-                  OutlinedButton(
-                    onPressed: () {
-                      launch("tel://214324234");
-                    },
-                    child: Text('Call'),
-                  ),
+                  SizedBox(height: 10,),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            children: [
+                              Text(
+                                'Customer Name: ',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold
+                                ),
+                              ),
+                              Text(widget.customerName),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              'Phone: ',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text(widget.phoneNo),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                launch("tel://214324234");
+                              },
+                              child: Text('Call'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text('Delivery Location'),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height / 1.5,
-                color: Colors.teal,
-                child: GoogleMap(
-                  onMapCreated: _onMapCreated,
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(widget.customerLocation.latitude, widget.customerLocation.longitude),
-                    zoom: 10.0,
-                  ),
-                  myLocationEnabled: true,
-                  mapType: MapType.normal,
-                  compassEnabled: true,
-                  onCameraMove: _onCameraMove,
-                  markers: _markers,
-
-                ),
-              ),
-              Row(
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      _settingModalBottomSheet(context,widget.price,widget.orderID);
-                    },
-                    child: Text('View Order')),
-                  OutlinedButton(
-                    onPressed: () {
-                      Order().markAsDelivered(widget.orderID);
-                    },
-                    child: Text('Mark As Delivered'),
+                  Expanded(
+                    child: OutlinedButton(
+                        onPressed: () {
+                          _settingModalBottomSheet(context,widget.price,widget.orderID);
+                        },
+                        child: Text('View Order')),
+                  ),
+                  SizedBox(width: 10,),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Order().markAsDelivered(widget.orderID);
+                      },
+                      child: Text('Mark As Delivered'),
+                    ),
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -119,7 +162,7 @@ class _DeliverViewState extends State<DeliverView> {
         Marker(
           markerId: MarkerId('customer'),
           position: LatLng(widget.customerLocation.latitude, widget.customerLocation.longitude),
-          icon: markerIcon,
+          //icon: markerIcon,
         ),
       );
       mapController.animateCamera(

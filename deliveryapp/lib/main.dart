@@ -45,8 +45,9 @@ class MyApp extends StatelessWidget {
         title: 'FODS',
         theme: ThemeData(
           primarySwatch: Colors.red,
+          scaffoldBackgroundColor: Colors.white
         ),
-        home: HomeView(),
+        home: StateManager(),
       ),
     );
   }

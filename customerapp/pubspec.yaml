@@ -48,6 +48,7 @@ dependencies:
   firebase_auth: ^3.3.11
   http: ^0.13.4
   pay: ^1.0.8
+  socket_io_client: ^1.0.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

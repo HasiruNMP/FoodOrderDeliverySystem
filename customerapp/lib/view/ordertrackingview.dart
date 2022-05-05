@@ -7,6 +7,22 @@ import 'package:intl/intl.dart';
 import '../api/apiservice.dart';
 import '../controller/orderitemsmodel.dart';
 import '../controller/productmodel.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart';
+
+class StreamSocket{
+  final _socketResponse= StreamController<String?>();
+
+  void Function(String?) get addResponse => _socketResponse.sink.add;
+
+  Stream<String?> get getResponse => _socketResponse.stream;
+
+  void dispose(){
+    _socketResponse.close();
+  }
+}
+
+StreamSocket streamSocket =StreamSocket();
 
 class TrackOrderView extends StatefulWidget {
   String orderId;
@@ -21,7 +37,8 @@ class TrackOrderView extends StatefulWidget {
 
 class _TrackOrderViewState extends State<TrackOrderView> {
   Completer<GoogleMapController> _controller = Completer();
-  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  final Set<Marker> markers = {};
+  String d = '12312';
 
   final CameraPosition initLocation = const CameraPosition(
     target: LatLng(6.820934, 80.041671),
@@ -31,7 +48,7 @@ class _TrackOrderViewState extends State<TrackOrderView> {
   void _onMapCreated(GoogleMapController controller) {
     final marker = Marker(
       markerId: MarkerId('place_name'),
-      position: LatLng(9.669111, 80.014007),
+      position: LatLng(6.820934, 80.041671),
       // icon: BitmapDescriptor.,
       infoWindow: InfoWindow(
         title: 'title',
@@ -40,16 +57,43 @@ class _TrackOrderViewState extends State<TrackOrderView> {
     );
 
     setState(() {
-      markers[MarkerId('place_name')] = marker;
+      markers.add(marker);
     });
   }
 
   late Future<List<productModel>> productDetails;
   late Future<List<orderItemModel>> orderItems;
+
+  void connectAndListen(){
+    IO.Socket socket = IO.io('https://6a53-2407-c00-6003-5178-cc12-6250-2dca-4e29.in.ngrok.io/',
+        OptionBuilder().setTransports(['websocket']).build());
+
+    socket.onConnect((_) {
+      print('connect');
+      socket.emit('message', 'connected');
+    });
+
+    //When an event recieved from server, data is added to the stream
+    socket.on('LocationUpdated', (data) {
+      setState(() {
+        print(data);
+        print(data);
+        d = data;
+        /*markers.add(Marker(
+          markerId: MarkerId('place_name'),
+          position: LatLng(data['latitude'], data['longitude']),
+        ));*/
+      });
+    });
+    socket.onDisconnect((_) => print('disconnect'));
+
+  }
+
   @override
   void initState() {
     super.initState();
     orderItems = APIService.getOrderItems(int.parse(widget.orderId));
+    connectAndListen();
   }
 
   late String status;
@@ -205,7 +249,7 @@ class _TrackOrderViewState extends State<TrackOrderView> {
                   ),
                   Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Delivery Location"),
+                    child: Text(d),
                   ),
                   Container(
                     height: MediaQuery.of(context).size.height / 2,
@@ -218,7 +262,7 @@ class _TrackOrderViewState extends State<TrackOrderView> {
                       myLocationEnabled: true,
                       zoomControlsEnabled: true,
                       zoomGesturesEnabled: true,
-                      markers: markers.values.toSet(),
+                      markers: markers
                     ),
                   ),
                 ],
