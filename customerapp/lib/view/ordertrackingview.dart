@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:customerapp/view/showlocation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -65,7 +66,7 @@ class _TrackOrderViewState extends State<TrackOrderView> {
   late Future<List<orderItemModel>> orderItems;
 
   void connectAndListen(){
-    IO.Socket socket = IO.io('https://6a53-2407-c00-6003-5178-cc12-6250-2dca-4e29.in.ngrok.io/',
+    IO.Socket socket = IO.io('https://106f-2402-d000-a500-123b-bc62-280d-ecbb-6fc4.in.ngrok.io',
         OptionBuilder().setTransports(['websocket']).build());
 
     socket.onConnect((_) {
@@ -93,7 +94,7 @@ class _TrackOrderViewState extends State<TrackOrderView> {
   void initState() {
     super.initState();
     orderItems = APIService.getOrderItems(int.parse(widget.orderId));
-    connectAndListen();
+    //connectAndListen();
   }
 
   late String status;
@@ -251,7 +252,16 @@ class _TrackOrderViewState extends State<TrackOrderView> {
                     alignment: Alignment.centerLeft,
                     child: Text(d),
                   ),
-                  Container(
+                  ElevatedButton(
+                    onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ShowLiveLocation()),
+                      );
+                    },
+                    child: Text("Check Delivery Live Location"),
+                  ),
+                  /*Container(
                     height: MediaQuery.of(context).size.height / 2,
                     child: GoogleMap(
                       mapType: MapType.normal,
@@ -264,7 +274,7 @@ class _TrackOrderViewState extends State<TrackOrderView> {
                       zoomGesturesEnabled: true,
                       markers: markers
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),
