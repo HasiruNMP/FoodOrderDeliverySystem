@@ -1,7 +1,7 @@
 import 'package:advance_notification/advance_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:customerapp/global_urls.dart';
 import '../controller/cart.dart';
 import '../controller/item.dart';
 import 'cartview.dart';
@@ -86,11 +86,10 @@ class _ItemViewState extends State<ItemView> {
         body: SafeArea(
           child: ListView(
             children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
+              AspectRatio(
+                aspectRatio: 4/4,
                 child: Image.network(
-                  imgUrl,
-                  height: 263,
+                  "${Urls.filesUrl}/static/images/p${widget.itemID}.png",
                 ),
               ),
               Container(

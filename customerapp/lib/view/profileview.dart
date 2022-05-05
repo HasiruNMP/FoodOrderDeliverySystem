@@ -88,8 +88,7 @@ class _ProfileViewState extends State<ProfileView> {
               //alignment: Alignment.centerLeft,
               child: TextButton(
                   onPressed: () async {
-                    deleteStatus =
-                        await APIService.deleteAccount(global.phoneNo);
+                    deleteStatus = await APIService.deleteAccount(global.phoneNo);
                     showAlertDialog2(context);
                   },
                   child: Text('Delete Account')),
@@ -97,11 +96,14 @@ class _ProfileViewState extends State<ProfileView> {
             SizedBox(
               height: 30,
             ),
-            ElevatedButton(
-              onPressed: () {
-                signOutAlertDialog(context);
-              },
-              child: const Text('SIGN OUT'),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  signOutAlertDialog(context);
+                },
+                child: const Text('SIGN OUT'),
+              ),
             ),
           ],
         ),

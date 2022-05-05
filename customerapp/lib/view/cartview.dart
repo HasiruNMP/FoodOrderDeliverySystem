@@ -1,3 +1,6 @@
+import 'package:customerapp/api/apiservice.dart';
+import 'package:customerapp/controller/ordermodel.dart';
+import 'package:customerapp/view/setlocationview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -170,26 +173,37 @@ class _CartViewState extends State<CartView> {
                         ),
                       ),
                       Expanded(
-                          flex: 1,
-                          child: Card(
-                            child: Container(
-                              margin: EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                      "Total Price: Rs.${Cart.totalPrice.toString()}"),
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                            context, 'checkout');
-                                      },
-                                      child: const Text("Checkout")),
-                                ],
-                              ),
+                        flex: 1,
+                        child: Card(
+                          child: Container(
+                            margin: EdgeInsets.all(10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Total Price: Rs.${Cart.totalPrice.toString()}"),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => SetLocation()),
+                                    );
+                                    /*APIService.addNewOrder(
+                                      NewOrderModel(
+                                        userId: 1,
+                                        dateTime: DateTime.now().toString(),
+                                        totalPrice: 123,
+                                        lat: 12,
+                                        lng: 12,
+                                      ),
+                                    );*/
+                                  },
+                                  child: const Text("Checkout")
+                                ),
+                              ],
                             ),
-                          )),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
           ),

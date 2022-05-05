@@ -227,7 +227,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpPost, Route("placeneworder")]
-        public JsonResult placeOrder(int userId, double price, double lat, double lng, DateTime time)
+        public ActionResult placeOrder(int userId, double price, double lat, double lng, DateTime time)
         {
             string query = @$"INSERT INTO [dbo].[ORDERS] ([UserId],[EmployeeId],[OrderStatus],[IsDelivered],[IsProcessed],[IsReceived],[TotalPrice],[Longitude],[Latitude],[datetime]) 
                 VALUES ({userId}, 1, 'pending', 0, 0, 0, {price}, {lng}, {lat}, '{time}') SELECT SCOPE_IDENTITY()";
@@ -245,7 +245,7 @@ namespace FODS_API.Controllers
                     myCon.Close();
                 }
             }
-            return new JsonResult(table);
+            return Ok(table.Rows[0]["Column1"]);
         }
 
         [HttpPost, Route("neworder/additem")]

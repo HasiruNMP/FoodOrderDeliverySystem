@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customerapp/global_urls.dart';
 import 'package:customerapp/view/itemview.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -23,8 +24,9 @@ class _CategoryViewState extends State<CategoryView> {
   List products = [];
   bool isLoaded = false;
 
-  Future<void> getProductsByCategory(int categoryId) async {
-    String url = "https://10.0.2.2:7072/products/getcategoryproducts?categoryId=" + categoryId.toString();
+  Future<void> getProductsByCategory() async {
+    String url = "${Urls.apiUrl}/products/getcategoryproducts?categoryId=" + categoryId.toString();
+    print(url);
     final response = await http.get(Uri.parse(url));
     var resJson = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -39,7 +41,7 @@ class _CategoryViewState extends State<CategoryView> {
 
   @override
   void initState() {
-    getProductsByCategory(1);
+    getProductsByCategory();
   }
 
   @override
@@ -87,47 +89,60 @@ class _CategoryViewState extends State<CategoryView> {
             shrinkWrap: true,
             itemCount: products.length,
             itemBuilder: (BuildContext context, index) {
-              return Container(
-                margin: const EdgeInsets.all(5),
-                height: 250,
-                child: Card(
-                    child: InkWell(
-                      highlightColor: Colors.blue.withOpacity(0.6),
-                      splashColor: Colors.blue.withOpacity(0.3),
-                      onTap: () {
-                      },
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.all(8),
-                            child: Image.network(
-                              "",
-                              height: 200,
+              return AspectRatio(
+                aspectRatio: 4/3,
+                child: Container(
+                  margin: const EdgeInsets.all(5),
+                  child: Card(
+                      child: InkWell(
+                        highlightColor: Colors.blue.withOpacity(0.6),
+                        splashColor: Colors.blue.withOpacity(0.3),
+                        onTap: () {
+                          print(products[index]);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ItemView(
+                              itemID: products[index]['ProductId'],
+                              name: products[index]['Name'],
+                              price: products[index]['Price'].toString(),
+                              imgUrl: products[index]['ImgUrl'],
+                              discription: products[index]['Description'],
+                            ),),
+                          );
+                        },
+                        child: Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.all(8),
+                              child: Image.network(
+                                "${Urls.filesUrl}/static/images/p${products[index]['ProductId']}.png",
+                                height: 200,
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin:
-                            EdgeInsets.only(left: 10, right: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(products[index]['Name'].toString(),
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.black),
-                                ),
-                                Text(
-                                  "Rs. "+products[index]['Price'].toString(),
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.black),
-                                ),
-                              ],
+                            Container(
+                              margin:
+                              EdgeInsets.only(left: 10, right: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(products[index]['Name'].toString(),
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black),
+                                  ),
+                                  Text(
+                                    "Rs. "+products[index]['Price'].toString(),
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    )),
+                          ],
+                        ),
+                      )),
+                ),
               );
             },
           ): Center(child: CircularProgressIndicator(),),

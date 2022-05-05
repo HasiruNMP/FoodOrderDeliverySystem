@@ -60,13 +60,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-         initialRoute: 'home',
+      initialRoute: 'main',
       routes: {
+        'main': (context) => ViewController(streamController.stream),
         'otpsetup': (context) => OtpSetup(),
         'home': (context) => const HomeView(),
         'menu': (context) => const MenuView(),
         'category': (context) => CategoryView('0', '0'),
-        'checkout': (context) => const CheckoutView(),
+        //'checkout': (context) => const CheckoutView(),
         'track': (context) => TrackOrderView('0', '1', 3.4),
         'orders': (context) => Orderview(),
       },

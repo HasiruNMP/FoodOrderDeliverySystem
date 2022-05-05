@@ -6,7 +6,7 @@ import 'package:pay/pay.dart';
 const _paymentItems = [
   PaymentItem(
     label: 'Total',
-    amount: '99.99',
+    amount: '00.00',
     status: PaymentItemStatus.final_price,
   )
 ];

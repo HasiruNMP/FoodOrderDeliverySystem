@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customerapp/global_urls.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:customerapp/global.dart' as global;
@@ -43,7 +44,7 @@ class _MenuViewState extends State<MenuView> {
   bool isLoaded = false;
 
   Future<void> getCategories() async {
-    String url = "https://10.0.2.2:7072/api/Category/getcategories";
+    String url = "${Urls.apiUrl}/api/Category/getcategories";
     final response = await http.get(Uri.parse(url));
     var resJson = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -74,6 +75,7 @@ class _MenuViewState extends State<MenuView> {
                     child: Card(
                       child: InkWell(
                         onTap: () {
+                          print(categories[index]['CategoryId'].toString());
                           Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryView(categories[index]['CategoryId'].toString(), categories[index]['Name'])));
                         },
                         child: Column(
@@ -82,17 +84,15 @@ class _MenuViewState extends State<MenuView> {
                             Container(
                               child: Column(
                                 children: [
-                                  Container(
-                                    height: 110,
-                                    width: double.infinity,
-                                    child: Image.network("https://fodsfiles.herokuapp.com/static/images/Burger.jpg"),
+                                  AspectRatio(
+                                    aspectRatio: 4/3,
+                                    child: FittedBox(
+                                      fit: BoxFit.fill,
+                                      child: Image.network("${Urls.filesUrl}/static/images/c${categories[index]['CategoryId']}.png"),
+                                    ),
                                   ),
                                   Container(
-                                    child: Padding(
-                                      padding:
-                                      const EdgeInsets.only(top: 7),
-                                      child: Text(categories[index]['Name'].toString()),
-                                    ),
+                                    child: Text(categories[index]['Name'].toString()),
                                   ),
                                 ],
                               ),
