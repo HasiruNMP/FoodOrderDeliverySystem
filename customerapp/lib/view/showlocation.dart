@@ -22,7 +22,6 @@ StreamSocket streamSocket =StreamSocket();
 
 class ShowLiveLocation extends StatefulWidget {
 
-
   @override
   State<ShowLiveLocation> createState() => _ShowLiveLocationState();
 }
@@ -81,6 +80,12 @@ class _ShowLiveLocationState extends State<ShowLiveLocation> {
     connectAndListen();
     setState(() {
       mapController = controller;
+      _markers.add(
+          Marker(
+            markerId: MarkerId('bus'),
+            position: LatLng(6.8213291,80.0415729),
+            icon: busicon,
+          ));
     });
   }
 
@@ -98,7 +103,7 @@ class _ShowLiveLocationState extends State<ShowLiveLocation> {
         child: Container(
           child: GoogleMap(
             onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(target: LatLng(6.844688, 80.015283), zoom: 15.0,),
+            initialCameraPosition: CameraPosition(target: LatLng(6.8213291,80.0415729), zoom: 15.0,),
             myLocationEnabled: true,
             mapType: MapType.normal,
             compassEnabled: true,

@@ -111,21 +111,30 @@ class _TrackOrderViewState extends State<TrackOrderView> {
               child: ListView(
                 children: [
                   Container(
-                    height: MediaQuery.of(context).size.height / 3,
+                    //height: MediaQuery.of(context).size.height / 3,
                     child: Card(
+                      color: Colors.blueGrey.shade50,
                       child: Column(
                         children: [
+                          SizedBox(height: 5,),
                           Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text("Order No: ${widget.orderId}"),
+                            alignment: Alignment.center,
+                            child: Text("Order No: ${widget.orderId}",style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold,
+                            ),),
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 5),
-                            alignment: Alignment.centerLeft,
+                            alignment: Alignment.center,
                             child: Text(widget.dateTime),
                           ),
+                          Divider(
+                            color: Colors.black38,
+                          ),
                           Container(
-                            margin: EdgeInsets.only(top: 5),
+                            margin: EdgeInsets.only(top: 5,left: 10),
                             alignment: Alignment.centerLeft,
                             child: const Text(
                               "Items",
@@ -183,8 +192,7 @@ class _TrackOrderViewState extends State<TrackOrderView> {
                                                       snapshot.data;
 
                                                   return Container(
-                                                    margin: EdgeInsets.only(
-                                                        top: 10),
+                                                    margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
                                                     child: ListView.builder(
                                                         scrollDirection:
                                                             Axis.vertical,
@@ -210,8 +218,11 @@ class _TrackOrderViewState extends State<TrackOrderView> {
                                                                 ),
                                                               ),
                                                               Expanded(
-                                                                child: Text(
-                                                                    '=${product[index].price * data[i].quantity}'),
+                                                                child: Container(
+                                                                  alignment: Alignment.centerRight,
+                                                                  child: Text(
+                                                                      ' = ${product[index].price * data[i].quantity}'),
+                                                                ),
                                                               ),
                                                             ],
                                                           );
@@ -238,28 +249,38 @@ class _TrackOrderViewState extends State<TrackOrderView> {
                                   );
                                 }),
                           ),
-                          Container(
-                            margin: EdgeInsets.only(top: 5, right: 58),
-                            alignment: Alignment.centerRight,
-                            child:
-                                Text("Total Price: Rs. ${widget.totalPrice}"),
+                          Divider(
+                            color: Colors.black38,
                           ),
+                          Container(
+                            //margin: EdgeInsets.only(top: 5, right: 58),
+                            alignment: Alignment.center,
+                            child:
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Text("Total Price: Rs. ${widget.totalPrice}",style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.bold,
+                                  ),),
+                                ),
+                          ),
+                          SizedBox(height: 8,),
                         ],
                       ),
                     ),
                   ),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text(d),
-                  ),
-                  ElevatedButton(
-                    onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ShowLiveLocation()),
-                      );
-                    },
-                    child: Text("Check Delivery Live Location"),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ShowLiveLocation()),
+                        );
+                      },
+                      child: Text("Track Delivery"),
+                    ),
                   ),
                   /*Container(
                     height: MediaQuery.of(context).size.height / 2,

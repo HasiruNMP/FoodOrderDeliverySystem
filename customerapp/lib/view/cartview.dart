@@ -1,5 +1,6 @@
 import 'package:customerapp/api/apiservice.dart';
 import 'package:customerapp/controller/ordermodel.dart';
+import 'package:customerapp/global_urls.dart';
 import 'package:customerapp/view/setlocationview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -69,39 +70,47 @@ class _CartViewState extends State<CartView> {
                               itemCount: Cart.basketItems.length,
                               itemBuilder: (context, index) {
                                 return Container(
-                                  height:
-                                      (MediaQuery.of(context).size.height) / 6,
+                                  height: (MediaQuery.of(context).size.height) / 6,
                                   child: Card(
+                                    color: Colors.amber.shade50,
                                     child: Row(
                                       children: [
                                         AspectRatio(
                                           aspectRatio: 1,
                                           child: Container(
-                                            margin: EdgeInsets.all(10),
-                                            child: Image.network(
-                                              "https://fodsfiles.herokuapp.com/static/images/Burger.jpg",
-                                              //Cart.basketItems[index].imgUrl,
-                                              width: 150,
+                                            margin: EdgeInsets.all(8),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(5),
+                                              child: Image.network(
+                                                "${Urls.filesUrl}/static/images/p${Cart.basketItems[index].id}.png",
+                                                //Cart.basketItems[index].imgUrl,
+                                                width: 150,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                        Column(
+                                        Expanded(
+                                          child: Column(
                                           children: [
                                             Container(
-                                              margin: const EdgeInsets.only(
-                                                  left: 10, top: 20),
+                                              margin: const EdgeInsets.only(top: 20),
                                               child: Column(
                                                 children: [
                                                   Container(
-                                                      alignment:
-                                                          Alignment.centerLeft,
+                                                      margin: const EdgeInsets.only(left: 12),
+                                                      alignment: Alignment.centerLeft,
                                                       child: Text(
-                                                        Cart.basketItems[index]
-                                                            .name,
+                                                        Cart.basketItems[index].name,
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.black87,
+                                                          fontWeight:
+                                                          FontWeight.bold,
+                                                        ),
                                                       )),
                                                   Container(
                                                     alignment:
-                                                        Alignment.centerLeft,
+                                                    Alignment.centerLeft,
                                                     child: Row(
                                                       children: [
                                                         IconButton(
@@ -109,9 +118,9 @@ class _CartViewState extends State<CartView> {
                                                               setState(() {
                                                                 cart.updateProduct(
                                                                     Cart.basketItems[
-                                                                        index],
+                                                                    index],
                                                                     Cart.basketItems[index]
-                                                                            .quantity -
+                                                                        .quantity -
                                                                         1);
                                                               });
                                                             },
@@ -120,7 +129,7 @@ class _CartViewState extends State<CartView> {
                                                         Text(
                                                           Cart
                                                               .basketItems[
-                                                                  index]
+                                                          index]
                                                               .quantity
                                                               .toString(),
                                                         ),
@@ -128,10 +137,9 @@ class _CartViewState extends State<CartView> {
                                                             onPressed: () {
                                                               setState(() {
                                                                 cart.updateProduct(
-                                                                    Cart.basketItems[
-                                                                        index],
+                                                                    Cart.basketItems[index],
                                                                     Cart.basketItems[index]
-                                                                            .quantity +
+                                                                        .quantity +
                                                                         1);
                                                               });
                                                             },
@@ -141,26 +149,30 @@ class _CartViewState extends State<CartView> {
                                                     ),
                                                   ),
                                                   Container(
+                                                    margin: const EdgeInsets.only(left: 12),
                                                       alignment:
-                                                          Alignment.centerLeft,
+                                                      Alignment.centerLeft,
                                                       child: Text(
-                                                          'Rs.${Cart.basketItems[index].price.toString()}')),
+                                                          'Rs.${Cart.basketItems[index].price.toString()}',style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: Colors.black87,
+                                                        fontWeight:
+                                                        FontWeight.bold,
+                                                      ),),
+                                                    ),
                                                 ],
                                               ),
                                             )
                                           ],
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            alignment: Alignment.topRight,
-                                            child: IconButton(
-                                              icon: Icon(Icons.close),
-                                              onPressed: () {
-                                                cart.remove(
-                                                    Cart.basketItems[index]);
-                                              },
-                                            ),
+                                        ),),
+                                        Container(
+                                          alignment: Alignment.topRight,
+                                          child: IconButton(
+                                            icon: Icon(Icons.close,color: Colors.black45,),
+                                            onPressed: () {
+                                              cart.remove(
+                                                  Cart.basketItems[index]);
+                                            },
                                           ),
                                         ),
                                       ],
@@ -175,19 +187,28 @@ class _CartViewState extends State<CartView> {
                       Expanded(
                         flex: 1,
                         child: Card(
+                          color: Colors.grey.shade100,
                           child: Container(
                             margin: EdgeInsets.all(10),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("Total Price: Rs.${Cart.totalPrice.toString()}"),
+                                Text(
+                                    "Total: Rs.${Cart.totalPrice.toString()}",style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                  fontWeight:
+                                  FontWeight.bold,
+                                ),),
                                 ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => SetLocation()),
-                                    );
-                                    /*APIService.addNewOrder(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SetLocation()),
+                                      );
+                                      /*APIService.addNewOrder(
                                       NewOrderModel(
                                         userId: 1,
                                         dateTime: DateTime.now().toString(),
@@ -196,9 +217,8 @@ class _CartViewState extends State<CartView> {
                                         lng: 12,
                                       ),
                                     );*/
-                                  },
-                                  child: const Text("Checkout")
-                                ),
+                                    },
+                                    child: const Text("Checkout")),
                               ],
                             ),
                           ),

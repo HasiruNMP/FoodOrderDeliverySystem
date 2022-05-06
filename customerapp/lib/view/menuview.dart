@@ -65,40 +65,105 @@ class _MenuViewState extends State<MenuView> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
           child: Container(
             child: (isLoaded)? Container(
               child: GridView.count(
                 crossAxisCount: 2,
                 children: List.generate(categories.length, (index) {
-                  return Container(
-                    child: Card(
-                      child: InkWell(
-                        onTap: () {
-                          print(categories[index]['CategoryId'].toString());
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryView(categories[index]['CategoryId'].toString(), categories[index]['Name'])));
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              child: Column(
-                                children: [
-                                  AspectRatio(
-                                    aspectRatio: 4/3,
-                                    child: FittedBox(
-                                      fit: BoxFit.fill,
-                                      child: Image.network("${Urls.filesUrl}/static/images/c${categories[index]['CategoryId']}.png"),
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    elevation: 5,
+                    margin: EdgeInsets.all(6),
+                    semanticContainer: true,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    child: InkWell(
+                      //highlightColor: Colors.blue.withOpacity(0.6),
+                      //splashColor: Colors.blue.withOpacity(0.3),
+                      onTap: (){
+                        print(categories[index]['CategoryId'].toString());
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => CategoryView(categories[index]['CategoryId'].toString(), categories[index]['Name']),),
+                        );
+                      },
+                      child: Stack(
+                        children: [
+                          Container(
+                            child: Image.network("${Urls.filesUrl}/static/images/c${categories[index]['CategoryId']}.png"),
+                          ),
+                          Container(
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  flex: 5,
+                                  child: Container(),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    color: Colors.white.withOpacity(0.8),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            categories[index]['Name'].toString(),
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                                color: Colors.black87
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                  Container(
-                                    child: Text(categories[index]['Name'].toString()),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                  return InkWell(
+                    onTap: () {
+                      print(categories[index]['CategoryId'].toString());
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryView(categories[index]['CategoryId'].toString(), categories[index]['Name'])));
+                    },
+                    child: Card(
+                      color: Colors.amber.shade50,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            child: Column(
+                              children: [
+                                AspectRatio(
+                                  aspectRatio: 5/4,
+                                  child: FittedBox(
+                                    fit: BoxFit.fill,
+                                    child: Image.network("${Urls.filesUrl}/static/images/c${categories[index]['CategoryId']}.png"),
+                                  ),
+                                ),
+                                SizedBox(height: 6,),
+                                Container(
+                                  child: Text(
+                                      categories[index]['Name'].toString(),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: Colors.black87
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );

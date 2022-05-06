@@ -52,21 +52,37 @@ class _ProfileViewState extends State<ProfileView> {
             loading == true
                 ? Column(
                     children: [
-                      ListTile(
+                      /*ListTile(
                         title: const Text('First Name:'),
-                        subtitle: Text(fname),
+                        subtitle: Text(fname,style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.bold,
+                        ),),
                       ),
                       ListTile(
                         title: const Text('Last Name'),
-                        subtitle: Text(lname),
-                      ),
+                        subtitle: Text(lname,style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.bold,
+                        ),),
+                      ),*/
                       ListTile(
-                        title: const Text('Full Name'),
-                        subtitle: Text('$fname $lname'),
+                        title: const Text('Name'),
+                        subtitle: Text('$fname $lname',style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.bold,
+                        ),),
                       ),
                       ListTile(
                         title: const Text('Phone Number:'),
-                        subtitle: Text(global.phoneNo),
+                        subtitle: Text(global.phoneNo,style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.bold,
+                        ),),
                       ),
                     ],
                   )

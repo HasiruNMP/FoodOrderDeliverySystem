@@ -78,288 +78,297 @@ class _OrderviewState extends State<Orderview> {
         centerTitle: true,
       ),
       body: SafeArea(
-          child: Column(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
         children: [
-          Container(
-            child: FutureBuilder<List<orderModel>>(
-                future: newOrders,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Text("Something went wrong");
-                  }
-                  //
-                  // if (snapshot.connectionState == ConnectionState.waiting ||
-                  //     !snapshot.hasData) {
-                  //   return CircularProgressIndicator();
-                  // }
+            Container(
+              child: FutureBuilder<List<orderModel>>(
+                  future: newOrders,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text("Something went wrong");
+                    }
+                    //
+                    // if (snapshot.connectionState == ConnectionState.waiting ||
+                    //     !snapshot.hasData) {
+                    //   return CircularProgressIndicator();
+                    // }
 
-                  if (snapshot.hasData) {
-                    List<orderModel>? data = snapshot.data;
-                    print('has data in orders');
-                    return Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(top: 10, left: 5, bottom: 5),
-                          alignment: Alignment.topLeft,
-                          child: const Text(
-                            'Pending Orders',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.left,
+                    if (snapshot.hasData) {
+                      List<orderModel>? data = snapshot.data;
+                      print('has data in orders');
+                      return Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(top: 10, left: 5, bottom: 5),
+                            alignment: Alignment.topLeft,
+                            child: const Text(
+                              'Pending Orders',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.left,
+                            ),
                           ),
-                        ),
-                        Container(
-                          height: MediaQuery.of(context).size.height / 3,
-                          child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: data!.length,
-                              itemBuilder: (BuildContext context, index) {
-                                DateTime orderTime =
-                                    DateTime.parse(data[index].dateTime);
-                                return Card(
-                                  color: Colors.grey[200],
-                                  child: Container(
-                                    margin: const EdgeInsets.all(20),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                                flex: 2,
-                                                child: Text(
-                                                    'Order No: ${data[index].orderId.toString()}')),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Text(
-                                                  (timeago.format(orderTime))),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              flex: 1,
-                                              child: Text(
-                                                  'Rs. ${data[index].totalPrice.toString()}'),
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Container(
-                                                margin:
-                                                    const EdgeInsets.all(15),
-                                                child: TextButton(
-                                                  style: TextButton.styleFrom(
-                                                    primary: Colors.white,
-                                                    backgroundColor:
-                                                        Colors.blue,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              0.0),
-                                                      //side: const BorderSide(color: Colors.grey)
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
+                          Container(
+                            height: MediaQuery.of(context).size.height / 3,
+                            child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: data!.length,
+                                itemBuilder: (BuildContext context, index) {
+                                  DateTime orderTime =
+                                      DateTime.parse(data[index].dateTime);
+                                  return Card(
+                                    color: Colors.grey.shade100,
+                                    child: Container(
+                                      margin: const EdgeInsets.all(12),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                  'Order ID: ${data[index].orderId.toString()}',
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black87,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Text(
+                                                'Rs. ${data[index].totalPrice.toString()}',
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black87,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 5,),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                                (timeago.format(orderTime))),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  margin: const EdgeInsets.all(5),
+                                                  child: OutlinedButton(
+                                                    /*style: TextButton.styleFrom(
+                                                      primary: Colors.white,
+                                                      backgroundColor:
+                                                          Colors.blue,
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                2),
+                                                        //side: const BorderSide(color: Colors.grey)
+                                                      ),
+                                                    ),*/
+                                                    onPressed: () {
 //   Navigator.pushNamed(context, OtpVerify.id);
-                                                    String orderId = data[index]
-                                                        .orderId
-                                                        .toString();
-                                                    showAlertDialog(
-                                                        context, orderId);
-                                                  },
-                                                  child: const Text('Recieved'),
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Container(
-                                                margin:
-                                                    const EdgeInsets.all(15),
-                                                child: TextButton(
-                                                  style: TextButton.styleFrom(
-                                                    primary: Colors.white,
-                                                    backgroundColor:
-                                                        Colors.blue,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              0.0),
-                                                    ),
+                                                      String orderId = data[index]
+                                                          .orderId
+                                                          .toString();
+                                                      showAlertDialog(
+                                                          context, orderId);
+                                                    },
+                                                    child: const Text('Mark As Recieved'),
                                                   ),
-                                                  onPressed: () {
-                                                    Navigator.push<void>(
-                                                      context,
-                                                      MaterialPageRoute<void>(
-                                                        builder: (BuildContext
-                                                                context) =>
-                                                            TrackOrderView(
-                                                          data[index]
-                                                              .orderId
-                                                              .toString(),
-                                                          data[index]
-                                                              .dateTime
-                                                              .toString(),
-                                                          data[index]
-                                                              .totalPrice,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: const Text('Track'),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                              Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  margin:
+                                                      const EdgeInsets.all(5),
+                                                  child: OutlinedButton(
+                                                    /*style: TextButton.styleFrom(
+                                                      primary: Colors.white,
+                                                      backgroundColor:
+                                                          Colors.blue,
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(2),
+                                                      ),
+                                                    ),*/
+                                                    onPressed: () {
+                                                      Navigator.push<void>(
+                                                        context,
+                                                        MaterialPageRoute<void>(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              TrackOrderView(
+                                                            data[index]
+                                                                .orderId
+                                                                .toString(),
+                                                            data[index]
+                                                                .dateTime
+                                                                .toString(),
+                                                            data[index]
+                                                                .totalPrice,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: const Text('View Order'),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }),
-                        ),
-                      ],
-                    );
-                  }
-                  return Center(
-                    child: Container(
-                      height: 100,
-                      width: 100,
-                      child: const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  );
-                }),
-          ),
-          Container(
-            child: FutureBuilder<List<orderModel>>(
-                future: completedOrders,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Text("Something went wrong");
-                  }
-                  //
-                  // if (snapshot.connectionState == ConnectionState.waiting ||
-                  //     !snapshot.hasData) {
-                  //   return CircularProgressIndicator();
-                  // }
-
-                  if (snapshot.hasData) {
-                    List<orderModel>? data = snapshot.data;
-                    print('has data in orders');
-                    return Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(top: 10, left: 5, bottom: 5),
-                          alignment: Alignment.topLeft,
-                          child: const Text(
-                            'Past Orders',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.left,
+                                  );
+                                }),
                           ),
+                        ],
+                      );
+                    }
+                    return Center(
+                      child: Container(
+                        height: 100,
+                        width: 100,
+                        child: const Center(
+                          child: CircularProgressIndicator(),
                         ),
-                        Container(
-                          height: 290,
-                          child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: data!.length,
-                              itemBuilder: (BuildContext context, index) {
-                                DateTime orderTime =
-                                    DateTime.parse(data[index].dateTime);
-                                return Card(
-                                  color: Colors.grey[200],
-                                  child: Container(
-                                    margin: const EdgeInsets.all(20),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                                flex: 2,
+                      ),
+                    );
+                  }),
+            ),
+            Container(
+              child: FutureBuilder<List<orderModel>>(
+                  future: completedOrders,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text("Something went wrong");
+                    }
+                    //
+                    // if (snapshot.connectionState == ConnectionState.waiting ||
+                    //     !snapshot.hasData) {
+                    //   return CircularProgressIndicator();
+                    // }
+
+                    if (snapshot.hasData) {
+                      List<orderModel>? data = snapshot.data;
+                      print('has data in orders');
+                      return Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(top: 10, left: 5, bottom: 5),
+                            alignment: Alignment.topLeft,
+                            child: const Text(
+                              'Past Orders',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          Container(
+                            height: 290,
+                            child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: data!.length,
+                                itemBuilder: (BuildContext context, index) {
+                                  DateTime orderTime =
+                                      DateTime.parse(data[index].dateTime);
+                                  return Card(
+                                    color: Colors.grey[200],
+                                    child: Container(
+                                      margin: const EdgeInsets.all(20),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                  flex: 2,
+                                                  child: Text(
+                                                      'Order No: ${data[index].orderId.toString()}')),
+                                              Expanded(
+                                                flex: 1,
                                                 child: Text(
-                                                    'Order No: ${data[index].orderId.toString()}')),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Text(
-                                                  (timeago.format(orderTime))),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              flex: 1,
-                                              child: Text(
-                                                  'Rs. ${data[index].totalPrice.toString()}'),
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Container(
-                                                margin:
-                                                    const EdgeInsets.all(15),
-                                                child: TextButton(
-                                                  style: TextButton.styleFrom(
-                                                    primary: Colors.white,
-                                                    backgroundColor:
-                                                        Colors.blue,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              0.0),
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.push<void>(
-                                                      context,
-                                                      MaterialPageRoute<void>(
-                                                        builder: (BuildContext
-                                                                context) =>
-                                                            TrackOrderView(
-                                                          data[index]
-                                                              .orderId
-                                                              .toString(),
-                                                          data[index]
-                                                              .dateTime
-                                                              .toString(),
-                                                          data[index]
-                                                              .totalPrice,
-                                                        ),
+                                                    (timeago.format(orderTime))),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 1,
+                                                child: Text(
+                                                    'Rs. ${data[index].totalPrice.toString()}'),
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  margin:
+                                                      const EdgeInsets.all(15),
+                                                  child: TextButton(
+                                                    style: TextButton.styleFrom(
+                                                      primary: Colors.white,
+                                                      backgroundColor:
+                                                          Colors.blue,
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                0.0),
                                                       ),
-                                                    );
-                                                  },
-                                                  child: const Text('View'),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.push<void>(
+                                                        context,
+                                                        MaterialPageRoute<void>(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              TrackOrderView(
+                                                            data[index]
+                                                                .orderId
+                                                                .toString(),
+                                                            data[index]
+                                                                .dateTime
+                                                                .toString(),
+                                                            data[index]
+                                                                .totalPrice,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: const Text('View'),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }),
+                                  );
+                                }),
+                          ),
+                        ],
+                      );
+                    }
+                    return Center(
+                      child: Container(
+                        height: 100,
+                        width: 100,
+                        child: const Center(
+                          child: CircularProgressIndicator(),
                         ),
-                      ],
-                    );
-                  }
-                  return Center(
-                    child: Container(
-                      height: 100,
-                      width: 100,
-                      child: const Center(
-                        child: CircularProgressIndicator(),
                       ),
-                    ),
-                  );
-                }),
-          ),
+                    );
+                  }),
+            ),
         ],
-      )
+      ),
+          )
           // Column(
           //    mainAxisAlignment: MainAxisAlignment.center,
           //    children: const [
