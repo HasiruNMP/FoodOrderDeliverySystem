@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FOODS Shop App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.brown,
       ),
       home: FutureBuilder(
         future: _initialization,
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
             print("Error");
           }
           if (snapshot.connectionState == ConnectionState.done) {
-            return HomeView();
+            return LoginView();
           }
           return const CircularProgressIndicator();
         },

@@ -116,7 +116,7 @@ class _NavigationViewState extends State<NavigationView> {
                 ),
                 Container(
                   color: Colors.white,
-                  child: const Center(child: DeliveryView()),
+                  child: const Center(),
                 ),
               ],
             ),

@@ -6,7 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
+import 'package:shopapp/globals.dart';
 import '../api/apiservice.dart';
 import '../model/orderitemsmodel.dart';
 import '../model/postEmployee.dart';
@@ -65,7 +65,7 @@ class PendingOrdersView extends StatefulWidget {
 class _PendingOrdersViewState extends State<PendingOrdersView> {
   Future<List<Data>> fetchData() async {
     final response = await http
-        .get(Uri.parse('https://localhost:7072/orders/getprocessedorders'));
+        .get(Uri.parse('${Urls.apiUrl}/orders/getprocessedorders'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => new Data.fromJson(data)).toList();
@@ -149,30 +149,32 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
     });
   }
 
+  int selOrder = 0;
+
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
+        const VerticalDivider(),
         Expanded(
           child: Column(
             children: [
-              const Expanded(
-                  child: SizedBox(
+              SizedBox(
                 width: double.infinity,
-                child: Card(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      "Pending Orders",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                      textAlign: TextAlign.center,
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Pending Orders",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.black87),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-              )),
+              ),
+              Divider(),
               Expanded(
-                flex: 11,
                 child: FutureBuilder<List<Data>>(
                     future: futureData,
                     builder: (context, snapshot) {
@@ -181,45 +183,55 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                         return ListView.builder(
                             itemCount: data!.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                onTap: () async {
-                                  updateOrderDetails(
-                                      data[index].OrderId,
-                                      data[index].UserId,
-                                      data[index].EmployeeId,
-                                      data[index].OrderStatus,
-                                      data[index].IsDelivered,
-                                      data[index].IsProcessed,
-                                      data[index].IsReceived,
-                                      DateTime.parse(data[index].DateTime)
-                                          .toString(),
-                                      data[index].TotalPrice,
-                                      data[index].Longitude,
-                                      data[index].Latitude);
-                                  callUserDetailsApi();
-                                  orderItems =
-                                      APIService.getOrderItems(OrderId);
-                                  setSelectedOrderId(data[index].OrderId);
+                              return Card(
+                                color: (selOrder == index)? Colors.brown.shade100 : Colors.brown.shade50,
+                                //elevation: 2,
+                                child: TextButton(
+                                    onPressed: () async {
+                                      selOrder = index;
+                                      updateOrderDetails(
+                                          data[index].OrderId,
+                                          data[index].UserId,
+                                          data[index].EmployeeId,
+                                          data[index].OrderStatus,
+                                          data[index].IsDelivered,
+                                          data[index].IsProcessed,
+                                          data[index].IsReceived,
+                                          DateTime.parse(data[index].DateTime).toString(),
+                                          data[index].TotalPrice,
+                                          data[index].Longitude,
+                                          data[index].Latitude);
+                                      callUserDetailsApi();
+                                      orderItems =
+                                          APIService.getOrderItems(OrderId);
+                                      setSelectedOrderId(data[index].OrderId);
 
-                                  print(data[index].EmployeeId);
-                                  deliveryInfo =
-                                      await APIService.getDeliveryInfo(
+                                      print(data[index].EmployeeId);
+                                      deliveryInfo = await APIService.getDeliveryInfo(
                                           data[index].EmployeeId);
-                                  setState(() {
-                                    deliveryPerson = deliveryInfo[0]["Name"];
-                                  });
-                                  //  deliverPersonInfo(deliveryInfo);
-                                },
-                                child: Card(
-                                  elevation: 2,
-                                  child: ListTile(
-                                    title: Text('Order No: ' +
-                                        data[index].OrderId.toString()),
-                                    subtitle: Text(
-                                        DateTime.parse(data[index].DateTime)
-                                            .toString()),
-                                  ),
-                                ),
+                                    },
+                                    child: Row(
+                                      //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: ListTile(
+                                            title: Text('Order No: ' +
+                                                data[index].OrderId.toString()),
+                                            subtitle: Text(DateTime.parse(
+                                                data[index].DateTime)
+                                                .toString()),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                          const EdgeInsets.only(right: 10),
+                                          child: Center(
+                                            child:
+                                            const Icon(Icons.navigate_next),
+                                          ),
+                                        ),
+                                      ],
+                                    )),
                               );
                             });
                       } else if (snapshot.hasError) {
@@ -240,280 +252,304 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
             ],
           ),
         ),
-        const VerticalDivider(
-          color: Colors.black26,
-        ),
+        const VerticalDivider(),
         Expanded(
           flex: 3,
           child: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
             child: Column(
               children: [
-                Expanded(
-                  child: Container(
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: const Text(
                       'Order Description',
                       style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          letterSpacing: 1),
+                        //color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        //letterSpacing: 1
+                      ),
                     ),
-                    alignment: Alignment.center,
                   ),
+                  alignment: Alignment.center,
                 ),
+                //Divider(),
                 Expanded(
                   child: Row(
                     children: [
-                      const Expanded(flex: 2, child: Text("Customer Name")),
-                      const Expanded(child: Text(":")),
                       Expanded(
-                        flex: 10,
-                        child: Text(
-                          '$fname $lname',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      const Expanded(flex: 2, child: Text("Phone No")),
-                      const Expanded(child: Text(":")),
-                      Expanded(
-                        flex: 10,
-                        child: Text(
-                          '$phoneNo',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      const Expanded(flex: 2, child: Text("Timestamp")),
-                      const Expanded(child: Text(":")),
-                      Expanded(
-                        flex: 10,
-                        child: Text(
-                          dateTime,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Row(
-                    children: [
-                      Expanded(flex: 2, child: Text("Order Items")),
-                      Expanded(child: Text(":")),
-                      Expanded(
-                        flex: 10,
-                        child: Card(
-                          child: Container(
-                            height: MediaQuery.of(context).size.height / 5,
-                            child: FutureBuilder<List<orderItemModel>>(
-                                future: orderItems,
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasError) {
-                                    return Text("Something went wrong ");
-                                  }
+                        child: Column(
+                          children: [
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("Order Items"),
+                                )),
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  color: Colors.red.shade50.withOpacity(0.5),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: FutureBuilder<List<orderItemModel>>(
+                                        future: orderItems,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasError) {
+                                            return Text("Something went wrong ");
+                                          }
 
-                                  // if (snapshot.connectionState ==
-                                  //         ConnectionState.waiting ||
-                                  //     !snapshot.hasData) {
-                                  //   return CircularProgressIndicator();
-                                  // }
+                                          if (snapshot.hasData) {
+                                            print('has data in Order Items');
+                                            List<orderItemModel>? data =
+                                                snapshot.data;
 
-                                  if (snapshot.hasData) {
-                                    print('has data in Order Items');
-                                    List<orderItemModel>? data = snapshot.data;
+                                            return ListView.builder(
+                                                scrollDirection: Axis.vertical,
+                                                shrinkWrap: true,
+                                                itemCount: data!.length,
+                                                itemBuilder:
+                                                    (BuildContext context, i) {
+                                                  productDetails =
+                                                      APIService.getProductDetails(
+                                                          data[i].productId);
 
-                                    return ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        shrinkWrap: true,
-                                        itemCount: data!.length,
-                                        itemBuilder: (BuildContext context, i) {
-                                          productDetails =
-                                              APIService.getProductDetails(
-                                                  data[i].productId);
+                                                  return FutureBuilder<
+                                                      List<productModel>>(
+                                                      future: productDetails,
+                                                      builder: (context, snapshot) {
+                                                        if (snapshot.hasError) {
+                                                          return Text(
+                                                              "Something went wrong future 2");
+                                                        }
 
-                                          return FutureBuilder<
-                                                  List<productModel>>(
-                                              future: productDetails,
-                                              builder: (context, snapshot) {
-                                                if (snapshot.hasError) {
-                                                  return Text(
-                                                      "Something went wrong future 2");
-                                                }
+                                                        // if (snapshot.connectionState ==
+                                                        //         ConnectionState.waiting ||
+                                                        //     !snapshot.hasData) {
+                                                        //   return CircularProgressIndicator();
+                                                        // }
 
-                                                // if (snapshot.connectionState ==
-                                                //         ConnectionState.waiting ||
-                                                //     !snapshot.hasData) {
-                                                //   return CircularProgressIndicator();
-                                                // }
+                                                        if (snapshot.hasData) {
+                                                          print(
+                                                              'has data in Order Items');
+                                                          List<productModel>?
+                                                          product = snapshot.data;
 
-                                                if (snapshot.hasData) {
-                                                  print(
-                                                      'has data in Order Items');
-                                                  List<productModel>? product =
-                                                      snapshot.data;
-
-                                                  return Container(
-                                                    margin: EdgeInsets.only(
-                                                        top: 10),
-                                                    child: ListView.builder(
-                                                        scrollDirection:
-                                                            Axis.vertical,
-                                                        shrinkWrap: true,
-                                                        itemCount:
-                                                            product!.length,
-                                                        itemBuilder:
-                                                            (BuildContext
-                                                                    context,
-                                                                index) {
-                                                          return Row(
-                                                            children: [
-                                                              Expanded(
-                                                                child: Text(
-                                                                  '${product[index].name}  ',
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child: Text(
-                                                                  ' ${data[i].quantity} x ${product[index].price}',
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .right,
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child: Text(
-                                                                  '=${product[index].price * data[i].quantity}',
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
+                                                          return Container(
+                                                            child: ListView.builder(
+                                                                scrollDirection:
+                                                                Axis.vertical,
+                                                                shrinkWrap: true,
+                                                                itemCount:
+                                                                product!.length,
+                                                                itemBuilder:
+                                                                    (BuildContext
+                                                                context,
+                                                                    index) {
+                                                                  return Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Expanded(
+                                                                          child: Text(
+                                                                            '${product[index].name}  ',
+                                                                            style:
+                                                                            const TextStyle(
+                                                                              //fontWeight: FontWeight.bold,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Expanded(
+                                                                          child: Container(
+                                                                            alignment: Alignment.centerRight,
+                                                                            child: Text(
+                                                                              '${data[i].quantity} x ${product[index].price}     =     ${product[index].price * data[i].quantity}',
+                                                                              textAlign:
+                                                                              TextAlign
+                                                                                  .right,
+                                                                              style:
+                                                                              const TextStyle(
+                                                                                //fontWeight: FontWeight.bold,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                }),
                                                           );
-                                                        }),
-                                                  );
-                                                }
-                                                return Container(
-                                                  height: 100,
-                                                  width: 100,
-                                                  child: const Center(
-                                                    child:
-                                                        CircularProgressIndicator(),
-                                                  ),
-                                                );
-                                              });
-                                        });
-                                  }
-                                  return Container(
-                                    height: 100,
-                                    width: 100,
-                                    child: const Center(
-                                      child: CircularProgressIndicator(),
+                                                        }
+                                                        return Container(
+                                                          height: 100,
+                                                          width: 100,
+                                                          child: const Center(
+                                                            child:
+                                                            CircularProgressIndicator(),
+                                                          ),
+                                                        );
+                                                      });
+                                                });
+                                          }
+                                          return Container(
+                                            height: 100,
+                                            width: 100,
+                                            child: const Center(
+                                              child: CircularProgressIndicator(),
+                                            ),
+                                          );
+                                        }),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: ListView(
+                                children: [
+                                  ListTile(
+                                    title: Text("Customer Name"),
+                                    subtitle: Text(
+                                      '$fname $lname',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  );
-                                }),
-                          ),
+                                  ),
+                                  ListTile(
+                                    title: Text("Phone Number"),
+                                    subtitle: Text(
+                                      '$phoneNo',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    title: Text("Time"),
+                                    subtitle: Text(
+                                      dateTime,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    title: Text("Total Price"),
+                                    subtitle: Text(
+                                      TotalPrice.toString(),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    title: Text("Delivery Person"),
+                                    subtitle: Text(deliveryPerson),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            /*Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    if (deliveryPerson != 'null') {
+                                      var updateStatus = await APIService
+                                          .updateOrderStatusNdelivery(
+                                          OrderId, EmployeeId);
+                                      if (updateStatus == 0) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            backgroundColor: Colors.blue,
+                                            content:
+                                            Text('Assigned Successfully!'),
+                                          ),
+                                        );
+                                        *//*Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                NewOrdersView(),
+                                          ),
+                                              (route) => false,
+                                        );*//*
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            backgroundColor: Colors.red,
+                                            content: Text('Failed to assigned!'),
+                                          ),
+                                        );
+                                      }
+
+                                      // updateOrders(selectedOrderId, deliveryPerson);
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          backgroundColor: Colors.red,
+                                          content: Text(
+                                              ' Please select a Delivery Person'),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: const Text('ASSIGN'),
+                                  ),
+                                ),
+                              ),
+                            ),*/
+                            SizedBox(height: 10,),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      const Expanded(flex: 2, child: Text("Total Price")),
-                      const Expanded(child: Text(":")),
+                      SizedBox(width: 8,),
                       Expanded(
-                        flex: 10,
-                        child: Text(
-                          TotalPrice.toString(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      const Expanded(flex: 2, child: Text("Location")),
-                      const Expanded(child: Text(":")),
-                      Expanded(
-                        flex: 10,
-                        child: Text(
-                          Latitude.toString() + " , " + Longitude.toString(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                    flex: 4,
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
-                      child: Stack(children: [
-                        GoogleMap(
-                          markers: {
-                            Marker(
-                              markerId: const MarkerId('_distressedAnimal'),
-                              infoWindow:
-                                  const InfoWindow(title: 'Delivery Location'),
-                              icon: BitmapDescriptor.defaultMarker,
-                              position: LatLng(Latitude, Longitude),
+                        child: Column(
+                          children: [
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("Delivery Location"),
+                                )),
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: GoogleMap(
+                                  markers: {
+                                    Marker(
+                                      markerId:
+                                      const MarkerId('_distressedAnimal'),
+                                      infoWindow: const InfoWindow(
+                                          title: 'Delivery Location'),
+                                      icon: BitmapDescriptor.defaultMarker,
+                                      position: LatLng(Latitude, Longitude),
+                                    )
+                                  },
+                                  initialCameraPosition: CameraPosition(
+                                      target: LatLng(Latitude, Longitude),
+                                      zoom: 16),
+                                ),
+                              ),
                             )
-                          },
-                          initialCameraPosition: CameraPosition(
-                              target: LatLng(Latitude, Longitude), zoom: 16),
+                          ],
                         ),
-                      ]),
-                    )),
-                Expanded(
-                  child: Text("\nDelivery Person: " + deliveryPerson),
+                      )
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
         ),
+        const VerticalDivider(),
       ],
     );
   }

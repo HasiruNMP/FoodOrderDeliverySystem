@@ -3,11 +3,12 @@ import 'package:http/http.dart' as http;
 import '../model/orderitemsmodel.dart';
 import '../model/postEmployee.dart';
 import '../model/productmodel.dart';
+import 'package:shopapp/globals.dart';
 
 class APIService {
   static Future getUserDetailsbyUserId(int userid) async {
     http.Response response = await http.get(Uri.parse(
-        'https://localhost:7072/users/getuserdetailsbyuserid?userId=1'));
+        '${Urls.apiUrl}/users/getuserdetailsbyuserid?userId=1'));
 
     if (response.statusCode == 200) {
       print(response.statusCode);
@@ -22,7 +23,7 @@ class APIService {
 
   static Future<List<orderItemModel>> getOrderItems(int orderId) async {
     final response = await http.get(Uri.parse(
-        'https://localhost:7072/orders/getOrderItems?orderId=$orderId'));
+        '${Urls.apiUrl}/orders/getOrderItems?orderId=$orderId'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse
@@ -35,7 +36,7 @@ class APIService {
 
   static Future<List<productModel>> getProductDetails(int productId) async {
     final response = await http.get(Uri.parse(
-        'https://localhost:7072/orders/getproductdetails?productId=$productId'));
+        '${Urls.apiUrl}/orders/getproductdetails?productId=$productId'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse
@@ -48,7 +49,7 @@ class APIService {
 
   static Future<List<PostEmployee>> getDeliveryEmployees() async {
     final response = await http.get(Uri.parse(
-        'https://localhost:7072/employee/getDeliveryEmployeesDetails'));
+        '${Urls.apiUrl}/employee/getDeliveryEmployeesDetails'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse
@@ -64,7 +65,7 @@ class APIService {
     var request = http.Request(
       'PUT',
       Uri.parse(
-          'https://localhost:7072/orders/putprocessed?orderId=$orderId&empId=$empId'),
+          '${Urls.apiUrl}/orders/putprocessed?orderId=$orderId&empId=$empId'),
     );
     request.headers.addAll(headers);
 
@@ -83,7 +84,7 @@ class APIService {
 
   static Future getDeliveryInfo(int empId) async {
     http.Response response = await http.get(Uri.parse(
-        'https://localhost:7072/employee/getemployeedetails?empId=$empId'));
+        '${Urls.apiUrl}/employee/getemployeedetails?empId=$empId'));
 
     if (response.statusCode == 200) {
       print(response.statusCode);
@@ -102,7 +103,7 @@ class APIService {
     var request = http.Request(
       'PUT',
       Uri.parse(
-          'https://localhost:7072/products/putproductdetails?ProductId=$prodId&Name=$name&Description=$description&Price=$price&ImgUrl=$imgUrl'),
+          '${Urls.apiUrl}/products/putproductdetails?ProductId=$prodId&Name=$name&Description=$description&Price=$price&ImgUrl=$imgUrl'),
     );
     request.headers.addAll(headers);
 
@@ -121,7 +122,7 @@ class APIService {
 
   static Future deleteAccount(int prodId) async {
     var request = http.Request('DELETE',
-        Uri.parse('https://localhost:7072/products?ProductId=$prodId'));
+        Uri.parse('${Urls.apiUrl}/products?ProductId=$prodId'));
 
     http.StreamedResponse response = await request.send();
 
@@ -138,7 +139,7 @@ class APIService {
   static Future addDeliveryPerson(PostEmployee user) async {
     var headers = {'Content-Type': 'application/json'};
     var request = http.Request(
-        'POST', Uri.parse('https://localhost:7072/employee/adddeliveryperson'));
+        'POST', Uri.parse('${Urls.apiUrl}/employee/adddeliveryperson'));
     request.body = json.encode({
       "department": "Delivery",
       "nic": user.nic,
@@ -168,7 +169,7 @@ class APIService {
     var request = http.Request(
       'PUT',
       Uri.parse(
-          'https://localhost:7072/employee/updateemployeedetails?empId=$empId&nic=$nic&name=$name&license=$license&phone=$phone&username=$userName'),
+          '${Urls.apiUrl}/employee/updateemployeedetails?empId=$empId&nic=$nic&name=$name&license=$license&phone=$phone&username=$userName'),
     );
     request.headers.addAll(headers);
 
@@ -187,7 +188,7 @@ class APIService {
 
   static Future deleteEmployee(int empId) async {
     var request = http.Request(
-        'DELETE', Uri.parse('https://localhost:7072/employee?empId=$empId'));
+        'DELETE', Uri.parse('${Urls.apiUrl}/employee?empId=$empId'));
 
     http.StreamedResponse response = await request.send();
 
