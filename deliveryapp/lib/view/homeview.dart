@@ -20,7 +20,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
 
   int _selectedIndex = 0;
-  IO.Socket socket = IO.io('http://10.0.2.2:3000/', OptionBuilder().setTransports(['websocket']).build());
+  IO.Socket socket = IO.io('https://106f-2402-d000-a500-123b-bc62-280d-ecbb-6fc4.in.ngrok.io/', OptionBuilder().setTransports(['websocket']).build());
 
   static final List<Widget> _widgetOptions = <Widget>[
     // PENDING ORDERS TAB
@@ -62,7 +62,10 @@ class _HomeViewState extends State<HomeView> {
       distanceFilter: 100,
     );
 
-
+    Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position? position) {
+      print(position == null ? 'Unknown' : '${position.latitude.toString()}, ${position.longitude.toString()}');
+      socket.emit('message', position);
+    });
 
     return "";
   }
@@ -78,19 +81,11 @@ class _HomeViewState extends State<HomeView> {
   }
 
 
-  final LocationSettings locationSettings = LocationSettings(
-    accuracy: LocationAccuracy.high,
-    distanceFilter: 100,
-  );
-
   @override
   void initState() {
     _determinePosition();
     connectAndListen();
-    Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position? position) {
-      print(position == null ? 'Unknown' : '${position.latitude.toString()}, ${position.longitude.toString()}');
-      socket.emit('LocationUpdated', "${position!.latitude},${position.longitude}");
-    });
+
   }
 
   @override
