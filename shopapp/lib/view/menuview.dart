@@ -134,8 +134,8 @@ class _MenuViewState extends State<MenuView> {
   }
 
   Future<List<Category>> fetchCategories() async {
-    final response = await http
-        .get(Uri.parse('${Urls.apiUrl}/api/Category/getcategories'));
+    final response =
+        await http.get(Uri.parse('${Urls.apiUrl}/api/Category/getcategories'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => Category.fromJson(data)).toList();
@@ -190,7 +190,8 @@ class _MenuViewState extends State<MenuView> {
     }
   }
 
-  Future addProduct(int CategoryId, String Name, String Description, double Price, String ImgUrl) async {
+  Future addProduct(int CategoryId, String Name, String Description,
+      double Price, String ImgUrl) async {
     final response = await http.post(
         Uri.parse(
             '${Urls.apiUrl}/products/postproduct?CategoryId=$CategoryId&Name=$Name&Description=$Description&Price=$Price&ImgUrl=$ImgUrl'),
@@ -208,7 +209,8 @@ class _MenuViewState extends State<MenuView> {
     }
   }
 
-  Future updateProduct(int ProductId, int CategoryId, String Name, String Description, double Price, String ImgUrl) async {
+  Future updateProduct(int ProductId, int CategoryId, String Name,
+      String Description, double Price, String ImgUrl) async {
     final response = await http.put(
         Uri.parse(
             '${Urls.apiUrl}/products/putproductdetails?ProductId=$ProductId&CategoryId=$CategoryId&Name=$Name&Description=$Description&Price=$Price&ImgUrl=$ImgUrl'),
@@ -298,8 +300,7 @@ class _MenuViewState extends State<MenuView> {
                 },
               ),
               TextFormField(
-                decoration:
-                InputDecoration(hintText: "Description"),
+                decoration: InputDecoration(hintText: "Description"),
                 controller: newDescription,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -325,12 +326,8 @@ class _MenuViewState extends State<MenuView> {
               OutlinedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    addProduct(
-                        CategoryId,
-                        newName.text,
-                        newDescription.text,
-                        double.parse(newPrice.text),
-                        'img.url');
+                    addProduct(CategoryId, newName.text, newDescription.text,
+                        double.parse(newPrice.text), 'img.url');
                   }
                 },
                 child: Text("Add New"),
@@ -352,15 +349,17 @@ class _MenuViewState extends State<MenuView> {
             flex: 2,
             child: Column(
               children: [
-                SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 SizedBox(
                   width: double.infinity,
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
                       "Categories",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -385,9 +384,11 @@ class _MenuViewState extends State<MenuView> {
                               itemCount: data!.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return Card(
-                                  color: (selCat == index)? Colors.brown.shade100 : Colors.brown.shade50,
+                                  color: (selCat == index)
+                                      ? Colors.brown.shade100
+                                      : Colors.brown.shade50,
                                   child: TextButton(
-                                    onPressed: (){
+                                    onPressed: () {
                                       selCat = index;
                                       setCategoryId(data[index].CategoryId,
                                           data[index].Name, data[index].ImgUrl);
@@ -398,7 +399,7 @@ class _MenuViewState extends State<MenuView> {
                                     child: ListTile(
                                       title: Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(data[index].Name),
                                           const Icon(Icons.navigate_next),
@@ -428,23 +429,33 @@ class _MenuViewState extends State<MenuView> {
                       children: [
                         Expanded(
                           child: OutlinedButton(
-                            onPressed: (){
+                            onPressed: () {
                               showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return addCat();
                                   });
                             },
-                            child: Text("ADD NEW",style: TextStyle(color: Colors.indigo),),
-                          ),),
-                        SizedBox(width: 5,),
+                            child: Text(
+                              "ADD NEW",
+                              style: TextStyle(color: Colors.indigo),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
                         Expanded(
                           child: OutlinedButton(
-                            onPressed: (){
-                              //deleteCategory(CategoryId);
+                            onPressed: () {
+                              deleteCategory(CategoryId);
                             },
-                            child: Text("DELETE",style: TextStyle(color: Colors.red),),
-                          ),),
+                            child: Text(
+                              "DELETE",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -457,15 +468,17 @@ class _MenuViewState extends State<MenuView> {
             flex: 2,
             child: Column(
               children: [
-                SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 SizedBox(
                   width: double.infinity,
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
                       "Products",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -491,40 +504,42 @@ class _MenuViewState extends State<MenuView> {
                               itemCount: data!.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return Card(
-                                  color: (selPro == index)? Colors.brown.shade100 : Colors.brown.shade50,
+                                  color: (selPro == index)
+                                      ? Colors.brown.shade100
+                                      : Colors.brown.shade50,
                                   child: TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        selPro = index;
-                                        prodId = data[index].ProductId.toString();
-                                        imgUrl = data[index].ImgUrl;
-                                        updateName.text = data[index].Name;
-                                        updateDescription.text =
-                                            data[index].Description;
-                                        updatePrice.text =
-                                            data[index].Price.toString();
-                                      });
+                                      onPressed: () {
+                                        setState(() {
+                                          selPro = index;
+                                          prodId =
+                                              data[index].ProductId.toString();
+                                          imgUrl = data[index].ImgUrl;
+                                          updateName.text = data[index].Name;
+                                          updateDescription.text =
+                                              data[index].Description;
+                                          updatePrice.text =
+                                              data[index].Price.toString();
+                                        });
 
-                                      updateItemDetails(
-                                        data[index].ProductId,
-                                        data[index].CategoryId,
-                                        data[index].Description,
-                                        data[index].ImgUrl,
-                                        data[index].Name,
-                                        data[index].Price,
-                                      );
-                                    },
-                                    child: ListTile(
-                                      title: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(data[index].Name),
-                                          const Icon(Icons.navigate_next),
-                                        ],
-                                      ),
-                                    )
-                                  ),
+                                        updateItemDetails(
+                                          data[index].ProductId,
+                                          data[index].CategoryId,
+                                          data[index].Description,
+                                          data[index].ImgUrl,
+                                          data[index].Name,
+                                          data[index].Price,
+                                        );
+                                      },
+                                      child: ListTile(
+                                        title: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(data[index].Name),
+                                            const Icon(Icons.navigate_next),
+                                          ],
+                                        ),
+                                      )),
                                 );
                               });
                         }
@@ -586,20 +601,22 @@ class _MenuViewState extends State<MenuView> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "Product Details",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ),
                   Divider(),
                   Expanded(
                     child: Column(
-                    children: [
-                      Expanded(
-                        flex: 8,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 200),
-                            child: ListView(
-                              children: [
-                                /*Container(
+                      children: [
+                        Expanded(
+                            flex: 8,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 200),
+                              child: ListView(
+                                children: [
+                                  /*Container(
                                   alignment: Alignment.centerLeft,
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -610,258 +627,299 @@ class _MenuViewState extends State<MenuView> {
                                     ],
                                   ),
                                 ),*/
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    "Item Code: ${prodId.toString()}",
-                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      "Item Code: ${prodId.toString()}",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Text(
+                                              "Category Name:",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                          Text(Name),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    "Product Image",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    child: SizedBox(
+                                      height: 400,
+                                      width: 400,
+                                      child: Image.network(
+                                        "https://fodsfiles.herokuapp.com/static/images/p${prodId}.png",
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  //Divider(),
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 1,
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Text(
+                                                "Item Name:",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 4,
+                                            child: TextFormField(
+                                              controller: updateName,
+                                              decoration: InputDecoration(
+                                                  hintText: "New Value",
+                                                  border: OutlineInputBorder()),
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'Please enter item name';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  //Divider(),
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 1,
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Text(
+                                                "Description:",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 4,
+                                            child: TextFormField(
+                                              controller: updateDescription,
+                                              decoration: InputDecoration(
+                                                  hintText: "New Value",
+                                                  border: OutlineInputBorder()),
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'Please enter description';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  //Divider(),
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 1,
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Text(
+                                                "Price:",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 4,
+                                            child: TextFormField(
+                                              controller: updatePrice,
+                                              decoration: InputDecoration(
+                                                  hintText: "New Value",
+                                                  border: OutlineInputBorder()),
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'Please enter item price';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )),
+                        Divider(),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(200, 5, 200, 15),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return addPro();
+                                        },
+                                      );
+                                    },
+                                    child: Text(
+                                      "ADD NEW",
+                                      style: TextStyle(color: Colors.indigo),
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 20,
+                                  width: 5,
                                 ),
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Text(
-                                            "Category Name:",style: TextStyle(fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        Text(Name),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Text(
-                                  "Product Image",style: TextStyle(fontWeight: FontWeight.bold),
-                                ),SizedBox(
-                                  height: 5,
-                                ),
-                                Container(
-                                  alignment: Alignment.center,
-                                  child: SizedBox(
-                                    height: 400,
-                                    width: 400,
-                                    child: Image.network(
-                                      "https://fodsfiles.herokuapp.com/static/images/p${prodId}.png",
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () async {
+                                      if (_formKey3.currentState!.validate()) {
+                                        var updateStatus = await APIService
+                                            .updateProductDetails(
+                                                int.parse(prodId),
+                                                updateName.text,
+                                                updateDescription.text,
+                                                double.parse(updatePrice.text),
+                                                imgUrl);
+                                        if (updateStatus == 0) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              backgroundColor: Colors.blue,
+                                              content:
+                                                  Text('Updated Successfully!'),
+                                            ),
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              backgroundColor: Colors.red,
+                                              content:
+                                                  Text('Failed to Update!'),
+                                            ),
+                                          );
+                                        }
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                    child: Text(
+                                      "UPDATE",
+                                      style:
+                                          TextStyle(color: Colors.deepOrange),
                                     ),
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 10,
+                                  width: 5,
                                 ),
-                                //Divider(),
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 1,
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                              "Item Name:",
-                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () async {
+                                      if (prodId != 'null') {
+                                        var deleteStatus =
+                                            await APIService.deleteAccount(
+                                                int.parse(prodId));
+                                        if (deleteStatus == 0) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              backgroundColor: Colors.blue,
+                                              content:
+                                                  Text('Deleted Successfully!'),
                                             ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: TextFormField(
-                                            controller: updateName,
-                                            decoration: InputDecoration(
-                                                hintText: "New Value",
-                                                border: OutlineInputBorder()),
-                                            validator: (value) {
-                                              if (value == null || value.isEmpty) {
-                                                return 'Please enter item name';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                //Divider(),
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 1,
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                              "Description:",style: TextStyle(fontWeight: FontWeight.bold),
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              backgroundColor: Colors.red,
+                                              content:
+                                                  Text('Failed to Delete!'),
                                             ),
+                                          );
+                                        }
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            backgroundColor: Colors.red,
+                                            content: Text(
+                                                'Please select the item you want to delete!'),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: TextFormField(
-                                            controller: updateDescription,
-                                            decoration: InputDecoration(
-                                                hintText: "New Value",
-                                                border: OutlineInputBorder()),
-                                            validator: (value) {
-                                              if (value == null || value.isEmpty) {
-                                                return 'Please enter description';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                //Divider(),
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 1,
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                              "Price:",style: TextStyle(fontWeight: FontWeight.bold),
-
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: TextFormField(
-                                            controller: updatePrice,
-                                            decoration: InputDecoration(
-                                                hintText: "New Value",
-                                                border: OutlineInputBorder()),
-                                            validator: (value) {
-                                              if (value == null || value.isEmpty) {
-                                                return 'Please enter item price';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
+                                        );
+                                      }
+                                    },
+                                    child: Text(
+                                      "DELETE",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                          )),
-                      Divider(),
-                      Container(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(200, 5, 200, 15),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: OutlinedButton(
-                                  onPressed: (){
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return addPro();
-                                      },
-                                    );
-                                  },
-                                  child: Text("ADD NEW",style: TextStyle(color: Colors.indigo),),
-                                ),),
-                              SizedBox(width: 5,),
-                              Expanded(
-                                child: OutlinedButton(
-                                  onPressed: () async {
-                                    if (_formKey3.currentState!.validate()) {
-                                      var updateStatus =
-                                      await APIService.updateProductDetails(
-                                          int.parse(prodId),
-                                          updateName.text,
-                                          updateDescription.text,
-                                          double.parse(updatePrice.text),
-                                          imgUrl);
-                                      if (updateStatus == 0) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                            backgroundColor: Colors.blue,
-                                            content: Text('Updated Successfully!'),
-                                          ),
-                                        );
-                                      } else {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                            backgroundColor: Colors.red,
-                                            content: Text('Failed to Update!'),
-                                          ),
-                                        );
-                                      }
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  child: Text("UPDATE",style: TextStyle(color: Colors.deepOrange),),
-                                ),
-                              ),
-                              SizedBox(width: 5,),
-                              Expanded(
-                                child: OutlinedButton(
-                                  onPressed: () async {
-                                    if (prodId != 'null') {
-                                      var deleteStatus = await APIService.deleteAccount(
-                                          int.parse(prodId));
-                                      if (deleteStatus == 0) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                            backgroundColor: Colors.blue,
-                                            content: Text('Deleted Successfully!'),
-                                          ),
-                                        );
-                                      } else {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                            backgroundColor: Colors.red,
-                                            content: Text('Failed to Delete!'),
-                                          ),
-                                        );
-                                      }
-                                    } else {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          backgroundColor: Colors.red,
-                                          content: Text(
-                                              'Please select the item you want to delete!'),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  child: Text("DELETE",style: TextStyle(color: Colors.red),),
-                                ),
-                              ),
-                            ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -878,7 +936,10 @@ class _MenuViewState extends State<MenuView> {
     Uint8List data = await image!.readAsBytes();
     List<int> list = data.cast();
 
-    var request = http.MultipartRequest('POST', Uri.parse('https://d21f-2402-d000-a400-52ba-fc34-b963-a9c3-6e76.ngrok.io/uploads'));
+    var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            'https://d21f-2402-d000-a400-52ba-fc34-b963-a9c3-6e76.ngrok.io/uploads'));
     request.files.add(
         await http.MultipartFile.fromBytes('image', list, filename: '123.png'));
 
