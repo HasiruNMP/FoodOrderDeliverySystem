@@ -185,7 +185,9 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                             itemCount: data!.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Card(
-                                color: (selOrder == index)? Colors.brown.shade100 : Colors.brown.shade50,
+                                color: (selOrder == index)
+                                    ? Colors.brown.shade100
+                                    : Colors.brown.shade50,
                                 //elevation: 2,
                                 child: TextButton(
                                     onPressed: () {
@@ -288,7 +290,9 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                             itemCount: data!.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Card(
-                                color: (selDel == index)? Colors.brown.shade100 : Colors.brown.shade50,
+                                color: (selDel == index)
+                                    ? Colors.brown.shade100
+                                    : Colors.brown.shade50,
                                 child: TextButton(
                                     onPressed: () {
                                       setState(() {
@@ -379,7 +383,8 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                                         future: orderItems,
                                         builder: (context, snapshot) {
                                           if (snapshot.hasError) {
-                                            return Text("Something went wrong ");
+                                            return Text(
+                                                "Something went wrong ");
                                           }
 
                                           if (snapshot.hasData) {
@@ -393,14 +398,15 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                                                 itemCount: data!.length,
                                                 itemBuilder:
                                                     (BuildContext context, i) {
-                                                  productDetails =
-                                                      APIService.getProductDetails(
+                                                  productDetails = APIService
+                                                      .getProductDetails(
                                                           data[i].productId);
 
                                                   return FutureBuilder<
                                                           List<productModel>>(
                                                       future: productDetails,
-                                                      builder: (context, snapshot) {
+                                                      builder:
+                                                          (context, snapshot) {
                                                         if (snapshot.hasError) {
                                                           return Text(
                                                               "Something went wrong future 2");
@@ -416,51 +422,54 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                                                           print(
                                                               'has data in Order Items');
                                                           List<productModel>?
-                                                              product = snapshot.data;
+                                                              product =
+                                                              snapshot.data;
 
                                                           return Container(
-                                                            child: ListView.builder(
-                                                                scrollDirection:
-                                                                    Axis.vertical,
-                                                                shrinkWrap: true,
-                                                                itemCount:
-                                                                    product!.length,
-                                                                itemBuilder:
-                                                                    (BuildContext
-                                                                            context,
-                                                                        index) {
-                                                                  return Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Row(
-                                                                      children: [
-                                                                        Expanded(
-                                                                          child: Text(
-                                                                            '${product[index].name}  ',
-                                                                            style:
-                                                                                const TextStyle(
-                                                                              //fontWeight: FontWeight.bold,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        Expanded(
-                                                                          child: Container(
-                                                                            alignment: Alignment.centerRight,
-                                                                            child: Text(
-                                                                              '${data[i].quantity} x ${product[index].price}     =     ${product[index].price * data[i].quantity}',
-                                                                              textAlign:
-                                                                                  TextAlign
-                                                                                      .right,
-                                                                              style:
-                                                                                  const TextStyle(
+                                                            child: ListView
+                                                                .builder(
+                                                                    scrollDirection:
+                                                                        Axis
+                                                                            .vertical,
+                                                                    shrinkWrap:
+                                                                        true,
+                                                                    itemCount:
+                                                                        product!
+                                                                            .length,
+                                                                    itemBuilder:
+                                                                        (BuildContext
+                                                                                context,
+                                                                            index) {
+                                                                      return Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.all(8.0),
+                                                                        child:
+                                                                            Row(
+                                                                          children: [
+                                                                            Expanded(
+                                                                              child: Text(
+                                                                                '${product[index].name}  ',
+                                                                                style: const TextStyle(
                                                                                     //fontWeight: FontWeight.bold,
+                                                                                    ),
                                                                               ),
                                                                             ),
-                                                                          ),
+                                                                            Expanded(
+                                                                              child: Container(
+                                                                                alignment: Alignment.centerRight,
+                                                                                child: Text(
+                                                                                  '${data[i].quantity} x ${product[index].price}     =     ${product[index].price * data[i].quantity}',
+                                                                                  textAlign: TextAlign.right,
+                                                                                  style: const TextStyle(
+                                                                                      //fontWeight: FontWeight.bold,
+                                                                                      ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ],
                                                                         ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                }),
+                                                                      );
+                                                                    }),
                                                           );
                                                         }
                                                         return Container(
@@ -478,7 +487,8 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                                             height: 100,
                                             width: 100,
                                             child: const Center(
-                                              child: CircularProgressIndicator(),
+                                              child:
+                                                  CircularProgressIndicator(),
                                             ),
                                           );
                                         }),
@@ -550,27 +560,29 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                                                 Text('Assigned Successfully!'),
                                           ),
                                         );
-                                        Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                                NewOrdersView(),
-                                          ),
-                                          (route) => false,
-                                        );
+                                        // Navigator.pushAndRemoveUntil(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //     builder: (BuildContext context) =>
+                                        //         NewOrdersView(),
+                                        //   ),
+                                        //   (route) => false,
+                                        // );
                                       } else {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           const SnackBar(
                                             backgroundColor: Colors.red,
-                                            content: Text('Failed to assigned!'),
+                                            content:
+                                                Text('Failed to assigned!'),
                                           ),
                                         );
                                       }
 
                                       // updateOrders(selectedOrderId, deliveryPerson);
                                     } else {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         const SnackBar(
                                           backgroundColor: Colors.red,
                                           content: Text(
@@ -586,11 +598,15 @@ class _NewOrdersViewState extends State<NewOrdersView> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 10,),
+                            SizedBox(
+                              height: 10,
+                            ),
                           ],
                         ),
                       ),
-                      SizedBox(width: 8,),
+                      SizedBox(
+                        width: 8,
+                      ),
                       Expanded(
                         child: Column(
                           children: [

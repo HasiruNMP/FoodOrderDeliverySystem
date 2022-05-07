@@ -64,8 +64,8 @@ class PendingOrdersView extends StatefulWidget {
 
 class _PendingOrdersViewState extends State<PendingOrdersView> {
   Future<List<Data>> fetchData() async {
-    final response = await http
-        .get(Uri.parse('${Urls.apiUrl}/orders/getprocessedorders'));
+    final response =
+        await http.get(Uri.parse('${Urls.apiUrl}/orders/getprocessedorders'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => new Data.fromJson(data)).toList();
@@ -184,7 +184,9 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                             itemCount: data!.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Card(
-                                color: (selOrder == index)? Colors.brown.shade100 : Colors.brown.shade50,
+                                color: (selOrder == index)
+                                    ? Colors.brown.shade100
+                                    : Colors.brown.shade50,
                                 //elevation: 2,
                                 child: TextButton(
                                     onPressed: () async {
@@ -197,7 +199,8 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                                           data[index].IsDelivered,
                                           data[index].IsProcessed,
                                           data[index].IsReceived,
-                                          DateTime.parse(data[index].DateTime).toString(),
+                                          DateTime.parse(data[index].DateTime)
+                                              .toString(),
                                           data[index].TotalPrice,
                                           data[index].Longitude,
                                           data[index].Latitude);
@@ -207,8 +210,10 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                                       setSelectedOrderId(data[index].OrderId);
 
                                       print(data[index].EmployeeId);
-                                      deliveryInfo = await APIService.getDeliveryInfo(
-                                          data[index].EmployeeId);
+                                      deliveryInfo =
+                                          await APIService.getDeliveryInfo(
+                                              data[index].EmployeeId);
+                                      deliveryPerson = deliveryInfo[0]["Name"];
                                     },
                                     child: Row(
                                       //mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -218,16 +223,16 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                                             title: Text('Order No: ' +
                                                 data[index].OrderId.toString()),
                                             subtitle: Text(DateTime.parse(
-                                                data[index].DateTime)
+                                                    data[index].DateTime)
                                                 .toString()),
                                           ),
                                         ),
                                         Padding(
                                           padding:
-                                          const EdgeInsets.only(right: 10),
+                                              const EdgeInsets.only(right: 10),
                                           child: Center(
                                             child:
-                                            const Icon(Icons.navigate_next),
+                                                const Icon(Icons.navigate_next),
                                           ),
                                         ),
                                       ],
@@ -298,7 +303,8 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                                         future: orderItems,
                                         builder: (context, snapshot) {
                                           if (snapshot.hasError) {
-                                            return Text("Something went wrong ");
+                                            return Text(
+                                                "Something went wrong ");
                                           }
 
                                           if (snapshot.hasData) {
@@ -312,14 +318,15 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                                                 itemCount: data!.length,
                                                 itemBuilder:
                                                     (BuildContext context, i) {
-                                                  productDetails =
-                                                      APIService.getProductDetails(
+                                                  productDetails = APIService
+                                                      .getProductDetails(
                                                           data[i].productId);
 
                                                   return FutureBuilder<
-                                                      List<productModel>>(
+                                                          List<productModel>>(
                                                       future: productDetails,
-                                                      builder: (context, snapshot) {
+                                                      builder:
+                                                          (context, snapshot) {
                                                         if (snapshot.hasError) {
                                                           return Text(
                                                               "Something went wrong future 2");
@@ -335,51 +342,54 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                                                           print(
                                                               'has data in Order Items');
                                                           List<productModel>?
-                                                          product = snapshot.data;
+                                                              product =
+                                                              snapshot.data;
 
                                                           return Container(
-                                                            child: ListView.builder(
-                                                                scrollDirection:
-                                                                Axis.vertical,
-                                                                shrinkWrap: true,
-                                                                itemCount:
-                                                                product!.length,
-                                                                itemBuilder:
-                                                                    (BuildContext
-                                                                context,
-                                                                    index) {
-                                                                  return Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Row(
-                                                                      children: [
-                                                                        Expanded(
-                                                                          child: Text(
-                                                                            '${product[index].name}  ',
-                                                                            style:
-                                                                            const TextStyle(
-                                                                              //fontWeight: FontWeight.bold,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        Expanded(
-                                                                          child: Container(
-                                                                            alignment: Alignment.centerRight,
-                                                                            child: Text(
-                                                                              '${data[i].quantity} x ${product[index].price}     =     ${product[index].price * data[i].quantity}',
-                                                                              textAlign:
-                                                                              TextAlign
-                                                                                  .right,
-                                                                              style:
-                                                                              const TextStyle(
-                                                                                //fontWeight: FontWeight.bold,
+                                                            child: ListView
+                                                                .builder(
+                                                                    scrollDirection:
+                                                                        Axis
+                                                                            .vertical,
+                                                                    shrinkWrap:
+                                                                        true,
+                                                                    itemCount:
+                                                                        product!
+                                                                            .length,
+                                                                    itemBuilder:
+                                                                        (BuildContext
+                                                                                context,
+                                                                            index) {
+                                                                      return Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.all(8.0),
+                                                                        child:
+                                                                            Row(
+                                                                          children: [
+                                                                            Expanded(
+                                                                              child: Text(
+                                                                                '${product[index].name}  ',
+                                                                                style: const TextStyle(
+                                                                                    //fontWeight: FontWeight.bold,
+                                                                                    ),
                                                                               ),
                                                                             ),
-                                                                          ),
+                                                                            Expanded(
+                                                                              child: Container(
+                                                                                alignment: Alignment.centerRight,
+                                                                                child: Text(
+                                                                                  '${data[i].quantity} x ${product[index].price}     =     ${product[index].price * data[i].quantity}',
+                                                                                  textAlign: TextAlign.right,
+                                                                                  style: const TextStyle(
+                                                                                      //fontWeight: FontWeight.bold,
+                                                                                      ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ],
                                                                         ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                }),
+                                                                      );
+                                                                    }),
                                                           );
                                                         }
                                                         return Container(
@@ -387,7 +397,7 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                                                           width: 100,
                                                           child: const Center(
                                                             child:
-                                                            CircularProgressIndicator(),
+                                                                CircularProgressIndicator(),
                                                           ),
                                                         );
                                                       });
@@ -397,7 +407,8 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                                             height: 100,
                                             width: 100,
                                             child: const Center(
-                                              child: CircularProgressIndicator(),
+                                              child:
+                                                  CircularProgressIndicator(),
                                             ),
                                           );
                                         }),
@@ -469,14 +480,14 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                                             Text('Assigned Successfully!'),
                                           ),
                                         );
-                                        *//*Navigator.pushAndRemoveUntil(
+                                        */ /*Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(
                                             builder: (BuildContext context) =>
                                                 NewOrdersView(),
                                           ),
                                               (route) => false,
-                                        );*//*
+                                        );*/ /*
                                       } else {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
@@ -505,11 +516,15 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                                 ),
                               ),
                             ),*/
-                            SizedBox(height: 10,),
+                            SizedBox(
+                              height: 10,
+                            ),
                           ],
                         ),
                       ),
-                      SizedBox(width: 8,),
+                      SizedBox(
+                        width: 8,
+                      ),
                       Expanded(
                         child: Column(
                           children: [
@@ -526,7 +541,7 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                                   markers: {
                                     Marker(
                                       markerId:
-                                      const MarkerId('_distressedAnimal'),
+                                          const MarkerId('_distressedAnimal'),
                                       infoWindow: const InfoWindow(
                                           title: 'Delivery Location'),
                                       icon: BitmapDescriptor.defaultMarker,

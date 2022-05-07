@@ -65,7 +65,7 @@ class _LoginViewState extends State<LoginView> {
         title: const Center(child: Text('Login')),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 50,horizontal: 350),
+        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 350),
         child: Column(
           children: [
             SizedBox(height: 50.0),
@@ -121,7 +121,8 @@ class _LoginViewState extends State<LoginView> {
                             ),
                             SizedBox(height: 20.0),
                             Container(
-                              margin: const EdgeInsets.only(left: 10, right: 10),
+                              margin:
+                                  const EdgeInsets.only(left: 10, right: 10),
                               child: TextFormField(
                                 controller: _userPassworController,
                                 decoration: InputDecoration(
@@ -154,13 +155,14 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ),
                       Container(
-                        margin: const EdgeInsets.only(right: 50, left: 50, top: 40),
+                        margin:
+                            const EdgeInsets.only(right: 50, left: 50, top: 40),
                         child: SizedBox(
                           width: 250,
                           height: 50,
                           child: TextButton(
                               style: TextButton.styleFrom(
-                                backgroundColor: Colors.blue,
+                                backgroundColor: Colors.brown[400],
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(2.0),
                                 ),
