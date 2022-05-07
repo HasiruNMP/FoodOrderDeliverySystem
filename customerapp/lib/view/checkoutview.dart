@@ -10,13 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:payhere_mobilesdk_flutter/payhere_mobilesdk_flutter.dart';
-
+import 'package:customerapp/global.dart' as global;
+import '../api/apiservice.dart';
 import '../controller/cart.dart';
 import 'homeview.dart';
 import 'package:pay/pay.dart';
 
 class CheckoutView extends StatefulWidget {
-
   LatLng delLoc;
   CheckoutView(this.delLoc, {Key? key}) : super(key: key);
 
@@ -26,10 +26,9 @@ class CheckoutView extends StatefulWidget {
 
 class _CheckoutViewState extends State<CheckoutView> {
   double quantityPrice = 0;
-  late String fname;
-  late String lname;
-  late String fullname;
-  late String phoneNo;
+  String fname = 'null';
+  String lname = 'null';
+  String phoneNo = 'null';
   late String totalPrice;
   late String items;
   late int orderNum;
@@ -43,12 +42,12 @@ class _CheckoutViewState extends State<CheckoutView> {
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   late LatLng lastTap;
   late CameraPosition initLocation;
+  var user;
 
   @override
   void initState() {
     super.initState();
-
-    getPhoneNo();
+    CallApi();
     totalPrice = Cart.totalPrice.toString();
 
     itemsArr = [
@@ -58,15 +57,17 @@ class _CheckoutViewState extends State<CheckoutView> {
     print(itemsArr);
   }
 
-  void getPhoneNo() async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    if (auth.currentUser != null) {
-      setState(() {
-        phoneNo = auth.currentUser!.phoneNumber!;
-      });
+  Future<void> CallApi() async {
+    user = await APIService.getUserDetails(global.phoneNo);
+    updateUi(user);
+  }
 
-      print(phoneNo);
-    }
+  void updateUi(dynamic user) {
+    setState(() {
+      fname = user[0]["FirstName"];
+      lname = user[0]["LastName"];
+      phoneNo = user[0]["Phone"];
+    });
   }
 
   void Pay() {
@@ -118,7 +119,6 @@ class _CheckoutViewState extends State<CheckoutView> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,10 +132,15 @@ class _CheckoutViewState extends State<CheckoutView> {
               child: Container(
                 child: ListView(
                   children: [
-                    SizedBox(height: 5,),
+                    SizedBox(
+                      height: 5,
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text("Delivery Location",style: TextStyle(fontWeight: FontWeight.bold),),
+                      child: Text(
+                        "Delivery Location",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                     Container(
                       height: MediaQuery.of(context).size.height / 3.2,
@@ -144,7 +149,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                         child: GoogleMap(
                           mapType: MapType.normal,
                           initialCameraPosition: CameraPosition(
-                            target: LatLng(widget.delLoc.latitude, widget.delLoc.longitude),
+                            target: LatLng(widget.delLoc.latitude,
+                                widget.delLoc.longitude),
                             zoom: 10,
                           ),
                           onMapCreated: _onMapCreated,
@@ -157,34 +163,66 @@ class _CheckoutViewState extends State<CheckoutView> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8, 8, 8, 2),
-                      child: Text("Customer Details",style: TextStyle(fontWeight: FontWeight.bold),),
+                      child: Text(
+                        "Customer Details",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(5, 2, 8, 0),
-                      child: Text("    Name: ",),
-                    ),Padding(
-                      padding: const EdgeInsets.fromLTRB(5, 3, 8, 0),
-                      child: Text("    Phone: ",),
+                      child: Row(
+                        children: [
+                          Text(
+                            "    Name: ",
+                          ),
+                          Text(
+                            "$fname $lname",
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 10,),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(5, 3, 8, 0),
+                      child: Row(
+                        children: [
+                          Text(
+                            "    Phone: ",
+                          ),
+                          Text(
+                            "$phoneNo",
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8, 8, 8, 2),
-                      child: Text("Order Description",style: TextStyle(fontWeight: FontWeight.bold),),
+                      child: Text(
+                        "Order Description",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                     Container(
                       height: MediaQuery.of(context).size.height / 3.4,
                       child: ListView(
-                        children: List.generate(Cart.basketItems.length,(index){
+                        children:
+                            List.generate(Cart.basketItems.length, (index) {
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(15, 8, 15, 0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("${Cart.basketItems[index].name} [${Cart.basketItems[index].price} x ${Cart.basketItems[index].quantity}]"),
-                                Text("   =  ${Cart.basketItems[index].quantity*Cart.basketItems[index].price}"),
+                                Text(
+                                    "${Cart.basketItems[index].name} [${Cart.basketItems[index].price} x ${Cart.basketItems[index].quantity}]"),
+                                Text(
+                                    "   =  ${Cart.basketItems[index].quantity * Cart.basketItems[index].price}"),
                               ],
                             ),
                           );
@@ -192,7 +230,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                       ),
                     ),
                     Center(
-                      child: Text("Total: ${Cart.totalPrice.toString()}",
+                      child: Text(
+                        "Total: ${Cart.totalPrice.toString()}",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -211,10 +250,12 @@ class _CheckoutViewState extends State<CheckoutView> {
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: ElevatedButton(
-                        onPressed: (){
+                        onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => OrderCompleted(widget.delLoc,Cart.totalPrice)),
+                            MaterialPageRoute(
+                                builder: (context) => OrderCompleted(
+                                    widget.delLoc, Cart.totalPrice)),
                           );
                         },
                         child: Text("Confirm & Pay"),

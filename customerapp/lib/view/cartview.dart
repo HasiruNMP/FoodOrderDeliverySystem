@@ -33,7 +33,6 @@ class _CartViewState extends State<CartView> {
                           child: Icon(
                         Icons.report_gmailerrorred_outlined,
                         size: 100,
-                        color: Colors.blue,
                       )),
                       SizedBox(
                         height: 20,
@@ -70,7 +69,8 @@ class _CartViewState extends State<CartView> {
                               itemCount: Cart.basketItems.length,
                               itemBuilder: (context, index) {
                                 return Container(
-                                  height: (MediaQuery.of(context).size.height) / 6,
+                                  height:
+                                      (MediaQuery.of(context).size.height) / 6,
                                   child: Card(
                                     color: Colors.amber.shade50,
                                     child: Row(
@@ -80,7 +80,8 @@ class _CartViewState extends State<CartView> {
                                           child: Container(
                                             margin: EdgeInsets.all(8),
                                             child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(5),
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
                                               child: Image.network(
                                                 "${Urls.filesUrl}/static/images/p${Cart.basketItems[index].id}.png",
                                                 //Cart.basketItems[index].imgUrl,
@@ -91,84 +92,101 @@ class _CartViewState extends State<CartView> {
                                         ),
                                         Expanded(
                                           child: Column(
-                                          children: [
-                                            Container(
-                                              margin: const EdgeInsets.only(top: 20),
-                                              child: Column(
-                                                children: [
-                                                  Container(
-                                                      margin: const EdgeInsets.only(left: 12),
-                                                      alignment: Alignment.centerLeft,
-                                                      child: Text(
-                                                        Cart.basketItems[index].name,
-                                                        style: const TextStyle(
-                                                          fontSize: 16,
-                                                          color: Colors.black87,
-                                                          fontWeight:
-                                                          FontWeight.bold,
-                                                        ),
-                                                      )),
-                                                  Container(
-                                                    alignment:
-                                                    Alignment.centerLeft,
-                                                    child: Row(
-                                                      children: [
-                                                        IconButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                cart.updateProduct(
-                                                                    Cart.basketItems[
-                                                                    index],
-                                                                    Cart.basketItems[index]
-                                                                        .quantity -
-                                                                        1);
-                                                              });
-                                                            },
-                                                            icon: const Icon(Icons
-                                                                .remove_circle_outlined)),
-                                                        Text(
+                                            children: [
+                                              Container(
+                                                margin: const EdgeInsets.only(
+                                                    top: 20),
+                                                child: Column(
+                                                  children: [
+                                                    Container(
+                                                        margin: const EdgeInsets
+                                                            .only(left: 12),
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Text(
                                                           Cart
                                                               .basketItems[
-                                                          index]
-                                                              .quantity
-                                                              .toString(),
-                                                        ),
-                                                        IconButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                cart.updateProduct(
-                                                                    Cart.basketItems[index],
-                                                                    Cart.basketItems[index]
-                                                                        .quantity +
-                                                                        1);
-                                                              });
-                                                            },
-                                                            icon: const Icon(Icons
-                                                                .add_circle)),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    margin: const EdgeInsets.only(left: 12),
+                                                                  index]
+                                                              .name,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 16,
+                                                            color:
+                                                                Colors.black87,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        )),
+                                                    Container(
                                                       alignment:
-                                                      Alignment.centerLeft,
-                                                      child: Text(
-                                                          'Rs.${Cart.basketItems[index].price.toString()}',style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Colors.black87,
-                                                        fontWeight:
-                                                        FontWeight.bold,
-                                                      ),),
+                                                          Alignment.centerLeft,
+                                                      child: Row(
+                                                        children: [
+                                                          IconButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  cart.updateProduct(
+                                                                      Cart.basketItems[
+                                                                          index],
+                                                                      Cart.basketItems[index]
+                                                                              .quantity -
+                                                                          1);
+                                                                });
+                                                              },
+                                                              icon: const Icon(Icons
+                                                                  .remove_circle_outlined)),
+                                                          Text(
+                                                            Cart
+                                                                .basketItems[
+                                                                    index]
+                                                                .quantity
+                                                                .toString(),
+                                                          ),
+                                                          IconButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  cart.updateProduct(
+                                                                      Cart.basketItems[
+                                                                          index],
+                                                                      Cart.basketItems[index]
+                                                                              .quantity +
+                                                                          1);
+                                                                });
+                                                              },
+                                                              icon: const Icon(Icons
+                                                                  .add_circle)),
+                                                        ],
+                                                      ),
                                                     ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),),
+                                                    Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              left: 12),
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Text(
+                                                        'Rs.${Cart.basketItems[index].price.toString()}',
+                                                        style: TextStyle(
+                                                          fontSize: 15,
+                                                          color: Colors.black87,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                         Container(
                                           alignment: Alignment.topRight,
                                           child: IconButton(
-                                            icon: Icon(Icons.close,color: Colors.black45,),
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: Colors.black45,
+                                            ),
                                             onPressed: () {
                                               cart.remove(
                                                   Cart.basketItems[index]);
@@ -194,12 +212,13 @@ class _CartViewState extends State<CartView> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                    "Total: Rs.${Cart.totalPrice.toString()}",style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black87,
-                                  fontWeight:
-                                  FontWeight.bold,
-                                ),),
+                                  "Total: Rs.${Cart.totalPrice.toString()}",
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 ElevatedButton(
                                     onPressed: () {
                                       Navigator.push(

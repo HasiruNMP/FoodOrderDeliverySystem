@@ -221,7 +221,7 @@ class _OtpSetupState extends State<OtpSetup> {
                       child: TextButton(
                         style: TextButton.styleFrom(
                           primary: Colors.white,
-                          backgroundColor: Colors.blue,
+                          backgroundColor: Colors.red,
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
@@ -360,7 +360,7 @@ class _OtpSetupState extends State<OtpSetup> {
                         'RESEND OTP',
                         style: TextStyle(
                           fontSize: 15.0,
-                          color: Colors.blue,
+                          color: Colors.red,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -386,7 +386,7 @@ class _OtpSetupState extends State<OtpSetup> {
                   child: TextButton(
                     style: TextButton.styleFrom(
                       primary: Colors.white,
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.red,
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -413,34 +413,32 @@ class _OtpSetupState extends State<OtpSetup> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text('OTP Verification'),
-          leading: InkWell(
-            onTap: () {
-              setState(() {
-                showLoading = false;
-                currentState = MobileVerificationState.SHOW_MOBILE_FORM_STATE;
-              });
-            },
-            child: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.black54,
-            ),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text('OTP Verification'),
+        leading: InkWell(
+          onTap: () {
+            setState(() {
+              showLoading = false;
+              currentState = MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+            });
+          },
+          child: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black54,
           ),
         ),
-        body: Container(
-          child: showLoading
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : currentState == MobileVerificationState.SHOW_MOBILE_FORM_STATE
-                  ? getMobileFormWidget(context)
-                  : getOtpFormWidget(context),
-        ),
+      ),
+      body: Container(
+        child: showLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : currentState == MobileVerificationState.SHOW_MOBILE_FORM_STATE
+                ? getMobileFormWidget(context)
+                : getOtpFormWidget(context),
       ),
     );
   }
