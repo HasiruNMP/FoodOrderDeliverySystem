@@ -11,6 +11,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:payhere_mobilesdk_flutter/payhere_mobilesdk_flutter.dart';
 import 'package:customerapp/global.dart' as global;
+import 'package:twilio_flutter/twilio_flutter.dart';
 import '../api/apiservice.dart';
 import '../controller/cart.dart';
 import 'homeview.dart';
@@ -255,7 +256,10 @@ class _CheckoutViewState extends State<CheckoutView> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => OrderCompleted(
-                                    widget.delLoc, Cart.totalPrice)),
+                                    widget.delLoc,
+                                    Cart.totalPrice,
+                                    fname,
+                                    phoneNo)),
                           );
                         },
                         child: Text("Confirm & Pay"),

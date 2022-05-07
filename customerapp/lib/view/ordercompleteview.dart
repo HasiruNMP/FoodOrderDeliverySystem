@@ -4,13 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:customerapp/global.dart' as global;
+import 'package:twilio_flutter/twilio_flutter.dart';
 
 import '../controller/cart.dart';
 
 class OrderCompleted extends StatefulWidget {
   LatLng delLoc;
   double total;
-  OrderCompleted(this.delLoc, this.total);
+  String fname;
+  String phoneNo;
+  OrderCompleted(this.delLoc, this.total, this.fname, this.phoneNo);
 
   @override
   State<OrderCompleted> createState() => _OrderCompletedState();
@@ -26,6 +29,19 @@ class _OrderCompletedState extends State<OrderCompleted> {
     placeOrder();
   }
 
+  late TwilioFlutter twilioFlutter;
+
+  void sendSms() async {
+    twilioFlutter = TwilioFlutter(
+        accountSid: 'AC0af284e07dd78c2b827ec036ba464315',
+        authToken: '388f87fc7fc687da4f6cd9653ba7ab7b',
+        twilioNumber: '+19289853180');
+    twilioFlutter.sendSMS(
+        toNumber: widget.phoneNo,
+        messageBody:
+            'Hello ${widget.fname}! Your Order ID is $orderID. Thank you!');
+  }
+
   void placeOrder() async {
     orderID = await APIService.addNewOrder(
       NewOrderModel(
@@ -36,9 +52,11 @@ class _OrderCompletedState extends State<OrderCompleted> {
         lng: widget.delLoc.longitude,
       ),
     );
+
     setState(() {
       p = true;
     });
+    sendSms();
   }
 
   @override
