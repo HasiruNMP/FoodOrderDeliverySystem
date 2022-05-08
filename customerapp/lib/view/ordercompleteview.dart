@@ -37,9 +37,9 @@ class _OrderCompletedState extends State<OrderCompleted> {
         authToken: '388f87fc7fc687da4f6cd9653ba7ab7b',
         twilioNumber: '+19289853180');
     twilioFlutter.sendSMS(
-        toNumber: 'phoneno',
+        toNumber: ' widget.phoneNo',
         messageBody:
-            'Hello ${widget.fname}! Your Order ID is $orderID. Thank you!');
+            'Hello ${widget.fname}! Your Order ID is $orderID, Your package will be delivered to you soon. Thank you!');
   }
 
   void placeOrder() async {
