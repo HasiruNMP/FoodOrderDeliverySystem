@@ -158,5 +158,29 @@ namespace FODS_API.Controllers
             return new JsonResult(table);
         }
 
+
+        [HttpGet, Route("getemployeedetailsbyusername")]
+        public JsonResult getEmployeeDetailsByUname(String username)
+        {
+            string query = @"select * from dbo.EMPLOYEES
+            Where  Username ='" + username + "' ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("FODSDB");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+
+                }
+            }
+            return new JsonResult(table);
+        }
+
     }
 }
