@@ -140,7 +140,7 @@ namespace FODS_API.Controllers
         [HttpGet, Route("getprofiledetails")]
         public JsonResult getprofiledetails(int EmployeeId)
         {
-            string query = @"SELECT * FROM [dbo].[EMPLOYEES] WHERE EmployeeId =1";
+            string query = @"SELECT * FROM [dbo].[EMPLOYEES] WHERE EmployeeId ="+ EmployeeId;
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("FODSDB");
             SqlDataReader myReader;

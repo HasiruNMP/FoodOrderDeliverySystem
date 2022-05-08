@@ -1,14 +1,15 @@
 import 'dart:async';
 
+import 'package:deliveryapp/common/globals.dart';
 import 'package:deliveryapp/view/historyview.dart';
 import 'package:deliveryapp/view/orderview.dart';
 import 'package:deliveryapp/view/pendingview.dart';
 import 'package:deliveryapp/view/profileview.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:socket_io_client/socket_io_client.dart';
-
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -18,9 +19,11 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-
+  late String userEmail;
   int _selectedIndex = 0;
-  IO.Socket socket = IO.io('https://106f-2402-d000-a500-123b-bc62-280d-ecbb-6fc4.in.ngrok.io/', OptionBuilder().setTransports(['websocket']).build());
+  IO.Socket socket = IO.io(
+      'https://106f-2402-d000-a500-123b-bc62-280d-ecbb-6fc4.in.ngrok.io/',
+      OptionBuilder().setTransports(['websocket']).build());
 
   static final List<Widget> _widgetOptions = <Widget>[
     // PENDING ORDERS TAB
@@ -54,7 +57,8 @@ class _HomeViewState extends State<HomeView> {
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
     }
 
     final LocationSettings locationSettings = LocationSettings(
@@ -62,15 +66,18 @@ class _HomeViewState extends State<HomeView> {
       distanceFilter: 100,
     );
 
-    Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position? position) {
-      print(position == null ? 'Unknown' : '${position.latitude.toString()}, ${position.longitude.toString()}');
+    Geolocator.getPositionStream(locationSettings: locationSettings)
+        .listen((Position? position) {
+      print(position == null
+          ? 'Unknown'
+          : '${position.latitude.toString()}, ${position.longitude.toString()}');
       socket.emit('message', position);
     });
 
     return "";
   }
 
-  void connectAndListen(){
+  void connectAndListen() {
     socket.onConnect((_) {
       print('connect');
     });
@@ -80,12 +87,17 @@ class _HomeViewState extends State<HomeView> {
     socket.onDisconnect((_) => print('disconnect'));
   }
 
-
   @override
   void initState() {
     _determinePosition();
     connectAndListen();
+    FirebaseAuth auth = FirebaseAuth.instance;
 
+    if (auth.currentUser != null) {
+      userEmail = auth.currentUser!.email!;
+      print(auth.currentUser!.email);
+      Globals.userName = userEmail.substring(0, 6);
+    }
   }
 
   @override

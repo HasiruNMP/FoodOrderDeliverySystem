@@ -1,10 +1,10 @@
-
 class Globals {
   static late String userID;
+  static String userName = '';
+  static late int EmployeeId;
 }
 
 class Urls {
-
   //----API URL---------------------------------------------
 
   //https://10.0.2.2:7072
@@ -13,7 +13,6 @@ class Urls {
 
   static String apiUrl = "https://fodsapi.azurewebsites.net";
 
-
   //----Files API URL---------------------------------------
 
   //https://10.0.2.2:7072
@@ -21,6 +20,4 @@ class Urls {
   //https://fodsfiles.herokuapp.com
 
   static String filesUrl = "https://fodsfiles.herokuapp.com";
-
-
 }

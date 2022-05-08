@@ -4,8 +4,9 @@ import 'package:deliveryapp/common/globals.dart';
 import 'package:deliveryapp/model/order.dart';
 import 'package:deliveryapp/view/deliverview.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart'as http;
+import 'package:http/http.dart' as http;
 
 class PendingOrdersView extends StatefulWidget {
   const PendingOrdersView({Key? key}) : super(key: key);
@@ -17,8 +18,30 @@ class PendingOrdersView extends StatefulWidget {
 class _PendingOrdersViewState extends State<PendingOrdersView> {
   var pendingorders = [];
   bool loaded = false;
+  late int empId;
+
+  Future getEmployeeDetails() async {
+    http.Response response = await http.get(Uri.parse(
+        '${Urls.apiUrl}/employee/getemployeedetailsbyusername?username=${Globals.userName}'));
+
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+      String data = response.body;
+      print(data);
+      var info = jsonDecode(data);
+      empId = info[0]["EmployeeId"];
+      Globals.EmployeeId = empId;
+      print(empId);
+    } else {
+      print(response.statusCode);
+      print(response.reasonPhrase);
+    }
+
+    fetchpendingorders();
+  }
+
   Future fetchpendingorders() async {
-    String url = "${Urls.apiUrl}/orders/getorderlist?EmployeeId=19";
+    String url = "${Urls.apiUrl}/orders/getorderlist?EmployeeId=$empId";
 
     final response = await http.get(Uri.parse(url));
     var resJson = json.decode(response.body);
@@ -28,16 +51,18 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
       pendingorders = a.toList();
       print(pendingorders);
       setState(() => loaded = true);
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
   }
+
   @override
   void initState() {
-    fetchpendingorders();
+    getEmployeeDetails();
+    print(Globals.userName);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,40 +70,52 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
         title: Text('Pending Orders'),
       ),
       body: SafeArea(
-        child: (loaded)?
-        Container(
-          child: (pendingorders.length != 0)?
-          ListView(
-              children: List.generate(pendingorders.length, (index) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                  child: Card(
-                    //elevation: 0,
-                    color: Colors.brown.shade50,
-                    child: InkWell(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => DeliverView(
-                          pendingorders[index]['OrderId'].toString(),
-                          "${pendingorders[index]['FirstName']} ${pendingorders[index]['LastName']}",
-                          pendingorders[index]['Phone'],
-                          GeoPoint(pendingorders[index]['Latitude'],pendingorders[index]['Longitude']),
-                          pendingorders[index]['TotalPrice'].toString(),
-                        ),
-                        ),
+        child: (loaded)
+            ? Container(
+                child: (pendingorders.length != 0)
+                    ? ListView(
+                        children: List.generate(pendingorders.length, (index) {
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                          child: Card(
+                            //elevation: 0,
+                            color: Colors.brown.shade50,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DeliverView(
+                                      pendingorders[index]['OrderId']
+                                          .toString(),
+                                      'pending',
+                                      "${pendingorders[index]['FirstName']} ${pendingorders[index]['LastName']}",
+                                      pendingorders[index]['Phone'],
+                                      GeoPoint(pendingorders[index]['Latitude'],
+                                          pendingorders[index]['Longitude']),
+                                      pendingorders[index]['TotalPrice']
+                                          .toString(),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: ListTile(
+                                title: Text("Order ID: " +
+                                    pendingorders[index]['OrderId'].toString()),
+                                subtitle: Text(pendingorders[index]['datetime']
+                                    .toString()),
+                              ),
+                            ),
+                          ),
                         );
-                      },
-                      child: ListTile(
-                        title: Text("Order ID: " + pendingorders[index]['OrderId'].toString()),
-                        subtitle: Text(pendingorders[index]['datetime'].toString()),
+                      }))
+                    : Center(
+                        child: Text("No Results"),
                       ),
-                    ),
-                  ),
-                );
-              })
-          ):
-          Center(child: Text("No Results"),),
-        ):
-        Center(child: CircularProgressIndicator(),),
+              )
+            : Center(
+                child: CircularProgressIndicator(),
+              ),
       ),
     );
   }

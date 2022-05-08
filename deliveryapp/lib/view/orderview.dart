@@ -19,7 +19,8 @@ class _OrderViewState extends State<OrderView> {
       ),
       body: SafeArea(
         child: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection("orders")
+          stream: FirebaseFirestore.instance
+              .collection("orders")
               .where("deliveryPerson", isEqualTo: "jagathg")
               .where("orderStatus", isEqualTo: "pending")
               .snapshots(),
@@ -36,24 +37,23 @@ class _OrderViewState extends State<OrderView> {
             if (snapshot.hasData) {
               print('has data');
               return ListView.builder(
-
                 itemCount: snapshot.data!.docs.length,
 
                 // ignore: missing_return
                 itemBuilder: (BuildContext context, index) {
                   QueryDocumentSnapshot category = snapshot.data!.docs[index];
 
-                  GeoPoint cLocation= category['customerLocation'];
+                  GeoPoint cLocation = category['customerLocation'];
                   String cName = category['customerName'];
                   String cPhone = category['customerPhone'];
                   String deliveryPerson = category['deliveryPerson'];
                   //String itemCounts = category['itemCounts'];
                   String itemID = category['orderid'];
                   Timestamp orderTime = category['orderTime'];
-                  var time = DateTime.fromMicrosecondsSinceEpoch(orderTime.microsecondsSinceEpoch);
+                  var time = DateTime.fromMicrosecondsSinceEpoch(
+                      orderTime.microsecondsSinceEpoch);
                   String orderId = category['orderid'];
                   String totalPrice = category['totalPrice'];
-
 
                   return ListTile(
                     title: Column(
@@ -61,37 +61,43 @@ class _OrderViewState extends State<OrderView> {
                         ListTile(
                           title: Card(
                             child: Padding(
-                              padding:  EdgeInsets.all(8.0),
+                              padding: EdgeInsets.all(8.0),
                               child: Column(
                                 children: [
                                   Padding(
-                                    padding:  EdgeInsets.all(8.0),
+                                    padding: EdgeInsets.all(8.0),
                                     child: Row(
-                                      children:  [
+                                      children: [
                                         Expanded(
                                           flex: 2,
                                           child: Text(
                                             'Order No.',
-                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                         Expanded(child: Text(':')),
-                                        Expanded(flex: 4, child: Text(itemID.toString())),
+                                        Expanded(
+                                            flex: 4,
+                                            child: Text(itemID.toString())),
                                       ],
                                     ),
                                   ),
                                   Padding(
-                                    padding:  EdgeInsets.all(8.0),
+                                    padding: EdgeInsets.all(8.0),
                                     child: Row(
-                                      children:  [
+                                      children: [
                                         Expanded(
                                             flex: 2,
                                             child: Text('Time',
-                                                style:
-                                                TextStyle(fontWeight: FontWeight.bold))),
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold))),
                                         Expanded(child: Text(':')),
                                         Expanded(
-                                            flex: 4, child: Text('${time.hour} : ${time.minute}')),
+                                            flex: 4,
+                                            child: Text(
+                                                '${time.hour} : ${time.minute}')),
                                       ],
                                     ),
                                   ),
@@ -111,10 +117,17 @@ class _OrderViewState extends State<OrderView> {
                                         flex: 3,
                                         child: OutlinedButton(
                                           onPressed: () {
-                                            Navigator.push(context,
+                                            Navigator.push(
+                                              context,
                                               MaterialPageRoute(
                                                 builder: (context) {
-                                                  return DeliverView(orderId,cName,cPhone,cLocation,totalPrice);
+                                                  return DeliverView(
+                                                      orderId,
+                                                      'gg',
+                                                      cName,
+                                                      cPhone,
+                                                      cLocation,
+                                                      totalPrice);
                                                 },
                                               ),
                                             );

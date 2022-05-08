@@ -9,12 +9,12 @@ class CurrentUser {
 }
 
 class Auth with ChangeNotifier {
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Stream<CurrentUser> get onAuthStateChanged => _auth.authStateChanges().map((User? user) => CurrentUser(user!.uid));
+  Stream<CurrentUser> get onAuthStateChanged =>
+      _auth.authStateChanges().map((User? user) => CurrentUser(user!.uid));
 
-  void signIn(String username, String password) async{
+  void signIn(String username, String password) async {
     String email = username + '@fods.lk';
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -30,8 +30,7 @@ class Auth with ChangeNotifier {
     }
   }
 
-  void signOut() async{
+  void signOut() async {
     await FirebaseAuth.instance.signOut();
   }
-
 }

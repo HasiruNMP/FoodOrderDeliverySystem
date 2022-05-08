@@ -121,6 +121,27 @@ namespace FODS_API.Controllers
             return new JsonResult("Updated Successfully!");
         }
 
+
+        [HttpPut, Route("updateorderasdelivered")]
+        public JsonResult updateOrderAsDelivered(int orderId)
+        {
+            string query = @"UPDATE dbo.ORDERS SET IsDelivered='1' WHERE OrderId='" + orderId + "' ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("FODSDB");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                }
+            }
+            return new JsonResult("Updated Successfully!");
+        }
+
         [HttpGet, Route("fetchneworders")]
         public JsonResult fetchNewOrders()
         {
@@ -208,7 +229,7 @@ namespace FODS_API.Controllers
         [HttpGet, Route("getorderlist")]
         public JsonResult getOrderlist(int EmployeeId)
         {
-            string query = @"SELECT * FROM [dbo].[OrderDetails] WHERE EmployeeId='" + EmployeeId + "' AND OrderStatus='pending'";
+            string query = @"SELECT * FROM [dbo].[OrderDetails] WHERE EmployeeId='" + EmployeeId + "' AND IsDelivered='0'";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("FODSDB");
             SqlDataReader myReader;
@@ -225,6 +246,28 @@ namespace FODS_API.Controllers
             }
             return new JsonResult(table);
         }
+
+        [HttpGet, Route("getcompleteddeliveryorders")]
+        public JsonResult getCompletedDeliveryOrders(int EmployeeId)
+        {
+            string query = @"SELECT * FROM [dbo].[OrderDetails] WHERE EmployeeId='" + EmployeeId + "' AND IsDelivered='1'";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("FODSDB");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+            return new JsonResult(table);
+        }
+
 
         [HttpPost, Route("placeneworder")]
         public ActionResult placeOrder(int userId, double price, double lat, double lng, DateTime time)

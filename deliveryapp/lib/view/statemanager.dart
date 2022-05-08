@@ -16,13 +16,12 @@ class StateManager extends StatefulWidget {
 class _StateManagerState extends State<StateManager> {
   @override
   Widget build(BuildContext context) {
-
-    final auth = Provider.of<Auth>(context,listen: false);
+    final auth = Provider.of<Auth>(context, listen: false);
 
     return StreamBuilder<CurrentUser>(
         stream: auth.onAuthStateChanged,
         builder: (context, snapshot) {
-          if(snapshot.connectionState == ConnectionState.active){
+          if (snapshot.connectionState == ConnectionState.active) {
             final currentUser = snapshot.data;
             if ((currentUser != null)) {
               Globals.userID = currentUser.id;
@@ -30,7 +29,7 @@ class _StateManagerState extends State<StateManager> {
                 value: currentUser,
                 child: HomeView(),
               );
-            }else{
+            } else {
               return LoginView();
             }
           }
@@ -41,12 +40,9 @@ class _StateManagerState extends State<StateManager> {
               ),
             ),
           );
-        }
-    );
+        });
   }
 }
-
-
 
 /*class _StateManagerState extends State<StateManager> {
   @override
