@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 using FODS_API.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FODS_API.Controllers
 {
@@ -20,6 +21,7 @@ namespace FODS_API.Controllers
             _configuration = configuration;
         }
         [HttpPost, Route("postcategory")]
+        [Authorize]
         public JsonResult PostCategory( string Name, string ImgUrl)
         {
             string query = @"insert into [dbo].[CATEGORIES] values('" + Name + "','" + ImgUrl + "')";
@@ -62,6 +64,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpPut, Route("putcategorydetails")]
+        [Authorize]
         public JsonResult PutCategoryDetails(int CategoryId, string Name, string ImgUrl)
         {
             string query = @"UPDATE [dbo].[CATEGORIES] SET Name = '" + Name + "',ImgUrl = '" + ImgUrl + "' WHERE CategoryId =" + CategoryId;
@@ -83,6 +86,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         public JsonResult DeleteCategory(int CategoryId)
         {
             string query = @"delete from dbo.CATEGORIES where CategoryId=" + CategoryId;

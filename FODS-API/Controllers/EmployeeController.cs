@@ -1,4 +1,5 @@
 ﻿using FODS_API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -18,6 +19,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpGet, Route("getDeliveryEmployeesDetails")]
+        [Authorize]
         public JsonResult getDeliveryEmployees()
         {
             string query = @"select * from dbo.EMPLOYEES
@@ -41,6 +43,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpGet, Route("getemployeedetails")]
+        [Authorize]
         public JsonResult getEmployeeDetails(int empId)
         {
             string query = @"select * from dbo.EMPLOYEES
@@ -64,6 +67,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpPost, Route("adddeliveryperson")]
+        [Authorize]
         public JsonResult addUserDetails(Employee user)
         {
             string query = @"insert into dbo.EMPLOYEES values(@Department,@NIC,@Name,@License,@Phone,@Username)";
@@ -95,6 +99,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpPut, Route("updateemployeedetails")]
+        [Authorize]
         public JsonResult PutProductDetails(int empId,string nic, string name, string license, string phone, string username)
         {
             string query = @"UPDATE [dbo].[EMPLOYEES] SET NIC= '" + nic + "',Name = '" + name + "',License = " + license + ",Phone = '" + phone + "',Username = '" + username + "' WHERE EmployeeId =" + empId;
@@ -116,6 +121,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         public JsonResult DeleteEmployee(int empId)
         {
             string query = @"delete from dbo.EMPLOYEES where EmployeeId=" + empId;
@@ -138,6 +144,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpGet, Route("getprofiledetails")]
+        [Authorize]
         public JsonResult getprofiledetails(int EmployeeId)
         {
             string query = @"SELECT * FROM [dbo].[EMPLOYEES] WHERE EmployeeId ="+ EmployeeId;
@@ -160,6 +167,7 @@ namespace FODS_API.Controllers
 
 
         [HttpGet, Route("getemployeedetailsbyusername")]
+        [Authorize]
         public JsonResult getEmployeeDetailsByUname(String username)
         {
             string query = @"select * from dbo.EMPLOYEES
