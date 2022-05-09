@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
@@ -16,6 +17,7 @@ namespace FODS_API.Controllers
             _configuration = configuration;
         }
         [HttpGet, Route("getneworderslist")]
+        [Authorize]
         public JsonResult getNewOrders(int userId)
         {
             string query = @"SELECT * FROM [dbo].[ORDERS] WHERE UserId='" + userId + "' AND OrderStatus='pending' OR OrderStatus='new'";
@@ -37,6 +39,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpGet, Route("getcompletedlist")]
+        [Authorize]
         public JsonResult getCompletedOrders(int userId)
         {
             string query = @"SELECT * FROM [dbo].[ORDERS] WHERE UserId='" + userId + "' AND OrderStatus='completed'";
@@ -59,6 +62,7 @@ namespace FODS_API.Controllers
 
 
         [HttpGet, Route("getOrderItems")]
+        [Authorize]
         public JsonResult getOrderItems(int orderId)
         {
             string query = @"SELECT * FROM [dbo].[ORDER_ITEMS] WHERE OrderId='" + orderId + "'";
@@ -81,6 +85,7 @@ namespace FODS_API.Controllers
 
 
         [HttpGet, Route("getproductdetails")]
+        [Authorize]
         public JsonResult getProductDetails(int productId)
         {
             string query = @"SELECT * FROM [dbo].[PRODUCTS] WHERE ProductId='" + productId + "'";
@@ -102,6 +107,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpPut, Route("updateorderstatus")]
+        [Authorize]
         public JsonResult updateOrderStatus(int orderId,String orderStatus)
         {
             string query = @"UPDATE dbo.ORDERS SET OrderStatus='" + orderStatus + "' WHERE OrderId='"+orderId+"' ";
@@ -123,6 +129,7 @@ namespace FODS_API.Controllers
 
 
         [HttpPut, Route("updateorderasdelivered")]
+        [Authorize]
         public JsonResult updateOrderAsDelivered(int orderId)
         {
             string query = @"UPDATE dbo.ORDERS SET IsDelivered='1' WHERE OrderId='" + orderId + "' ";
@@ -143,6 +150,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpGet, Route("fetchneworders")]
+        [Authorize]
         public JsonResult fetchNewOrders()
         {
             string query = @"SELECT * FROM [dbo].[ORDERS] WHERE IsProcessed = 0";
@@ -164,6 +172,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpGet, Route("getprocessedorders")]
+        [Authorize]
         public JsonResult GetProcessedOrders()
         {
             string query = @"SELECT * FROM [dbo].[ORDERS] WHERE IsProcessed != 0 AND (IsReceived = 0 OR IsDelivered = 0)";
@@ -185,6 +194,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpGet, Route("getcompletedorders")]
+        [Authorize]
         public JsonResult GetCompletedOrders()
         {
             string query = @"SELECT * FROM [dbo].[ORDERS] WHERE IsReceived != 0 AND IsDelivered != 0";
@@ -206,6 +216,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpPut, Route("putprocessed")]
+        [Authorize]
         public JsonResult PutProcessed(int orderId,int empId)
         {
             string query = @"UPDATE [dbo].[ORDERS] SET IsProcessed =1, EmployeeId='"+empId+"',  OrderStatus='processed' WHERE OrderId =" + orderId;
@@ -227,6 +238,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpGet, Route("getorderlist")]
+        [Authorize]
         public JsonResult getOrderlist(int EmployeeId)
         {
             string query = @"SELECT * FROM [dbo].[OrderDetails] WHERE EmployeeId='" + EmployeeId + "' AND IsDelivered='0'";
@@ -248,6 +260,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpGet, Route("getcompleteddeliveryorders")]
+        [Authorize]
         public JsonResult getCompletedDeliveryOrders(int EmployeeId)
         {
             string query = @"SELECT * FROM [dbo].[OrderDetails] WHERE EmployeeId='" + EmployeeId + "' AND IsDelivered='1'";
@@ -270,6 +283,7 @@ namespace FODS_API.Controllers
 
 
         [HttpPost, Route("placeneworder")]
+        [Authorize]
         public ActionResult placeOrder(int userId, double price, double lat, double lng, DateTime time)
         {
             string query = @$"INSERT INTO [dbo].[ORDERS] ([UserId],[EmployeeId],[OrderStatus],[IsDelivered],[IsProcessed],[IsReceived],[TotalPrice],[Longitude],[Latitude],[datetime]) 
@@ -292,6 +306,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpPost, Route("neworder/additem")]
+        [Authorize]
         public JsonResult addOrderItem(int orderId, int prodId, int qt)
         {
             string query = @$"INSERT INTO [dbo].[ORDER_ITEMS] ([OrderId],[ProductId],[Quantity]) VALUES ({orderId},{prodId},{qt})";

@@ -7,12 +7,35 @@ import 'package:customerapp/controller/usermodel.dart';
 
 import '../controller/orderitemsmodel.dart';
 import '../controller/productmodel.dart';
+import '../global.dart';
 
 class APIService {
 
+  Future<void> login(String phone, String otp) async {
+    var headers = {
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse('${Urls.apiUrl}/auth/login'));
+    request.body = json.encode({
+      "userID": phone,
+      "password": otp,
+      "userType": "CS"
+    });
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
+
   static Future<String> addNewOrder(NewOrderModel newOrder) async {
     String url = '${Urls.apiUrl}/orders/placeneworder?userId=${newOrder.userId}&price=${newOrder.totalPrice}&lat=${newOrder.lat}&lng=${newOrder.lng}&time=${newOrder.dateTime}';
-    final response = await http.post(Uri.parse(url));
+    final response = await http.post(Uri.parse(url),headers: {
+      'Authorization': 'Bearer ${Auth.token}'
+    });
     if (response.statusCode == 200) {
       String oid = response.body.toString();
       double orderID = double.parse(oid);

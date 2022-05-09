@@ -1,8 +1,13 @@
+import 'dart:convert';
+
+import 'package:customerapp/global.dart';
+import 'package:customerapp/global_urls.dart';
 import 'package:customerapp/view/homeview.dart';
 import 'package:customerapp/view/userregister.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 import '../main.dart';
 
@@ -34,7 +39,6 @@ class _OtpSetupState extends State<OtpSetup> {
   @override
   void initState() {
     super.initState();
-
     FirebaseAuth auth = FirebaseAuth.instance;
   }
 
@@ -122,6 +126,39 @@ class _OtpSetupState extends State<OtpSetup> {
     }
   }
 
+  Future<void> requestOTP(String phn) async {
+    var request = http.Request('POST', Uri.parse('${Urls.apiUrl}/auth/req-otp?phoneNo=$phn'));
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  Future<void> login(String phone, String otp) async {
+    var headers = {
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse('${Urls.apiUrl}/auth/login'));
+    request.body = json.encode({
+      "userID": phone,
+      "password": otp,
+      "userType": "CS"
+    });
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      String tok = await response.stream.bytesToString();
+      Auth.token = tok;
+    }
+    else {
+      print(response.reasonPhrase);
+      //login fail
+    }
+  }
+
   getMobileFormWidget(context) {
     return SafeArea(
       child: Container(
@@ -202,9 +239,9 @@ class _OtpSetupState extends State<OtpSetup> {
                     RegExp regExp = new RegExp(pattern);
                     if (value!.isEmpty) {
                       return 'Please enter your mobile number';
-                    } else if (!regExp.hasMatch(value)) {
-                      return 'Please enter valid mobile number';
-                    }
+                    } //else if (!regExp.hasMatch(value)) {
+                      //return 'Please enter valid mobile number';
+                    //}
                     return null;
                   },
                 ),
@@ -230,9 +267,10 @@ class _OtpSetupState extends State<OtpSetup> {
                               mob = _mobilenoController.text;
                               countryMobNo = '+94$mob';
                             });
-                            verifyPhoneNumber();
+                            //verifyPhoneNumber();
+                            requestOTP(countryMobNo);
                             print('controller');
-                            print(_mobilenoController.text);
+                            print(countryMobNo);
                           } else {
                             return null;
                           }
@@ -365,7 +403,7 @@ class _OtpSetupState extends State<OtpSetup> {
                         ),
                       ),
                       onPressed: () async {
-                        verifyPhoneNumber();
+                        //verifyPhoneNumber();
                         showAlertDialog('OTP Sent Back', context);
                         print('OTP Sent Back');
                         print(_mobilenoController.text);

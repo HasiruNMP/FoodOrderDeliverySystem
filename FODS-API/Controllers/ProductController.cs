@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 using FODS_API.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FODS_API.Controllers
 {
@@ -22,6 +23,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpPost,Route("postproduct")]
+        [Authorize]
         public JsonResult PostProduct(int CategoryId,string Name,string Description,float Price,string ImgUrl)
         {
             string query = @"insert into [dbo].[PRODUCTS] values("+CategoryId+",'"+Name+"','"+Description+"',"+Price+",'"+ImgUrl+"')";
@@ -43,6 +45,7 @@ namespace FODS_API.Controllers
         }
 
          [HttpGet, Route("getcategoryproducts")]
+        [Authorize]
         public JsonResult GetCategoryProducts(int categoryId)
         {
             string query = @"SELECT * FROM [dbo].[PRODUCTS] WHERE CategoryId =" + categoryId;
@@ -64,6 +67,7 @@ namespace FODS_API.Controllers
         }
 
          [HttpPut,Route("putproductdetails")]
+        [Authorize]
         public JsonResult PutProductDetails(int ProductId,string Name,string Description,float Price,string ImgUrl)
         {
             string query = @"UPDATE [dbo].[PRODUCTS] SET Name = '" + Name + "',Description = '" + Description + "',Price = " + Price + ",ImgUrl = '" + ImgUrl + "' WHERE ProductId =" + ProductId;
@@ -85,6 +89,7 @@ namespace FODS_API.Controllers
         }
 
          [HttpDelete]
+        [Authorize]
         public JsonResult DeleteProduct(int ProductId)
         {
             string query = @"delete from dbo.PRODUCTS where ProductId="+ProductId;

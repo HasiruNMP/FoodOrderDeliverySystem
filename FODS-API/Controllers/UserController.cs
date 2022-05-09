@@ -1,4 +1,5 @@
 ﻿using FODS_API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -19,6 +20,7 @@ namespace FODS_API.Controllers
 
 
         [HttpPost, Route("adduser")]
+        [Authorize]
         public JsonResult addUserDetails(User user)
         {
             string query = @"insert into dbo.USERS values(@FirstName,@LastName,@Phone)";
@@ -47,6 +49,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpGet, Route("getuserdetails")]
+        [Authorize]
         public JsonResult GetUserDetails(String phone)
         {
             string query = @"select * from dbo.USERS
@@ -70,6 +73,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpDelete, Route("deletuser")]
+        [Authorize]
         public JsonResult DeleteUser(String phone)
         {
             string query = @"delete from dbo.USERS where Phone='" + phone + "'";
@@ -94,6 +98,7 @@ namespace FODS_API.Controllers
         }
 
         [HttpGet, Route("getuserdetailsbyuserid")]
+        [Authorize]
         public JsonResult GetUserDetailsByUserid(int userId)
         {
             string query = @"select * from dbo.USERS

@@ -65,7 +65,7 @@ namespace FODS_API
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "SLBFE-API",
+                    Title = "Food Order Delivery System API",
                     Version = "v1"
                 });
             });
