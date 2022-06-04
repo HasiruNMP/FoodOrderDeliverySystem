@@ -16,6 +16,8 @@ import '../api/apiservice.dart';
 import '../controller/cart.dart';
 import 'homeview.dart';
 import 'package:pay/pay.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CheckoutView extends StatefulWidget {
   LatLng delLoc;
@@ -37,6 +39,7 @@ class _CheckoutViewState extends State<CheckoutView> {
   late Timestamp timeStamp;
   //LatLng location = LatLng(0.0, 0.0);
   List<String> itemsArr = [];
+  late Razorpay _razorpay;
 
   //map variables
   Completer<GoogleMapController> _controller = Completer();
@@ -48,6 +51,10 @@ class _CheckoutViewState extends State<CheckoutView> {
   @override
   void initState() {
     super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     CallApi();
     totalPrice = Cart.totalPrice.toString();
 
@@ -56,6 +63,73 @@ class _CheckoutViewState extends State<CheckoutView> {
         " ${Cart.basketItems[i].name} * ${Cart.basketItems[i].quantity}  Rs.${Cart.basketItems[i].quantity * Cart.basketItems[i].price}"
     ];
     print(itemsArr);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    // Fluttertoast.showToast(
+    //  msg: "SUCCESS:" + response.paymentId, toastLength: Toast.LENGTH_SHORT);
+    // IncreaseOrderNumbers();
+    // AddOrderDetails('Paid');
+    // AddEachItems();
+    setState(() {
+      Cart.EmptyCart();
+    });
+    //Navigator.pop(context);
+    setState(() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                OrderCompleted(widget.delLoc, Cart.totalPrice, fname, phoneNo)),
+      );
+      Cart.PaymentStates();
+    });
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+        msg: "Payment Failed:" +
+            response.code.toString() +
+            "-" +
+            response.message!,
+        toastLength: Toast.LENGTH_SHORT);
+    print(response.code.toString());
+    print(response.message);
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(
+        msg: "EXTERNAL_WALLET:" + response.walletName!,
+        toastLength: Toast.LENGTH_SHORT);
+  }
+
+  void openCheckout() async {
+    double lastprice = double.parse(totalPrice) * 100;
+    var options = {
+      'key': 'rzp_test_1G3GSxR1F87q2o',
+      'amount': lastprice.toString(),
+      "currency": "LKR",
+      //"orderid": orderId,
+      "international": true,
+      "method": "card",
+      //    "email": userEmail,
+      "contact": phoneNo,
+      'name': '$fname $lname',
+      'description': itemsArr,
+      // 'send_sms_hash': true,
+      'prefill': {'contact': phoneNo, 'email': 'rakshitha@gmail.com'},
+    };
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint('Error: e');
+    }
   }
 
   Future<void> CallApi() async {
@@ -252,15 +326,17 @@ class _CheckoutViewState extends State<CheckoutView> {
                       padding: const EdgeInsets.all(10.0),
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OrderCompleted(
-                                    widget.delLoc,
-                                    Cart.totalPrice,
-                                    fname,
-                                    phoneNo)),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => OrderCompleted(
+                          //           widget.delLoc,
+                          //           Cart.totalPrice,
+                          //           fname,
+                          //           phoneNo)),
+                          // );
+
+                          openCheckout();
                         },
                         child: Text("Confirm & Pay"),
                       ),
