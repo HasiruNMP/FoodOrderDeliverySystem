@@ -22,7 +22,7 @@ class _HomeViewState extends State<HomeView> {
   late String userEmail;
   int _selectedIndex = 0;
   IO.Socket socket = IO.io(
-      'https://106f-2402-d000-a500-123b-bc62-280d-ecbb-6fc4.in.ngrok.io/',
+      'https://fods-geotrack.herokuapp.com/',
       OptionBuilder().setTransports(['websocket']).build());
 
   static final List<Widget> _widgetOptions = <Widget>[

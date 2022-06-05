@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.red,
           scaffoldBackgroundColor: Colors.white
         ),
-        home: StateManager(),
+        home: LoginView(),
       ),
     );
   }
