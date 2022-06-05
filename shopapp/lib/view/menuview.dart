@@ -680,7 +680,7 @@ class _MenuViewState extends State<MenuView> {
                                       height: 400,
                                       width: 400,
                                       child: Image.network(
-                                        "https://fodsfiles.herokuapp.com/static/images/p${prodId}.png",
+                                        "https://fods-images.herokuapp.com/static/images/p${prodId}.png",
                                       ),
                                     ),
                                   ),

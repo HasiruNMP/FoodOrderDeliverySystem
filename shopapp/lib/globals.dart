@@ -17,6 +17,5 @@ class Urls {
 }
 
 class Auth {
-  static String token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDUyAgICAgICAgIiwiZXhwIjoxNjU3MDE2ODMwLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDcyLyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcwNzIvIn0.xogBr8Mu2nJ2MdoJK3NZFxmzSfsPq-aM2RNW0lkkEcU";
+  static String token = "";
 }

@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shopapp/view/homeview.dart';
+import 'package:http/http.dart' as http;
+
+import '../globals.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -23,38 +28,36 @@ class _LoginViewState extends State<LoginView> {
     });
   }
 
-  Future<void> _signInWithEmailAndPassword() async {
-    try {
-      setState(() {
-        status = false;
-      });
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-              email: _userEmailController.text,
-              password: _userPassworController.text);
-
-      Useremail = _userPassworController.text;
-
-      print('Sign in Succefully {$Useremail}');
-
+    Future<void> login() async {
+    String tok ='';
+    var headers = {
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse('${Urls.apiUrl}/auth/login'));
+    request.body = json.encode({
+      "userID": _userEmailController.text,
+      "password": _userPassworController.text,
+      "userType": "RS"
+    });
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      tok = await response.stream.bytesToString();
+      print(tok);
+      Auth.token = tok;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You Are Signed In!'),),
+      );
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
           (route) => false);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        setState(() {
-          status = true;
-        });
-        print('No user found for that email.');
-        showAlertDialog('No user found for that email.', context);
-      } else if (e.code == 'wrong-password') {
-        setState(() {
-          status = true;
-        });
-        print('Wrong password provided for that user.');
-        showAlertDialog('Wrong password provided for that user.', context);
-      }
+    }
+    else {
+      print(response.reasonPhrase);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Sign In Failed!'),),
+      );
     }
   }
 
@@ -101,7 +104,7 @@ class _LoginViewState extends State<LoginView> {
                                   ),
                                   filled: true,
                                   fillColor: Colors.grey.withOpacity(0.3),
-                                  labelText: 'Email',
+                                  labelText: 'Username',
                                   suffixIcon: const Icon(
                                     Icons.email,
                                     color: Colors.black,
@@ -113,8 +116,8 @@ class _LoginViewState extends State<LoginView> {
                                 textCapitalization: TextCapitalization.none,
                                 enableSuggestions: false,
                                 validator: (value) {
-                                  if (value!.isEmpty || !value.contains('@')) {
-                                    return 'Please enter a valid email address';
+                                  if (value!.isEmpty) {
+                                    return 'Please enter username';
                                   }
                                   return null;
                                 },
@@ -170,7 +173,7 @@ class _LoginViewState extends State<LoginView> {
                               ),
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
-                                  _signInWithEmailAndPassword();
+                                  login();
                                 } else {
                                   return null;
                                 }
