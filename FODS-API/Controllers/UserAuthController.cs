@@ -128,7 +128,7 @@ namespace FODS_API.Controllers
 
         private int SendOTP(string otp,string phone)
         {
-            /*string accountSid = "AC0af284e07dd78c2b827ec036ba464315";
+            string accountSid = "AC0af284e07dd78c2b827ec036ba464315";
             string authToken = "388f87fc7fc687da4f6cd9653ba7ab7b";
 
             TwilioClient.Init(accountSid, authToken);
@@ -137,7 +137,7 @@ namespace FODS_API.Controllers
                 body: $"Welcome to FODS! Your OTP is {otp}",
                 from: new Twilio.Types.PhoneNumber("+19289853180"),
                 to: new Twilio.Types.PhoneNumber(phone)
-            );*/
+            );
             return 1;
         }
 

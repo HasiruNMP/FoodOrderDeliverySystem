@@ -19,5 +19,5 @@ class Urls {
   //https://localhost:7072
   //https://fodsfiles.herokuapp.com
 
-  static String filesUrl = "https://fodsfiles.herokuapp.com";
+  static String filesUrl = "https://fods-images.herokuapp.com";
 }
