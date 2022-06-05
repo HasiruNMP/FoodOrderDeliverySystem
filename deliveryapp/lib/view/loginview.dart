@@ -36,7 +36,7 @@ class _LoginViewState extends State<LoginView> {
     if (response.statusCode == 200) {
       tok = await response.stream.bytesToString();
       print(tok);
-      Auth.token = tok;
+      //Auth.token = tok;
       Globals.userName = tecUsername.text;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('You Are Signed In!'),),

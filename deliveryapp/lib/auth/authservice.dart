@@ -9,7 +9,7 @@ class CurrentUser {
 }
 
 class Auth with ChangeNotifier {
-  static String token ='0';
+  static String token ='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJETCAgICAgICAgIiwiZXhwIjoxNjU3MDQzODE0LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDcyLyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcwNzIvIn0.IABcnSPdsG-c-C8wz_YUyyFw2KsaiU7zNoA2VBXgc_U';
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Stream<CurrentUser> get onAuthStateChanged =>

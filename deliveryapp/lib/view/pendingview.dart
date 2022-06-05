@@ -33,9 +33,9 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
       String data = response.body;
       print(data);
       var info = jsonDecode(data);
-      empId = info[0]["EmployeeId"];
-      Globals.EmployeeId = empId;
-      print(empId);
+      //empId = info[0]["EmployeeId"];
+      //Globals.EmployeeId = empId;
+      //print(empId);
     } else {
       print(response.statusCode);
       print(response.reasonPhrase);
@@ -45,7 +45,9 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
   }
 
   Future fetchpendingorders() async {
-    String url = "${Urls.apiUrl}/orders/getorderlist?EmployeeId=$empId";
+    String url = "https://fodsapi.azurewebsites.net/orders/getorderlist?EmployeeId=21";
+
+    print(Auth.token);
 
     final response = await http.get(Uri.parse(url),
         headers: {'Authorization': 'Bearer ${Auth.token}'});
@@ -63,7 +65,8 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
 
   @override
   void initState() {
-    getEmployeeDetails();
+    //getEmployeeDetails();
+    fetchpendingorders();
     print(Globals.userName);
     super.initState();
   }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -192,8 +193,7 @@ class _MenuViewState extends State<MenuView> {
     }
   }
 
-  Future addProduct(int CategoryId, String Name, String Description,
-      double Price, String ImgUrl) async {
+  Future addProduct(int CategoryId, String Name, String Description, double Price, String ImgUrl, List<int> img) async {
     final response = await http.post(
         Uri.parse(
             '${Urls.apiUrl}/products/postproduct?CategoryId=$CategoryId&Name=$Name&Description=$Description&Price=$Price&ImgUrl=$ImgUrl'),
@@ -202,6 +202,7 @@ class _MenuViewState extends State<MenuView> {
           'Authorization': 'Bearer ${Auth.token}',
         });
     if (response.statusCode == 200) {
+      uploadImage(img, 29);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Item Added!'),
@@ -209,6 +210,23 @@ class _MenuViewState extends State<MenuView> {
       );
     } else {
       throw Exception('Failed to add.');
+    }
+  }
+
+  Future uploadImage(List<int> image,int pid) async {
+
+    var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('https://fods-images.herokuapp.com/images/upload'));
+    request.files.add(
+        await http.MultipartFile.fromBytes('image', image, filename: 'p$pid.png'));
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    } else {
+      print(response.reasonPhrase);
     }
   }
 
@@ -324,15 +342,15 @@ class _MenuViewState extends State<MenuView> {
                   return null;
                 },
               ),
-              ElevatedButton(
+              OutlinedButton(
                 onPressed: selectFile,
                 child: Text('Select Image'),
               ),
-              OutlinedButton(
+              ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     addProduct(CategoryId, newName.text, newDescription.text,
-                        double.parse(newPrice.text), 'img.url');
+                        double.parse(newPrice.text), 'img.url',list);
                   }
                 },
                 child: Text("Add New"),
@@ -342,6 +360,17 @@ class _MenuViewState extends State<MenuView> {
         ),
       ),
     );
+  }
+
+  late List<int> list;
+  bool sel = false;
+  late Uint8List bytes;
+
+  Future selectFile() async {
+    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    Uint8List data = await image!.readAsBytes();
+    list = data.cast();
+    setState((){bytes = data;});
   }
 
   @override
@@ -936,24 +965,5 @@ class _MenuViewState extends State<MenuView> {
     );
   }
 
-  Future selectFile() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    Uint8List data = await image!.readAsBytes();
-    List<int> list = data.cast();
 
-    var request = http.MultipartRequest(
-        'POST',
-        Uri.parse(
-            'https://d21f-2402-d000-a400-52ba-fc34-b963-a9c3-6e76.ngrok.io/uploads'));
-    request.files.add(
-        await http.MultipartFile.fromBytes('image', list, filename: '123.png'));
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
-    } else {
-      print(response.reasonPhrase);
-    }
-  }
 }

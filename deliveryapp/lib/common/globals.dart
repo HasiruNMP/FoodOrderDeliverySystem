@@ -1,7 +1,7 @@
 class Globals {
   static late String userID;
   static String userName = '';
-  static late int EmployeeId;
+  static int EmployeeId = 21;
 }
 
 class Urls {
@@ -13,7 +13,7 @@ class Urls {
 
   static String apiUrl = "https://fodsapi.azurewebsites.net";
 
-  //----Files API URL---------------------------------------
+  //----Files API URL------------------------dini---------------
 
   //https://10.0.2.2:7072
   //https://localhost:7072
