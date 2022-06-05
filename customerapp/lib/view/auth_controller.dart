@@ -4,6 +4,8 @@ import 'package:customerapp/view/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../global.dart';
+
 class AuthController extends StatefulWidget {
   const AuthController({Key? key}) : super(key: key);
 
@@ -26,6 +28,11 @@ class _AuthControllerState extends State<AuthController> {
     authState = prefs.getInt('auth');
     token = prefs.getString('token');
     phone = prefs.getString('phone');
+    if(authState == 1){
+      Auth.token = token!;
+      Auth.userId = phone!;
+      print("${Auth.userId}---------${Auth.token}");
+    }
 
     setState(() {loading = false;});
   }
