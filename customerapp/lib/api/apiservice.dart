@@ -90,8 +90,9 @@ class APIService {
   }
 
   static Future getUserDetails(String phone) async {
+    String phn = Auth.userId.replaceAll('+', '%2B');
     http.Response response = await http.get(Uri.parse(
-        '${Urls.apiUrl}/users/getuserdetails?phone=%2B${phone.substring(1)}'),
+        '${Urls.apiUrl}/users/getuserdetails?phone=$phn'),
         headers: {'Authorization': 'Bearer ${Auth.token}'});
 
     if (response.statusCode == 200) {
