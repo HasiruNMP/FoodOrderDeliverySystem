@@ -7,8 +7,9 @@ import 'package:shopapp/globals.dart';
 
 class APIService {
   static Future getUserDetailsbyUserId(int userid) async {
-    http.Response response = await http.get(Uri.parse(
-        '${Urls.apiUrl}/users/getuserdetailsbyuserid?userId=1'));
+    http.Response response = await http.get(
+        Uri.parse('${Urls.apiUrl}/users/getuserdetailsbyuserid?userId=1'),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
 
     if (response.statusCode == 200) {
       print(response.statusCode);
@@ -22,8 +23,9 @@ class APIService {
   }
 
   static Future<List<orderItemModel>> getOrderItems(int orderId) async {
-    final response = await http.get(Uri.parse(
-        '${Urls.apiUrl}/orders/getOrderItems?orderId=$orderId'));
+    final response = await http.get(
+        Uri.parse('${Urls.apiUrl}/orders/getOrderItems?orderId=$orderId'),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse
@@ -35,8 +37,10 @@ class APIService {
   }
 
   static Future<List<productModel>> getProductDetails(int productId) async {
-    final response = await http.get(Uri.parse(
-        '${Urls.apiUrl}/orders/getproductdetails?productId=$productId'));
+    final response = await http.get(
+        Uri.parse(
+            '${Urls.apiUrl}/orders/getproductdetails?productId=$productId'),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse
@@ -48,8 +52,9 @@ class APIService {
   }
 
   static Future<List<PostEmployee>> getDeliveryEmployees() async {
-    final response = await http.get(Uri.parse(
-        '${Urls.apiUrl}/employee/getDeliveryEmployeesDetails'));
+    final response = await http.get(
+        Uri.parse('${Urls.apiUrl}/employee/getDeliveryEmployeesDetails'),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse
@@ -61,7 +66,10 @@ class APIService {
   }
 
   static Future updateOrderStatusNdelivery(int orderId, int empId) async {
-    var headers = {'Content-Type': 'application/json'};
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Auth.token}'
+    };
     var request = http.Request(
       'PUT',
       Uri.parse(
@@ -83,8 +91,9 @@ class APIService {
   }
 
   static Future getDeliveryInfo(int empId) async {
-    http.Response response = await http.get(Uri.parse(
-        '${Urls.apiUrl}/employee/getemployeedetails?empId=$empId'));
+    http.Response response = await http.get(
+        Uri.parse('${Urls.apiUrl}/employee/getemployeedetails?empId=$empId'),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
 
     if (response.statusCode == 200) {
       print(response.statusCode);
@@ -99,7 +108,10 @@ class APIService {
 
   static Future updateProductDetails(int prodId, String name,
       String description, double price, String imgUrl) async {
-    var headers = {'Content-Type': 'application/json'};
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Auth.token}'
+    };
     var request = http.Request(
       'PUT',
       Uri.parse(
@@ -121,8 +133,13 @@ class APIService {
   }
 
   static Future deleteAccount(int prodId) async {
-    var request = http.Request('DELETE',
-        Uri.parse('${Urls.apiUrl}/products?ProductId=$prodId'));
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Auth.token}'
+    };
+    var request = http.Request(
+        'DELETE', Uri.parse('${Urls.apiUrl}/products?ProductId=$prodId'));
+    request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
@@ -137,7 +154,10 @@ class APIService {
   }
 
   static Future addDeliveryPerson(PostEmployee user) async {
-    var headers = {'Content-Type': 'application/json'};
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Auth.token}'
+    };
     var request = http.Request(
         'POST', Uri.parse('${Urls.apiUrl}/employee/adddeliveryperson'));
     request.body = json.encode({
@@ -165,7 +185,10 @@ class APIService {
 
   static Future updateDeliveryPerson(int empId, String nic, String name,
       String license, String phone, String userName) async {
-    var headers = {'Content-Type': 'application/json'};
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Auth.token}'
+    };
     var request = http.Request(
       'PUT',
       Uri.parse(
@@ -187,9 +210,13 @@ class APIService {
   }
 
   static Future deleteEmployee(int empId) async {
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Auth.token}'
+    };
     var request = http.Request(
         'DELETE', Uri.parse('${Urls.apiUrl}/employee?empId=$empId'));
-
+    request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {

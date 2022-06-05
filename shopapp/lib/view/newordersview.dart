@@ -64,8 +64,9 @@ class NewOrdersView extends StatefulWidget {
 
 class _NewOrdersViewState extends State<NewOrdersView> {
   Future<List<Data>> fetchData() async {
-    final response =
-        await http.get(Uri.parse('${Urls.apiUrl}/orders/fetchneworders'));
+    final response = await http.get(
+        Uri.parse('${Urls.apiUrl}/orders/fetchneworders'),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => new Data.fromJson(data)).toList();

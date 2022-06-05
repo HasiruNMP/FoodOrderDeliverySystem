@@ -135,7 +135,7 @@ class _MenuViewState extends State<MenuView> {
 
   Future<List<Category>> fetchCategories() async {
     final response =
-        await http.get(Uri.parse('${Urls.apiUrl}/api/Category/getcategories'));
+        await http.get(Uri.parse('${Urls.apiUrl}/api/Category/getcategories'), headers: {'Authorization': 'Bearer ${Auth.token}'});
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => Category.fromJson(data)).toList();
@@ -150,6 +150,7 @@ class _MenuViewState extends State<MenuView> {
             '${Urls.apiUrl}/api/Category/postcategory?Name=$Name&ImgUrl=$ImgUrl'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${Auth.token}',
         });
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -167,6 +168,7 @@ class _MenuViewState extends State<MenuView> {
         Uri.parse('${Urls.apiUrl}/api/Category?CategoryId=$CategoryId'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${Auth.token}',
         });
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -181,7 +183,7 @@ class _MenuViewState extends State<MenuView> {
 
   Future<List<Product>> fetchProducts() async {
     final response = await http.get(Uri.parse(
-        '${Urls.apiUrl}/products/getcategoryproducts?categoryId=$CategoryId'));
+        '${Urls.apiUrl}/products/getcategoryproducts?categoryId=$CategoryId'), headers: {'Authorization': 'Bearer ${Auth.token}'});
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => Product.fromJson(data)).toList();
@@ -197,6 +199,7 @@ class _MenuViewState extends State<MenuView> {
             '${Urls.apiUrl}/products/postproduct?CategoryId=$CategoryId&Name=$Name&Description=$Description&Price=$Price&ImgUrl=$ImgUrl'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${Auth.token}',
         });
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -216,6 +219,7 @@ class _MenuViewState extends State<MenuView> {
             '${Urls.apiUrl}/products/putproductdetails?ProductId=$ProductId&CategoryId=$CategoryId&Name=$Name&Description=$Description&Price=$Price&ImgUrl=$ImgUrl'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${Auth.token}',
         });
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
@@ -233,6 +237,7 @@ class _MenuViewState extends State<MenuView> {
         Uri.parse('  ${Urls.apiUrl}/products?ProductId=$ProductId'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${Auth.token}',
         });
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,

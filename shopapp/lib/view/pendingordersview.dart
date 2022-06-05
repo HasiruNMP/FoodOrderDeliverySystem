@@ -64,8 +64,9 @@ class PendingOrdersView extends StatefulWidget {
 
 class _PendingOrdersViewState extends State<PendingOrdersView> {
   Future<List<Data>> fetchData() async {
-    final response =
-        await http.get(Uri.parse('${Urls.apiUrl}/orders/getprocessedorders'));
+    final response = await http.get(
+        Uri.parse('${Urls.apiUrl}/orders/getprocessedorders'),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => new Data.fromJson(data)).toList();
@@ -213,7 +214,10 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
                                       deliveryInfo =
                                           await APIService.getDeliveryInfo(
                                               data[index].EmployeeId);
-                                      deliveryPerson = deliveryInfo[0]["Name"];
+                                      setState(() {
+                                        deliveryPerson =
+                                            deliveryInfo[0]["Name"];
+                                      });
                                     },
                                     child: Row(
                                       //mainAxisAlignment: MainAxisAlignment.spaceBetween,

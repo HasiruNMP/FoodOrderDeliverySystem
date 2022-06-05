@@ -12,7 +12,6 @@ import 'package:shopapp/view/menuview.dart';
 
 import 'loginview.dart';
 
-
 class DeliveryDetailedView extends StatefulWidget {
   const DeliveryDetailedView({Key? key}) : super(key: key);
 
@@ -124,17 +123,14 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     PostEmployee deliver = PostEmployee(
-                        name: newFirstName.text +
-                            " " +
-                            newLastName.text,
+                        name: newFirstName.text + " " + newLastName.text,
                         phone: newPhone.text,
                         username: newUsername.text,
                         department: 'Delivery',
                         employeeId: 0,
                         license: newLicense.text,
                         nic: newNic.text);
-                    var addStatus =
-                    await APIService.addDeliveryPerson(deliver);
+                    var addStatus = await APIService.addDeliveryPerson(deliver);
                     print(addStatus);
                     if (addStatus == 0) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -171,7 +167,7 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
         children: [
           const VerticalDivider(),
           Expanded(
-            flex: 2,
+            flex: 1,
             child: Column(
               children: [
                 Expanded(
@@ -183,13 +179,13 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                       SizedBox(
                         width: double.infinity,
                         child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        "Delivery Person",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            "Delivery Person",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                       Divider(),
@@ -214,36 +210,40 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                                     itemBuilder:
                                         (BuildContext context, int index) {
                                       return Card(
-                                        color: (selDelP == index)? Colors.brown.shade100 : Colors.brown.shade50,
+                                        color: (selDelP == index)
+                                            ? Colors.brown.shade100
+                                            : Colors.brown.shade50,
                                         child: TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              selDelP = index;
-                                              employeeId = data[index]
-                                                  .employeeId
-                                                  .toString();
-                                              updatePhone.text =
-                                                  data[index].phone;
-                                              updateName.text =
-                                                  data[index].name;
-                                              updateNic.text = data[index].nic;
-                                              updateUsername.text =
-                                                  data[index].username;
-                                              updateLicense.text =
-                                                  data[index].license;
-                                            });
-                                          },
-                                          child: ListTile(
-                                            title: Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(data[index].name),
-                                                const Icon(Icons.navigate_next),
-                                              ],
-                                            ),
-                                          )
-                                        ),
+                                            onPressed: () {
+                                              setState(() {
+                                                selDelP = index;
+                                                employeeId = data[index]
+                                                    .employeeId
+                                                    .toString();
+                                                updatePhone.text =
+                                                    data[index].phone;
+                                                updateName.text =
+                                                    data[index].name;
+                                                updateNic.text =
+                                                    data[index].nic;
+                                                updateUsername.text =
+                                                    data[index].username;
+                                                updateLicense.text =
+                                                    data[index].license;
+                                              });
+                                            },
+                                            child: ListTile(
+                                              title: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(data[index].name),
+                                                  const Icon(
+                                                      Icons.navigate_next),
+                                                ],
+                                              ),
+                                            )),
                                       );
                                     });
                               }
@@ -265,28 +265,33 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
             ),
           ),
           const VerticalDivider(),
+          Expanded(child: addDelP()),
+          const VerticalDivider(),
           Expanded(
-            flex: 5,
+            flex: 3,
             child: Column(
               children: [
-                SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 SizedBox(
                   width: double.infinity,
                   child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  'Delivery Person Details',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 16),
-                  textAlign: TextAlign.center,
-                ),
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'Delivery Person Details',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
                 Divider(),
                 Expanded(
                   flex: 11,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 300,vertical: 100),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 300, vertical: 100),
                     child: Form(
                       key: _formKey2,
                       child: Column(
@@ -301,12 +306,14 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                                 children: [
                                   Text(
                                     "Employee ID: ",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   Text(
                                     employeeId,
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               )
@@ -326,7 +333,8 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                                       alignment: Alignment.topLeft,
                                       child: Text(
                                         "Name:",
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ),
@@ -356,7 +364,8 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                                       alignment: Alignment.topLeft,
                                       child: Text(
                                         "NIC:",
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ),
@@ -386,7 +395,8 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                                       alignment: Alignment.topLeft,
                                       child: Text(
                                         "Phone:",
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ),
@@ -416,7 +426,8 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                                       alignment: Alignment.topLeft,
                                       child: Text(
                                         "Username:",
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ),
@@ -446,7 +457,8 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                                       alignment: Alignment.topLeft,
                                       child: Text(
                                         "License:",
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ),
@@ -477,67 +489,83 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                                   child: OutlinedButton(
                                     onPressed: () async {
                                       if (_formKey2.currentState!.validate()) {
-                                        var updateStatus =
-                                        await APIService.updateDeliveryPerson(
-                                            int.parse(employeeId),
-                                            updateNic.text,
-                                            updateName.text,
-                                            updateLicense.text,
-                                            updatePhone.text,
-                                            updateUsername.text);
+                                        var updateStatus = await APIService
+                                            .updateDeliveryPerson(
+                                                int.parse(employeeId),
+                                                updateNic.text,
+                                                updateName.text,
+                                                updateLicense.text,
+                                                updatePhone.text,
+                                                updateUsername.text);
                                         if (updateStatus == 0) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
                                             const SnackBar(
                                               backgroundColor: Colors.blue,
-                                              content: Text('Updated Successfully!'),
+                                              content:
+                                                  Text('Updated Successfully!'),
                                             ),
                                           );
                                         } else {
-                                          ScaffoldMessenger.of(context).showSnackBar(
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
                                             const SnackBar(
                                               backgroundColor: Colors.red,
-                                              content: Text('Failed to Update!'),
+                                              content:
+                                                  Text('Failed to Update!'),
                                             ),
                                           );
                                         }
                                       } else {
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
                                           const SnackBar(
                                             backgroundColor: Colors.red,
-                                            content: Text('Failed to update data!'),
+                                            content:
+                                                Text('Failed to update data!'),
                                           ),
                                         );
                                       }
                                     },
-                                    child: Text("Update",style: TextStyle(color: Colors.indigo),),
+                                    child: Text(
+                                      "Update",
+                                      style: TextStyle(color: Colors.indigo),
+                                    ),
                                   ),
                                 ),
-                                SizedBox(width: 10,),
+                                SizedBox(
+                                  width: 10,
+                                ),
                                 Expanded(
                                   child: OutlinedButton(
                                     onPressed: () async {
                                       if (employeeId != 'null') {
                                         var deleteStatus =
-                                        await APIService.deleteEmployee(
+                                            await APIService.deleteEmployee(
                                           int.parse(employeeId),
                                         );
                                         if (deleteStatus == 0) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
                                             const SnackBar(
                                               backgroundColor: Colors.blue,
-                                              content: Text('Deleted Successfully!'),
+                                              content:
+                                                  Text('Deleted Successfully!'),
                                             ),
                                           );
                                         } else {
-                                          ScaffoldMessenger.of(context).showSnackBar(
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
                                             const SnackBar(
                                               backgroundColor: Colors.red,
-                                              content: Text('Failed to Delete!'),
+                                              content:
+                                                  Text('Failed to Delete!'),
                                             ),
                                           );
                                         }
                                       } else {
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
                                           const SnackBar(
                                             backgroundColor: Colors.red,
                                             content: Text(
@@ -546,7 +574,10 @@ class _DeliveryDetailedViewState extends State<DeliveryDetailedView> {
                                         );
                                       }
                                     },
-                                    child: Text("Delete Employee",style: TextStyle(color: Colors.red),),
+                                    child: Text(
+                                      "Delete Employee",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
                                   ),
                                 ),
                               ],

@@ -65,8 +65,9 @@ class CompletedOrdersView extends StatefulWidget {
 
 class _CompletedOrdersViewState extends State<CompletedOrdersView> {
   Future<List<Data>> fetchData() async {
-    final response =
-        await http.get(Uri.parse('${Urls.apiUrl}/orders/getcompletedorders'));
+    final response = await http.get(
+        Uri.parse('${Urls.apiUrl}/orders/getcompletedorders'),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => new Data.fromJson(data)).toList();
