@@ -10,65 +10,73 @@ import '../controller/productmodel.dart';
 import '../global.dart';
 
 class APIService {
-
   Future<void> login(String phone, String otp) async {
-    var headers = {
-      'Content-Type': 'application/json'
-    };
+    var headers = {'Content-Type': 'application/json'};
     var request = http.Request('POST', Uri.parse('${Urls.apiUrl}/auth/login'));
-    request.body = json.encode({
-      "userID": phone,
-      "password": otp,
-      "userType": "CS"
-    });
+    request.body =
+        json.encode({"userID": phone, "password": otp, "userType": "CS"});
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
   }
 
   static Future<String> addNewOrder(NewOrderModel newOrder) async {
-    String url = '${Urls.apiUrl}/orders/placeneworder?userId=${newOrder.userId}&price=${newOrder.totalPrice}&lat=${newOrder.lat}&lng=${newOrder.lng}&time=${newOrder.dateTime}';
-    final response = await http.post(Uri.parse(url),headers: {
-      'Authorization': 'Bearer ${Auth.token}'
-    });
+    String url =
+        '${Urls.apiUrl}/orders/placeneworder?userId=${newOrder.userId}&price=${newOrder.totalPrice}&lat=${newOrder.lat}&lng=${newOrder.lng}&time=${newOrder.dateTime}';
+    final response = await http.post(Uri.parse(url),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     if (response.statusCode == 200) {
       String oid = response.body.toString();
       double orderID = double.parse(oid);
       print("Order ID: $orderID");
       print(Cart.basketItems.length);
-      for (int i = 0; i < Cart.basketItems.length; i++){
+      for (int i = 0; i < Cart.basketItems.length; i++) {
         print("adding new order item");
-        addNewOrderItem(
-          OrderItemModel(orderId: orderID.toInt(), prodId: Cart.basketItems[i].id, qty: Cart.basketItems[i].quantity)
-        );
+        addNewOrderItem(OrderItemModel(
+            orderId: orderID.toInt(),
+            prodId: Cart.basketItems[i].id,
+            qty: Cart.basketItems[i].quantity));
       }
       return orderID.toInt().toString();
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
       return "error";
     }
   }
 
   static Future addNewOrderItem(OrderItemModel orderItem) async {
-    var request = http.Request('POST', Uri.parse('${Urls.apiUrl}/orders/neworder/additem?orderId=${orderItem.orderId}&prodId=${orderItem.prodId}&qt=${orderItem.qty}'));
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Auth.token}'
+    };
+    var request = http.Request(
+      'POST',
+      Uri.parse(
+          '${Urls.apiUrl}/orders/neworder/additem?orderId=${orderItem.orderId}&prodId=${orderItem.prodId}&qt=${orderItem.qty}'),
+    );
+
+    request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
   }
 
   static Future adduser(userModel user) async {
-    var headers = {'Content-Type': 'application/json','Authorization': 'Bearer ${Auth.token}'};
-    var request = http.Request('POST', Uri.parse('${Urls.apiUrl}/users/adduser'),);
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Auth.token}'
+    };
+    var request = http.Request(
+      'POST',
+      Uri.parse('${Urls.apiUrl}/users/adduser'),
+    );
     request.body = json.encode({
       "firstName": user.firstName,
       "lastName": user.lastName,
@@ -91,8 +99,8 @@ class APIService {
 
   static Future getUserDetails(String phone) async {
     String phn = Auth.userId.replaceAll('+', '%2B');
-    http.Response response = await http.get(Uri.parse(
-        '${Urls.apiUrl}/users/getuserdetails?phone=$phn'),
+    http.Response response = await http.get(
+        Uri.parse('${Urls.apiUrl}/users/getuserdetails?phone=$phn'),
         headers: {'Authorization': 'Bearer ${Auth.token}'});
 
     if (response.statusCode == 200) {
@@ -108,9 +116,10 @@ class APIService {
 
   static Future deleteAccount(String phone) async {
     var request = http.Request(
-        'DELETE',
-        Uri.parse(
-            '${Urls.apiUrl}/users/deletuser?phone=%2B${phone.substring(1)}'),);
+      'DELETE',
+      Uri.parse(
+          '${Urls.apiUrl}/users/deletuser?phone=%2B${phone.substring(1)}'),
+    );
 
     http.StreamedResponse response = await request.send();
 
@@ -125,8 +134,9 @@ class APIService {
   }
 
   static Future<List<orderModel>> getNewOrders(int userId) async {
-    final response = await http.get(Uri.parse(
-        '${Urls.apiUrl}/orders/getneworderslist?userId=$userId'));
+    final response = await http.get(
+        Uri.parse('${Urls.apiUrl}/orders/getneworderslist?userId=$userId'),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => new orderModel.fromJson(data)).toList();
@@ -136,8 +146,9 @@ class APIService {
   }
 
   static Future<List<orderModel>> getCompletedOrders(int userId) async {
-    final response = await http.get(Uri.parse(
-        '${Urls.apiUrl}/orders/getcompletedlist?userId=$userId'));
+    final response = await http.get(
+        Uri.parse('${Urls.apiUrl}/orders/getcompletedlist?userId=$userId'),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => new orderModel.fromJson(data)).toList();
@@ -147,8 +158,9 @@ class APIService {
   }
 
   static Future<List<orderItemModel>> getOrderItems(int orderId) async {
-    final response = await http.get(Uri.parse(
-        '${Urls.apiUrl}/orders/getOrderItems?orderId=$orderId'));
+    final response = await http.get(
+        Uri.parse('${Urls.apiUrl}/orders/getOrderItems?orderId=$orderId'),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse
@@ -160,8 +172,10 @@ class APIService {
   }
 
   static Future<List<productModel>> getProductDetails(int productId) async {
-    final response = await http.get(Uri.parse(
-        '${Urls.apiUrl}/orders/getproductdetails?productId=$productId'));
+    final response = await http.get(
+        Uri.parse(
+            '${Urls.apiUrl}/orders/getproductdetails?productId=$productId'),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse
@@ -173,7 +187,11 @@ class APIService {
   }
 
   static Future updateOrderStatus(int orderId, String orderStatus) async {
-    var headers = {'Content-Type': 'application/json'};
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Auth.token}'
+    };
+
     var request = http.Request(
       'PUT',
       Uri.parse(

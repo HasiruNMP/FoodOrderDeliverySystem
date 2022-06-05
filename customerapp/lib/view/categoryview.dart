@@ -1,10 +1,10 @@
-
 import 'package:customerapp/global_urls.dart';
 import 'package:customerapp/view/itemview.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../controller/cart.dart';
+import '../global.dart';
 import 'cartview.dart';
 import 'package:badges/badges.dart';
 
@@ -30,7 +30,8 @@ class _CategoryViewState extends State<CategoryView> {
     String url = "${Urls.apiUrl}/products/getcategoryproducts?categoryId=" +
         categoryId.toString();
     print(url);
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse(url),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     var resJson = json.decode(response.body);
     if (response.statusCode == 200) {
       var a = resJson as List;
@@ -58,18 +59,20 @@ class _CategoryViewState extends State<CategoryView> {
             animationDuration: Duration(milliseconds: 300),
             badgeColor: Colors.yellow,
             animationType: BadgeAnimationType.slide,
-            badgeContent: Text(Cart.count.toString(),),
+            badgeContent: Text(
+              Cart.count.toString(),
+            ),
             child: IconButton(
                 icon: Icon(Icons.shopping_cart),
                 iconSize: 27,
                 onPressed: () {
-              Navigator.push<void>(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (BuildContext context) => CartView(),
-                ),
-              );
-            }),
+                  Navigator.push<void>(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => CartView(),
+                    ),
+                  );
+                }),
           ),
           SizedBox(
             width: 5,

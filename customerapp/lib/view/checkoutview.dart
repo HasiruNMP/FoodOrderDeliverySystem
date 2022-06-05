@@ -76,9 +76,7 @@ class _CheckoutViewState extends State<CheckoutView> {
     // IncreaseOrderNumbers();
     // AddOrderDetails('Paid');
     // AddEachItems();
-    setState(() {
-      Cart.EmptyCart();
-    });
+
     //Navigator.pop(context);
     setState(() {
       Navigator.push(

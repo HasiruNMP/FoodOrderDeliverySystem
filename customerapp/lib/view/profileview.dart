@@ -1,4 +1,3 @@
-
 import 'package:customerapp/main.dart';
 import 'package:customerapp/archive/otpverificationview.dart';
 import 'package:customerapp/view/userregister.dart';
@@ -72,19 +71,25 @@ class _ProfileViewState extends State<ProfileView> {
                       ),*/
                       ListTile(
                         title: const Text('Name'),
-                        subtitle: Text('$fname $lname',style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.bold,
-                        ),),
+                        subtitle: Text(
+                          '$fname $lname',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                       ListTile(
                         title: const Text('Phone Number:'),
-                        subtitle: Text(global.phoneNo,style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.bold,
-                        ),),
+                        subtitle: Text(
+                          phoneNo,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ],
                   )
@@ -106,7 +111,8 @@ class _ProfileViewState extends State<ProfileView> {
               //alignment: Alignment.centerLeft,
               child: TextButton(
                   onPressed: () async {
-                    deleteStatus = await APIService.deleteAccount(global.phoneNo);
+                    deleteStatus =
+                        await APIService.deleteAccount(global.phoneNo);
                     showAlertDialog2(context);
                   },
                   child: Text('Delete Account')),
@@ -150,7 +156,7 @@ class _ProfileViewState extends State<ProfileView> {
       onPressed: () {
         if (deleteStatus == 1) {
           logout();
-         // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OtpSetup()), (route) => false);
+          // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OtpSetup()), (route) => false);
         } else {
           showAlertDialog(context, 'Failed to delete this account!');
         }
