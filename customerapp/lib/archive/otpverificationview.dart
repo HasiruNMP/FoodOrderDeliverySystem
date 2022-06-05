@@ -4,7 +4,6 @@ import 'package:customerapp/global.dart';
 import 'package:customerapp/global_urls.dart';
 import 'package:customerapp/view/homeview.dart';
 import 'package:customerapp/view/userregister.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -16,6 +15,7 @@ enum MobileVerificationState {
   SHOW_OTP_FORM_STATE,
 }
 
+/*
 class OtpSetup extends StatefulWidget {
   static String id = 'otp_setup';
   @override
@@ -506,3 +506,4 @@ showAlertDialog(String message, BuildContext context) {
     },
   );
 }
+*/

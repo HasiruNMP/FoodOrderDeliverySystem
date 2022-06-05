@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:advance_notification/advance_notification.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:customerapp/view/makepayment.dart';
 import 'package:customerapp/view/ordercompleteview.dart';
 import 'package:customerapp/view/setlocationview.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -36,7 +35,7 @@ class _CheckoutViewState extends State<CheckoutView> {
   late String items;
   late int orderNum;
   late String orderId;
-  late Timestamp timeStamp;
+  //late Timestamp timeStamp;
   //LatLng location = LatLng(0.0, 0.0);
   List<String> itemsArr = [];
   late Razorpay _razorpay;

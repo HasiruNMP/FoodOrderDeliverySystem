@@ -30,7 +30,11 @@ class _AuthControllerState extends State<AuthController> {
     setState(() {loading = false;});
   }
 
-
+  @override
+  void initState() {
+    getAuthState();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

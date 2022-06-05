@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:customerapp/global.dart';
+import 'package:customerapp/view/userregister.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -23,7 +24,7 @@ class _SignInScreenState extends State<SignInScreen> {
   String countryMobNo = '0';
   bool loading = false;
   bool loading2 = false;
-  bool sent = false;
+  bool sent = true;
 
   Future<void> getOTP(String phn) async {
     setState((){loading = true;});
@@ -67,6 +68,8 @@ class _SignInScreenState extends State<SignInScreen> {
         const SnackBar(content: Text('You Are Signed In!'),),
       );
       setPrefs(phone, tok);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => userRegister()));
     }
     else {
       setState((){loading2 = false;});
@@ -84,7 +87,7 @@ class _SignInScreenState extends State<SignInScreen> {
     await prefs.setString('token', token);
     Auth.token = token;
     Auth.userId = phone;
-    Navigator.pop(context);
+    //Navigator.pop(context);
   }
 
   @override

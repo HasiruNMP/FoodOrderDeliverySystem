@@ -67,8 +67,8 @@ class APIService {
   }
 
   static Future adduser(userModel user) async {
-    var headers = {'Content-Type': 'application/json'};
-    var request = http.Request('POST', Uri.parse('${Urls.apiUrl}/users/adduser'));
+    var headers = {'Content-Type': 'application/json','Authorization': 'Bearer ${Auth.token}'};
+    var request = http.Request('POST', Uri.parse('${Urls.apiUrl}/users/adduser'),);
     request.body = json.encode({
       "firstName": user.firstName,
       "lastName": user.lastName,
@@ -91,7 +91,8 @@ class APIService {
 
   static Future getUserDetails(String phone) async {
     http.Response response = await http.get(Uri.parse(
-        '${Urls.apiUrl}/users/getuserdetails?phone=%2B${phone.substring(1)}'));
+        '${Urls.apiUrl}/users/getuserdetails?phone=%2B${phone.substring(1)}'),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
 
     if (response.statusCode == 200) {
       print(response.statusCode);
@@ -108,7 +109,7 @@ class APIService {
     var request = http.Request(
         'DELETE',
         Uri.parse(
-            '${Urls.apiUrl}/users/deletuser?phone=%2B${phone.substring(1)}'));
+            '${Urls.apiUrl}/users/deletuser?phone=%2B${phone.substring(1)}'),);
 
     http.StreamedResponse response = await request.send();
 

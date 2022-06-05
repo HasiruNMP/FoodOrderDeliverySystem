@@ -1,9 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:customerapp/view/otpverificationview.dart';
+
+import 'package:customerapp/main.dart';
+import 'package:customerapp/archive/otpverificationview.dart';
 import 'package:customerapp/view/userregister.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:customerapp/view/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:customerapp/global.dart' as global;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/apiservice.dart';
 
@@ -128,10 +130,11 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   void logout() async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.pop(context);
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => OtpSetup()));
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('auth', 0);
+    await prefs.setString('phone', '0');
+    await prefs.setString('token', '0');
+    Navigator.pushNamedAndRemoveUntil(context, 'auth', (route) => false);
   }
 
   showAlertDialog2(BuildContext context) {
@@ -147,10 +150,7 @@ class _ProfileViewState extends State<ProfileView> {
       onPressed: () {
         if (deleteStatus == 1) {
           logout();
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => OtpSetup()),
-              (route) => false);
+         // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OtpSetup()), (route) => false);
         } else {
           showAlertDialog(context, 'Failed to delete this account!');
         }
@@ -198,10 +198,6 @@ class _ProfileViewState extends State<ProfileView> {
       ),
       onPressed: () {
         logout();
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => OtpSetup()),
-            (route) => false);
         //Navigator.pop(context);
       },
     );

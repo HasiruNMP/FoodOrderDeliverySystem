@@ -1,7 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:customerapp/controller/usermodel.dart';
+import 'package:customerapp/global.dart';
+import 'package:customerapp/main.dart';
 import 'package:customerapp/view/homeview.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../api/apiservice.dart';
@@ -17,13 +18,10 @@ class _userRegister extends State<userRegister> {
   final TextEditingController _fnameController = TextEditingController();
   final TextEditingController _lnameController = TextEditingController();
 
+  @override
   void initState() {
     super.initState();
-    FirebaseAuth auth = FirebaseAuth.instance;
-    if (auth.currentUser != null) {
-      phonNo = auth.currentUser!.phoneNumber!;
-      print(phonNo);
-    }
+    phonNo = Auth.userId;
   }
 
   userModel user = userModel(
@@ -38,9 +36,11 @@ class _userRegister extends State<userRegister> {
     user.lastName = _lnameController.text;
     user.phone = phonNo;
     bool saveResponse = await APIService.adduser(user);
-    saveResponse == true
-        ? Navigator.pushNamedAndRemoveUntil(context, 'home', (route) => false)
-        : showAlertDialog(context);
+    if(saveResponse == true){
+      Navigator.pushNamedAndRemoveUntil(context, 'home', (route) => false);
+    }else{
+      showAlertDialog(context);
+    }
   }
 
   // void addUserData() {
@@ -63,83 +63,79 @@ class _userRegister extends State<userRegister> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign Up'),
+        title: Text('Your Name'),
       ),
       body: SafeArea(
-        child: ListView(
+        child: Column(
           children: [
             Form(
               key: _formKey,
               child: Container(
-                child: Row(
+                child: Column(
                   children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          margin: EdgeInsets.only(top: 10),
-                          child: TextFormField(
-                            controller: _fnameController,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              labelText: 'First Name',
-                              labelStyle: TextStyle(
-                                fontSize: 15,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                              ),
-                              // suffixIcon: Icon(
-                              //   Icons.error,
-                              // ),
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: TextFormField(
+                          controller: _fnameController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            labelText: 'First Name',
+                            labelStyle: TextStyle(
+                              fontSize: 15,
                             ),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter the First Name';
-                              } else if (RegExp(
-                                      r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]')
-                                  .hasMatch(value)) {
-                                return 'Enter a Valid Name';
-                              }
-                              return null;
-                            },
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(11),
+                            ),
+                            // suffixIcon: Icon(
+                            //   Icons.error,
+                            // ),
                           ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter the First Name';
+                            } else if (RegExp(
+                                    r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]')
+                                .hasMatch(value)) {
+                              return 'Enter a Valid Name';
+                            }
+                            return null;
+                          },
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          margin: EdgeInsets.only(top: 10),
-                          child: TextFormField(
-                            controller: _lnameController,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              labelText: 'Last Name',
-                              labelStyle: TextStyle(
-                                fontSize: 15,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                              ),
-                              // suffixIcon: Icon(
-                              //   Icons.error,
-                              // ),
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: TextFormField(
+                          controller: _lnameController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            labelText: 'Last Name',
+                            labelStyle: TextStyle(
+                              fontSize: 15,
                             ),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter the second Name';
-                              } else if (RegExp(
-                                      r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]')
-                                  .hasMatch(value)) {
-                                return 'Enter a Valid Name';
-                              }
-                              return null;
-                            },
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(11),
+                            ),
+                            // suffixIcon: Icon(
+                            //   Icons.error,
+                            // ),
                           ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter the second Name';
+                            } else if (RegExp(
+                                    r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]')
+                                .hasMatch(value)) {
+                              return 'Enter a Valid Name';
+                            }
+                            return null;
+                          },
                         ),
                       ),
                     ),
@@ -147,15 +143,18 @@ class _userRegister extends State<userRegister> {
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  addUserData();
-                } else {
-                  return null;
-                }
-              },
-              child: const Text('Sign Up'),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    addUserData();
+                  } else {
+                    return null;
+                  }
+                },
+                child: const Text('CONTINUE'),
+              ),
             ),
           ],
         ),

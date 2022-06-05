@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:customerapp/view/showlocation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:intl/intl.dart';
 
 import '../api/apiservice.dart';
@@ -66,7 +66,7 @@ class _TrackOrderViewState extends State<TrackOrderView> {
   late Future<List<orderItemModel>> orderItems;
 
   void connectAndListen(){
-    IO.Socket socket = IO.io('https://106f-2402-d000-a500-123b-bc62-280d-ecbb-6fc4.in.ngrok.io',
+    IO.Socket socket = IO.io('https://fods-geotrack.herokuapp.com',
         OptionBuilder().setTransports(['websocket']).build());
 
     socket.onConnect((_) {
