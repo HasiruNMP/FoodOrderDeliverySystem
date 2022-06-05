@@ -7,6 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../auth/authservice.dart';
+
 class CompletedOrdersView extends StatefulWidget {
   const CompletedOrdersView({Key? key}) : super(key: key);
 
@@ -21,7 +23,8 @@ class _CompletedOrdersViewState extends State<CompletedOrdersView> {
     String url =
         "${Urls.apiUrl}/orders/getcompleteddeliveryorders?EmployeeId=${Globals.EmployeeId}";
 
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse(url),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     var resJson = json.decode(response.body);
 
     if (response.statusCode == 200) {

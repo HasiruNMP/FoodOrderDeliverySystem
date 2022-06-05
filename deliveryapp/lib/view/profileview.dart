@@ -21,7 +21,8 @@ class _ProfileDetailsState extends State<ProfileDetails> {
     String url =
         "${Urls.apiUrl}/employee/getprofiledetails?EmployeeId=${Globals.EmployeeId}";
 
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse(url),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     var resJson = json.decode(response.body);
 
     if (response.statusCode == 200) {

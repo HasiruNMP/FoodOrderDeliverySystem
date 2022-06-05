@@ -8,6 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../auth/authservice.dart';
+
 class PendingOrdersView extends StatefulWidget {
   const PendingOrdersView({Key? key}) : super(key: key);
 
@@ -21,8 +23,10 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
   late int empId;
 
   Future getEmployeeDetails() async {
-    http.Response response = await http.get(Uri.parse(
-        '${Urls.apiUrl}/employee/getemployeedetailsbyusername?username=${Globals.userName}'));
+    http.Response response = await http.get(
+        Uri.parse(
+            '${Urls.apiUrl}/employee/getemployeedetailsbyusername?username=${Globals.userName}'),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
 
     if (response.statusCode == 200) {
       print(response.statusCode);
@@ -43,7 +47,8 @@ class _PendingOrdersViewState extends State<PendingOrdersView> {
   Future fetchpendingorders() async {
     String url = "${Urls.apiUrl}/orders/getorderlist?EmployeeId=$empId";
 
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse(url),
+        headers: {'Authorization': 'Bearer ${Auth.token}'});
     var resJson = json.decode(response.body);
 
     if (response.statusCode == 200) {

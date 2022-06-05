@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
+import '../auth/authservice.dart';
 import '../common/globals.dart';
 import '../model/orderitemsmodel.dart';
 import '../model/productmodel.dart';
@@ -42,7 +43,10 @@ class _DeliverViewState extends State<DeliverView> {
   }
 
   Future updateAsDeliverd() async {
-    var headers = {'Content-Type': 'application/json'};
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Auth.token}'
+    };
     var request = http.Request(
       'PUT',
       Uri.parse(
@@ -223,8 +227,9 @@ late Future<List<orderItemModel>> orderItems;
 late Future<List<productModel>> productDetails;
 
 Future<List<orderItemModel>> getOrderItems(int orderId) async {
-  final response = await http
-      .get(Uri.parse('${Urls.apiUrl}/orders/getOrderItems?orderId=$orderId'));
+  final response = await http.get(
+      Uri.parse('${Urls.apiUrl}/orders/getOrderItems?orderId=$orderId'),
+      headers: {'Authorization': 'Bearer ${Auth.token}'});
   if (response.statusCode == 200) {
     List jsonResponse = json.decode(response.body);
     return jsonResponse
@@ -236,8 +241,9 @@ Future<List<orderItemModel>> getOrderItems(int orderId) async {
 }
 
 Future<List<productModel>> getProductDetails(int productId) async {
-  final response = await http.get(Uri.parse(
-      '${Urls.apiUrl}/orders/getproductdetails?productId=$productId'));
+  final response = await http.get(
+      Uri.parse('${Urls.apiUrl}/orders/getproductdetails?productId=$productId'),
+      headers: {'Authorization': 'Bearer ${Auth.token}'});
   if (response.statusCode == 200) {
     List jsonResponse = json.decode(response.body);
     return jsonResponse.map((data) => new productModel.fromJson(data)).toList();
