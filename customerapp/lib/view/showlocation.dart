@@ -37,7 +37,7 @@ class _ShowLiveLocationState extends State<ShowLiveLocation> {
     setMapMarker();
   }
   void connectAndListen(){
-    IO.Socket socket = IO.io('https://106f-2402-d000-a500-123b-bc62-280d-ecbb-6fc4.in.ngrok.io/',
+    IO.Socket socket = IO.io('https://fods-geotrack.herokuapp.com',
         OptionBuilder()
             .setTransports(['websocket']).build());
 

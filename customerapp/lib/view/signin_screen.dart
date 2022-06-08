@@ -24,7 +24,7 @@ class _SignInScreenState extends State<SignInScreen> {
   String countryMobNo = '0';
   bool loading = false;
   bool loading2 = false;
-  bool sent = true;
+  bool sent = false;
 
   Future<void> getOTP(String phn) async {
     setState((){loading = true;});

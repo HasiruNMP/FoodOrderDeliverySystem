@@ -75,7 +75,7 @@ class _TrackOrderViewState extends State<TrackOrderView> {
     });
 
     //When an event recieved from server, data is added to the stream
-    socket.on('LocationUpdated', (data) {
+    socket.on('message', (data) {
       setState(() {
         print(data);
         print(data);

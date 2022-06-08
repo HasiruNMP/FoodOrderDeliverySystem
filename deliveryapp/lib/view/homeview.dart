@@ -63,7 +63,7 @@ class _HomeViewState extends State<HomeView> {
 
     final LocationSettings locationSettings = LocationSettings(
       accuracy: LocationAccuracy.high,
-      distanceFilter: 100,
+      distanceFilter: 10,
     );
 
     Geolocator.getPositionStream(locationSettings: locationSettings)
