@@ -128,8 +128,8 @@ namespace FODS_API.Controllers
 
         private int SendOTP(string otp,string phone)
         {
-            string accountSid = "AC0af284e07dd78c2b827ec036ba464315";
-            string authToken = "388f87fc7fc687da4f6cd9653ba7ab7b";
+            string accountSid = APIKeys.TwilioSiD;
+            string authToken = APIKeys.TwilioAuthToken;
 
             TwilioClient.Init(accountSid, authToken);
 

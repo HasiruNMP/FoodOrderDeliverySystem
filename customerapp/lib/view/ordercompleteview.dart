@@ -7,6 +7,7 @@ import 'package:customerapp/global.dart' as global;
 import 'package:twilio_flutter/twilio_flutter.dart';
 
 import '../controller/cart.dart';
+import '../secrets.dart';
 
 class OrderCompleted extends StatefulWidget {
   LatLng delLoc;
@@ -33,8 +34,8 @@ class _OrderCompletedState extends State<OrderCompleted> {
 
   void sendSms() async {
     twilioFlutter = TwilioFlutter(
-        accountSid: 'AC0af284e07dd78c2b827ec036ba464315',
-        authToken: '388f87fc7fc687da4f6cd9653ba7ab7b',
+        accountSid: Secrets.twilioSid,
+        authToken: Secrets.twilioAuthToken,
         twilioNumber: '+19289853180');
     twilioFlutter.sendSMS(
         toNumber: widget.phoneNo,
